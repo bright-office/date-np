@@ -8,6 +8,7 @@ import {
     MAX_BS_YEAR
 } from "../data/constants";
 import { extractYear, type yearInput } from "./helpers";
+import { NepaliDate } from "../src/NepaliDate";
 
 /**
  * @categoryDescription validators
@@ -104,18 +105,31 @@ const isValidBSRange = (BS_date: Date): boolean => {
 /**
  * Checks whether if two dates are equal or not.
  * Ignores there time and only checks the year month and date.
- * @param {Date} date1 - The first date to be checked.
- * @param {Date} date2 - The second date to be checked.
+ * @param {Date | NepaliDate} date1 - The first date to be checked.
+ * @param {Date | NepaliDate} date2 - The second date to be checked.
  * 
  * @returns {boolean} - True if the dates are equal, false otherwise.
  */
-const areDatesEqual = (date1: Date, date2: Date): boolean => {
-    if (date1.getFullYear() === date2.getFullYear()
-        && date1.getMonth() === date2.getMonth()
-        && date1.getDate() === date2.getDate())
-        return true;
-
-    return false;
+const areDatesEqual = (date1: Date | NepaliDate, date2: Date | NepaliDate): boolean => {
+    // If both are NepaliDate, use the equals method
+    if (date1 instanceof NepaliDate && date2 instanceof NepaliDate) {
+        return date1.equals(date2);
+    }
+    
+    // If both are Date, use the original logic
+    if (date1 instanceof Date && date2 instanceof Date) {
+        return date1.getFullYear() === date2.getFullYear()
+            && date1.getMonth() === date2.getMonth()
+            && date1.getDate() === date2.getDate();
+    }
+    
+    // If types are mixed, convert both to AD dates for comparison
+    const adDate1 = date1 instanceof NepaliDate ? date1.toADDate() : date1;
+    const adDate2 = date2 instanceof NepaliDate ? date2.toADDate() : date2;
+    
+    return adDate1.getFullYear() === adDate2.getFullYear()
+        && adDate1.getMonth() === adDate2.getMonth()
+        && adDate1.getDate() === adDate2.getDate();
 }
 
 

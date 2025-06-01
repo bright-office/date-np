@@ -2,6 +2,7 @@ import { AD_MONTH, AD_MONTH_LEAP_YEAR, BS_MONTHS, MAX_BS_YEAR, MIN_AD_YEAR, MIN_
 import { convertFromADToBS, convertFromBSToAD } from "./conversion.ts";
 import Errors from "./Errors.ts";
 import { isADLeapYear, isValidADYear, isValidBSRange, isValidBSYear } from "./validators.ts";
+import { NepaliDate } from "../src/NepaliDate.ts";
 
 /**
  * @category helpers
@@ -155,28 +156,30 @@ const extractYear = (input: Date | BS_MONTHS_KEYS | number): number => {
 }
 
 export type tgetMonthTotalDaysProps = {
-    date: Date,
+    date: Date | NepaliDate,
     locale: "en" | "ne",
 }
 
 /**
- * This function assums you send date according to the locale 
+ * This function assumes you send date according to the locale 
  */
 const getTotalDaysInMonth = ({ date, locale }: tgetMonthTotalDaysProps) => {
     if (locale === "en") {
-        const isValid = isValidADYear(date);
+        const adDate = date instanceof NepaliDate ? date.toADDate() : date;
+        const isValid = isValidADYear(adDate);
         if (!isValid)
             throw Errors.INVALID_AD_YEAR;
 
-        const isLeapYear = isADLeapYear(date);
-        return isLeapYear ? AD_MONTH_LEAP_YEAR[date.getMonth()] : AD_MONTH[date.getMonth()];
+        const isLeapYear = isADLeapYear(adDate);
+        return isLeapYear ? AD_MONTH_LEAP_YEAR[adDate.getMonth()] : AD_MONTH[adDate.getMonth()];
     }
 
-    const isvalid = isValidBSRange(date);
+    const nepaliDate = date instanceof NepaliDate ? date : new NepaliDate(date);
+    const isvalid = isValidBSYear(nepaliDate.getFullYear());
     if (!isvalid)
         throw Errors.INVALID_BS_YEAR;
 
-    return BS_MONTHS[date.getFullYear() as BS_MONTHS_KEYS][date.getMonth()];
+    return nepaliDate.getDaysInMonth();
 };
 
 /**
@@ -185,21 +188,21 @@ const getTotalDaysInMonth = ({ date, locale }: tgetMonthTotalDaysProps) => {
  */
 const getStartingDayOfMonth = ({ date, locale }: tgetMonthTotalDaysProps) => {
     if (locale === "en") {
-        const isValid = isValidADYear(date);
+        const adDate = date instanceof NepaliDate ? date.toADDate() : date;
+        const isValid = isValidADYear(adDate);
         if (!isValid)
             throw Errors.INVALID_AD_YEAR;
 
-        return (new Date(date.getFullYear(), date.getMonth(), 1).getDay());
+        return (new Date(adDate.getFullYear(), adDate.getMonth(), 1).getDay());
     }
 
-    date.setDate(1)
-    const thisBSMonthADdate = convertFromBSToAD(date);
-
-    const isvalid = isValidBSYear(date);
+    const nepaliDate = date instanceof NepaliDate ? date : new NepaliDate(date);
+    const firstDayOfMonth = nepaliDate.getFirstDayOfMonth();
+    const isvalid = isValidBSYear(firstDayOfMonth.getFullYear());
     if (!isvalid)
         throw Errors.INVALID_BS_YEAR;
 
-    return (thisBSMonthADdate).getDay();
+    return firstDayOfMonth.getDay();
 };
 
 /**
@@ -208,19 +211,22 @@ const getStartingDayOfMonth = ({ date, locale }: tgetMonthTotalDaysProps) => {
  */
 const getEndingDayOfMonth = ({ date, locale }: tgetMonthTotalDaysProps) => {
     if (locale === "en") {
-        const isValid = isValidADYear(date);
+        const adDate = date instanceof NepaliDate ? date.toADDate() : date;
+        const isValid = isValidADYear(adDate);
         if (!isValid)
             throw Errors.INVALID_AD_YEAR;
 
-        return date.getDay();
+        const lastDay = new Date(adDate.getFullYear(), adDate.getMonth() + 1, 0);
+        return lastDay.getDay();
     }
 
-    const thisBSMonthADdate = convertFromBSToAD(date);
-    const isvalid = isValidBSYear(date);
+    const nepaliDate = date instanceof NepaliDate ? date : new NepaliDate(date);
+    const lastDayOfMonth = nepaliDate.getLastDayOfMonth();
+    const isvalid = isValidBSYear(lastDayOfMonth.getFullYear());
     if (!isvalid)
         throw Errors.INVALID_BS_YEAR;
 
-    return (thisBSMonthADdate).getDay();
+    return lastDayOfMonth.getDay();
 };
 
 export {

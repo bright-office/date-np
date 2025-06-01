@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { convertFromADToBS, convertFromBSToAD } from "../../utils/conversion";
+import { NepaliDate } from "../NepaliDate";
 
 type tpickerContextType = {
     pickerState: {
@@ -10,7 +11,7 @@ type tpickerContextType = {
          * The Date that is selected
          * @default today
          */
-        selectedDate: Date,
+        selectedDate: Date | NepaliDate,
         /**
          * Month that is currently in view,
          * not always the selected Date's month.
@@ -36,7 +37,7 @@ const usePicker = () => {
 
     const { setPickerState } = pickerContextValue;
 
-    const updatePickerDay = (day: Date) => {
+    const updatePickerDay = (day: Date | NepaliDate) => {
         setPickerState((prevState) => {
             return {
                 ...prevState,
@@ -116,8 +117,8 @@ const usePicker = () => {
             const selectedDate = prevState.selectedDate;
 
             const updatedDate = newLocale === "ne"
-                ? convertFromADToBS(selectedDate)
-                : convertFromBSToAD(selectedDate);
+                ? (selectedDate instanceof NepaliDate ? selectedDate : new NepaliDate(selectedDate))
+                : (selectedDate instanceof Date ? selectedDate : selectedDate.toADDate());
 
             return {
                 ...prevState,

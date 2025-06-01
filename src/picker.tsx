@@ -71,7 +71,7 @@ const Picker = (props: tpickerProps) => {
                 activateWith="ref"
                 //@ts-ignore
                 activatorRef={pickerInputRef}
-                onOutsideClick={() => updatePickerVisiblity(false)}
+                //onOutsideClick={() => updatePickerVisiblity(false)}
                 centerAlignContainer
                 active={shouldShowPicker}
                 {...dAwareConProps}

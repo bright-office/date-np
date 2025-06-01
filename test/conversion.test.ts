@@ -53,18 +53,67 @@ const BSToADCASES = [
     {
         inputDate: new Date(2081, 8, 9),
         outputDate: new Date(2024, 11, 24)
-    }
-]
+    },
 
+];
+
+const ADToBSCASES = [
+    {
+        inputDate: new Date(2023, 2, 17),
+        outputDate: new Date(2079, 11, 3),
+    },
+    {
+        inputDate: new Date(2023, 10, 25),
+        outputDate: new Date(2080, 7, 9),
+    },
+    {
+        inputDate: new Date(2024, 0, 1),
+        outputDate: new Date(2080, 8, 16),
+    },
+    {
+        inputDate: new Date(2024, 4, 15),
+        outputDate: new Date(2081, 1, 2),
+    },
+    {
+        inputDate: new Date(2025, 1, 21),
+        outputDate: new Date(2081, 10, 9),
+    },
+    {
+        inputDate: new Date(2022, 0, 1),
+        outputDate: new Date(2078, 8, 17),
+    },
+    {
+        inputDate: new Date(2025, 8, 21),
+        outputDate: new Date(2082, 5, 5),
+    },
+    {
+        inputDate: new Date(2020, 4, 15),
+        outputDate: new Date(2077, 1, 2),
+    }
+];
+
+// BS to AD conversion tests
 for (const { inputDate, outputDate } of BSToADCASES) {
-    test(`AD to BS ${inputDate.toLocaleString().split(',')[0]}`, () => {
+    test(`BS to AD ${inputDate.toLocaleString().split(',')[0]}`, () => {
         const output = convertFromBSToAD(inputDate);
         expect(output).toEqual(outputDate);
     });
+}
 
-    test(`BS to AD ${inputDate}`, () => {
-        const output = convertFromADToBS(outputDate);
-        expect(output).toEqual(inputDate);
+// AD to BS conversion tests
+for (const { inputDate, outputDate } of ADToBSCASES) {
+    test(`AD to BS ${inputDate.toLocaleString().split(',')[0]}`, () => {
+        const output = convertFromADToBS(inputDate);
+        expect(output).toEqual(outputDate);
+    });
+}
+
+// Bidirectional conversion tests (using BSToADCASES for round-trip testing)
+for (const { inputDate, outputDate } of BSToADCASES) {
+    test(`Round-trip conversion BS->AD->BS ${inputDate.toLocaleString().split(',')[0]}`, () => {
+        const adDate = convertFromBSToAD(inputDate);
+        const backToBs = convertFromADToBS(adDate);
+        expect(backToBs).toEqual(inputDate);
     });
 }
 

@@ -2,12 +2,13 @@ import type { HTMLAttributes, MouseEvent } from "react";
 import { cn } from "../../utils/clsx";
 import { usePicker } from "../hooks/usePicker";
 import { areDatesEqual } from "../../utils/validators";
+import { NepaliDate } from "../NepaliDate";
 
 type tdayProps = {
-    date: Date,
+    date: Date | NepaliDate,
     disabled?: boolean,
     isToday?: boolean,
-    onClick?: (date: Date, e: MouseEvent<HTMLButtonElement>) => void,
+    onClick?: (date: Date | NepaliDate, e: MouseEvent<HTMLButtonElement>) => void,
 } & HTMLAttributes<HTMLButtonElement>
 
 const Day = (props: tdayProps) => {

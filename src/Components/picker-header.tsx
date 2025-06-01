@@ -3,31 +3,26 @@ import { CALENDAR } from "../../data/locale";
 import { cn } from "../../utils/clsx";
 import { convertFromADToBS } from "../../utils/conversion";
 import { usePicker } from "../hooks/usePicker";
+import { NepaliDate } from "../NepaliDate";
 
 const PickerHeader = () => {
     const { pickerState, togglePickerMode } = usePicker();
     const { activeMonth, selectedDate, activeYear, locale } = pickerState;
 
-    // We are going with current Month middle date 
-    // since it is possible that the month we are viewing
-    // may have more days than the previous or next month, which will
-    // change the month but when the currentDate is calculated with
-    // activeyear, activemonth, selectedDate.getDate() it will be the same.
-    const currentMonthMiddle = useMemo(
-        () => new Date(activeYear, activeMonth, (selectedDate.getDate() / 2)),
-        [activeYear, activeMonth, selectedDate]);
-
-    const currentNepaliDate = pickerState.locale === "ne"
-        ? currentMonthMiddle
-        : convertFromADToBS(currentMonthMiddle);
+    // Create the appropriate date object based on locale
+    const currentMonthDate = useMemo(() => {
+        if (locale === "ne") {
+            return new NepaliDate(activeYear, activeMonth, 15); // Use 15th as middle date
+        } else {
+            return new Date(activeYear, activeMonth, 15);
+        }
+    }, [activeYear, activeMonth, locale]);
 
     const monthName = locale === "en"
-        ? CALENDAR.AD.months[currentMonthMiddle.getMonth()]
-        : CALENDAR.BS.months[currentNepaliDate.getMonth()];
+        ? CALENDAR.AD.months[currentMonthDate.getMonth()]
+        : CALENDAR.BS.months[currentMonthDate.getMonth()];
 
-    const year = locale === "en"
-        ? currentMonthMiddle.getFullYear()
-        : currentNepaliDate.getFullYear()
+    const year = currentMonthDate.getFullYear();
 
     const handleMonthClick = () => {
         togglePickerMode("month", "date");

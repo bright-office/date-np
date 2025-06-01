@@ -12,25 +12,39 @@ import { usePicker } from "../hooks/usePicker";
 import Day from "./day";
 import Month from "./month";
 import { WeekRow } from "./week-row";
+import { NepaliDate } from "../NepaliDate";
 
 const PickerBody = () => {
     const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear } = usePicker();
     const { today, selectedDate, activeYear, activeMonth, locale } = pickerState;
 
-    const thisMonthtotalDays = getTotalDaysInMonth({ date: new Date(activeYear, activeMonth, 1), locale });
-    const thisMonthStartDay = getStartingDayOfMonth({ date: new Date(activeYear, activeMonth, 1), locale });
-    const thisMonthEndDay = getEndingDayOfMonth({ date: new Date(activeYear, activeMonth, thisMonthtotalDays), locale })
-    const prevMonthTotalDays = getTotalDaysInMonth({ date: new Date(activeYear, activeMonth - 1, 1), locale });
+    // Create appropriate date objects based on locale
+    const createDate = (year: number, month: number, date?: number) => {
+        if (locale === "ne") {
+            return new NepaliDate(year, month, date || 1);
+        } else {
+            return new Date(year, month, date || 1);
+        }
+    };
+
+    const currentMonthDate = createDate(activeYear, activeMonth, 1);
+    const thisMonthtotalDays = getTotalDaysInMonth({ date: currentMonthDate, locale });
+    const thisMonthStartDay = getStartingDayOfMonth({ date: currentMonthDate, locale });
+    const thisMonthEndDate = createDate(activeYear, activeMonth, thisMonthtotalDays);
+    const thisMonthEndDay = getEndingDayOfMonth({ date: thisMonthEndDate, locale });
+    const prevMonthDate = createDate(activeYear, activeMonth - 1, 1);
+    const prevMonthTotalDays = getTotalDaysInMonth({ date: prevMonthDate, locale });
 
     const plotablePrevMonthDays = thisMonthStartDay;
 
     const TrailingPrevMonthDays = () => {
         return [...Array(plotablePrevMonthDays)].map((_, index) => {
             const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
-            const isNotActive = !areDatesEqual(new Date(activeYear, activeMonth - 1, date), selectedDate);
+            const dayDate = createDate(activeYear, activeMonth - 1, date);
+            const isNotActive = !areDatesEqual(dayDate, selectedDate);
 
             return <Day
-                date={new Date(activeYear, activeMonth - 1, date)}
+                date={dayDate}
                 key={index}
                 className={cn(isNotActive && "bg-gray-50 opacity-50")}
             />
@@ -39,25 +53,29 @@ const PickerBody = () => {
 
     const ThisMonthDays = () => {
         return [...Array(thisMonthtotalDays)].map((_, index) => {
+            const dayDate = createDate(activeYear, activeMonth, index + 1);
             return <Day
-                // TODO: Extend the date with custom class so that it doesnot
-                // round off when in Nepali Date 
-                date={new Date(activeYear, activeMonth, index + 1)}
+                date={dayDate}
                 key={index}
             />
         })
     }
 
     const PrecidingNxtMonthDays = () => {
-        const PrecidingDays = 6 - thisMonthEndDay;
+        // Calculate remaining cells needed to fill the 42-cell grid (7 columns × 6 rows)
+        const totalCells = 42;
+        const usedCells = plotablePrevMonthDays + thisMonthtotalDays;
+        const PrecidingDays = totalCells - usedCells;
 
         return [...Array(PrecidingDays)].map((_, index) => {
-            const isNotActive = !areDatesEqual(new Date(activeYear, activeMonth - 1, index + 1), selectedDate);
+            const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
+            const isNotActive = !areDatesEqual(dayDate, selectedDate);
+            const isTodayDate = locale === "en" && index + 1 === today.getDate();
 
             return <Day
-                date={new Date(activeYear, activeMonth + 1, index + 1)}
+                date={dayDate}
                 key={index}
-                isToday={index + 1 === today.getDate()}
+                isToday={isTodayDate}
                 className={cn(isNotActive && "bg-gray-50 opacity-50")}
             />
         })
