@@ -62,24 +62,29 @@ const PickerBody = () => {
     }
 
     const PrecidingNxtMonthDays = () => {
-        // Calculate remaining cells needed to fill the 42-cell grid (7 columns × 6 rows)
-        const totalCells = 42;
-        const usedCells = plotablePrevMonthDays + thisMonthtotalDays;
-        const PrecidingDays = totalCells - usedCells;
-
-        return [...Array(PrecidingDays)].map((_, index) => {
-            const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
-            const isNotActive = !areDatesEqual(dayDate, selectedDate);
-            const isTodayDate = locale === "en" && index + 1 === today.getDate();
-
-            return <Day
-                date={dayDate}
-                key={index}
-                isToday={isTodayDate}
-                className={cn(isNotActive && "bg-gray-50 opacity-50")}
-            />
-        })
+    // Calculate remaining cells needed to fill the 42-cell grid (7 columns × 6 rows)
+    const totalCells = 42;
+    const usedCells = plotablePrevMonthDays + thisMonthtotalDays;
+    let PrecidingDays = totalCells - usedCells;
+    
+    // If the last row would be entirely next month days (7 days), don't render it
+    if (PrecidingDays >= 7) {
+        PrecidingDays = PrecidingDays - 7;
     }
+
+    return [...Array(PrecidingDays)].map((_, index) => {
+        const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
+        const isNotActive = !areDatesEqual(dayDate, selectedDate);
+        const isTodayDate = locale === "en" && index + 1 === today.getDate();
+
+        return <Day
+            date={dayDate}
+            key={index}
+            isToday={isTodayDate}
+            className={cn(isNotActive && "bg-gray-50 opacity-50")}
+        />
+    })
+}
 
     /**
      * Conditionally render if mode is set to date.
