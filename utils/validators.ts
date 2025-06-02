@@ -132,6 +132,69 @@ const areDatesEqual = (date1: Date | NepaliDate, date2: Date | NepaliDate): bool
         && adDate1.getDate() === adDate2.getDate();
 }
 
+/**
+ * @category validators
+ * Compare two dates for ordering. Returns -1 if date1 < date2, 0 if equal, 1 if date1 > date2
+ * @param {Date | NepaliDate} date1 - First date to compare
+ * @param {Date | NepaliDate} date2 - Second date to compare
+ * @returns {number} - Comparison result (-1, 0, or 1)
+ */
+const compareDates = (date1: Date | NepaliDate, date2: Date | NepaliDate): number => {
+    // If both are NepaliDate, use the compare method
+    if (date1 instanceof NepaliDate && date2 instanceof NepaliDate) {
+        return date1.compare(date2);
+    }
+    
+    // If both are Date, compare timestamps
+    if (date1 instanceof Date && date2 instanceof Date) {
+        const time1 = date1.getTime();
+        const time2 = date2.getTime();
+        return time1 < time2 ? -1 : time1 > time2 ? 1 : 0;
+    }
+    
+    // If types are mixed, convert both to AD dates for comparison
+    const adDate1 = date1 instanceof NepaliDate ? date1.toADDate() : date1;
+    const adDate2 = date2 instanceof NepaliDate ? date2.toADDate() : date2;
+    
+    const time1 = adDate1.getTime();
+    const time2 = adDate2.getTime();
+    return time1 < time2 ? -1 : time1 > time2 ? 1 : 0;
+};
+
+/**
+ * @category validators
+ * Check if first date is before second date
+ * @param {Date | NepaliDate} date1 - First date
+ * @param {Date | NepaliDate} date2 - Second date
+ * @returns {boolean} - True if date1 is before date2
+ */
+const isDateBefore = (date1: Date | NepaliDate, date2: Date | NepaliDate): boolean => {
+    return compareDates(date1, date2) < 0;
+};
+
+/**
+ * @category validators
+ * Check if first date is after second date
+ * @param {Date | NepaliDate} date1 - First date
+ * @param {Date | NepaliDate} date2 - Second date
+ * @returns {boolean} - True if date1 is after date2
+ */
+const isDateAfter = (date1: Date | NepaliDate, date2: Date | NepaliDate): boolean => {
+    return compareDates(date1, date2) > 0;
+};
+
+/**
+ * @category validators
+ * Check if a date falls between two other dates (inclusive)
+ * @param {Date | NepaliDate} date - Date to check
+ * @param {Date | NepaliDate} startDate - Start of range
+ * @param {Date | NepaliDate} endDate - End of range
+ * @returns {boolean} - True if date is between startDate and endDate
+ */
+const isDateBetween = (date: Date | NepaliDate, startDate: Date | NepaliDate, endDate: Date | NepaliDate): boolean => {
+    return compareDates(date, startDate) >= 0 && compareDates(date, endDate) <= 0;
+};
+
 
 export {
     isValidBSYear,
@@ -139,5 +202,9 @@ export {
     isADLeapYear,
     isValidADRange,
     isValidBSRange,
-    areDatesEqual
+    areDatesEqual,
+    compareDates,
+    isDateBefore,
+    isDateAfter,
+    isDateBetween
 }
