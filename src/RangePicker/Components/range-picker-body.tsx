@@ -20,6 +20,7 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
     const { rangePickerState } = useRangePicker();
     const { today, locale } = rangePickerState;
     const panelState = panel === "left" ? rangePickerState.leftPanel : rangePickerState.rightPanel;
+    const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeYear, activeMonth, mode } = panelState;
 
     // Create appropriate date objects based on locale
@@ -97,9 +98,9 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
                     <RangeWeekRow locale={locale} />
                 </div>
                 <div className="grid grid-cols-7 gap-1">
-                    <TrailingPrevMonthDays />
+                    {/* <TrailingPrevMonthDays />
+                    <TrailingNextMonthDays /> */}
                     <CurrentMonthDays />
-                    <TrailingNextMonthDays />
                 </div>
             </div>
         );
@@ -111,13 +112,42 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         
         return (
             <div className="grid grid-cols-3 gap-2 p-2">
-                {months.map((_, index) => (
-                    <RangeMonth
-                        key={index}
-                        month={index}
-                        panel={panel}
-                    />
-                ))}
+                {months.map((_, index) => {
+                    // Filter months based on panel constraints
+                    let shouldShow = true;
+                    
+                    if (panel === "left") {
+                        // Left panel: don't show months greater than right panel's active month
+                        // if they are in the same year
+                        if (activeYear === otherPanelState.activeYear && index >= otherPanelState.activeMonth) {
+                            shouldShow = false;
+                        }
+                        // If left panel year is greater than right panel year, don't show any months
+                        if (activeYear > otherPanelState.activeYear) {
+                            shouldShow = false;
+                        }
+                    } else {
+                        // Right panel: don't show months less than left panel's active month
+                        // if they are in the same year
+                        if (activeYear === otherPanelState.activeYear && index <= otherPanelState.activeMonth) {
+                            shouldShow = false;
+                        }
+                        // If right panel year is less than left panel year, don't show any months
+                        if (activeYear < otherPanelState.activeYear) {
+                            shouldShow = false;
+                        }
+                    }
+
+                    if (!shouldShow) return null;
+
+                    return (
+                        <RangeMonth
+                            key={index}
+                            month={index}
+                            panel={panel}
+                        />
+                    );
+                })}
             </div>
         );
     }
@@ -127,9 +157,18 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         const minYear = locale === "en" ? MIN_AD_YEAR : MIN_BS_YEAR;
         const maxYear = locale === "en" ? MAX_AD_YEAR : MAX_BS_YEAR;
         
-        // Show years around the active year
-        const startYear = Math.max(minYear, activeYear - 12);
-        const endYear = Math.min(maxYear, activeYear + 12);
+        // Adjust year range based on panel constraints
+        let startYear = minYear;
+        let endYear = maxYear;
+        
+        if (panel === "left") {
+            // Left panel: don't show years greater than right panel's active year
+            endYear = Math.min(maxYear, otherPanelState.activeYear);
+        } else {
+            // Right panel: don't show years less than left panel's active year
+            startYear = Math.max(minYear, otherPanelState.activeYear);
+        }
+        
         const years = [];
         
         for (let year = startYear; year <= endYear; year++) {

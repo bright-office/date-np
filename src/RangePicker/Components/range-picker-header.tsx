@@ -18,6 +18,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     
     const { locale } = rangePickerState;
     const panelState = panel === "left" ? rangePickerState.leftPanel : rangePickerState.rightPanel;
+    const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeMonth, activeYear } = panelState;
 
     // Create the appropriate date object based on locale
@@ -35,6 +36,45 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
 
     const year = currentMonthDate.getFullYear();
 
+    // Check if navigation should be disabled
+    const isRightArrowDisabled = useMemo(() => {
+        if (panel === "left") {
+            // Left panel: disable right arrow if moving forward would make it equal to or greater than right panel
+            const nextMonth = activeMonth + 1;
+            const nextYear = nextMonth > 11 ? activeYear + 1 : activeYear;
+            const adjustedNextMonth = nextMonth > 11 ? 0 : nextMonth;
+            
+            // Check if next month would be >= right panel's month in same year
+            if (nextYear === otherPanelState.activeYear && adjustedNextMonth >= otherPanelState.activeMonth) {
+                return true;
+            }
+            // Check if next year would be > right panel's year
+            if (nextYear > otherPanelState.activeYear) {
+                return true;
+            }
+        }
+        return false;
+    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear]);
+
+    const isLeftArrowDisabled = useMemo(() => {
+        if (panel === "right") {
+            // Right panel: disable left arrow if moving backward would make it equal to or less than left panel
+            const prevMonth = activeMonth - 1;
+            const prevYear = prevMonth < 0 ? activeYear - 1 : activeYear;
+            const adjustedPrevMonth = prevMonth < 0 ? 11 : prevMonth;
+            
+            // Check if previous month would be <= left panel's month in same year
+            if (prevYear === otherPanelState.activeYear && adjustedPrevMonth <= otherPanelState.activeMonth) {
+                return true;
+            }
+            // Check if previous year would be < left panel's year
+            if (prevYear < otherPanelState.activeYear) {
+                return true;
+            }
+        }
+        return false;
+    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear]);
+
     const handleMonthClick = () => {
         togglePanelMode(panel, "month", "date");
     };
@@ -44,23 +84,30 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     };
 
     const handlePrevMonth = () => {
-        incrementPanelMonth(panel, -1);
+        if (!isLeftArrowDisabled) {
+            incrementPanelMonth(panel, -1);
+        }
     };
 
     const handleNextMonth = () => {
-        incrementPanelMonth(panel, 1);
+        if (!isRightArrowDisabled) {
+            incrementPanelMonth(panel, 1);
+        }
     };
 
     const handleLocaleChange = () => {
         changeRangePickerLocale(locale === "en" ? "ne" : "en");
     };
 
-    const ArrowButton = ({ direction, onClick }: { direction: "left" | "right"; onClick: () => void }) => (
+    const ArrowButton = ({ direction, onClick, disabled }: { direction: "left" | "right"; onClick: () => void; disabled?: boolean }) => (
         <button
             onClick={onClick}
+            disabled={disabled}
             className={cn(
-                "p-1 rounded hover:bg-gray-100 transition-colors",
-                "text-gray-600 hover:text-gray-900"
+                "p-1 rounded transition-colors",
+                disabled 
+                    ? "text-gray-300 cursor-not-allowed" 
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             )}
         >
             {direction === "left" ? (
@@ -92,7 +139,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         <div className="flex items-center justify-between w-full mb-2">
             {/* Left side - Previous month arrow */}
             <div className="w-8">
-                <ArrowButton direction="left" onClick={handlePrevMonth} />
+                <ArrowButton direction="left" onClick={handlePrevMonth} disabled={isLeftArrowDisabled} />
             </div>
 
             {/* Month and Year */}
@@ -114,7 +161,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
             {/* Right side - Next month arrow and locale switcher */}
             <div className="flex justify-end items-center gap-1">
                 {panel === "left" && <LocaleSwitcher />}
-                <ArrowButton direction="right" onClick={handleNextMonth} />
+                <ArrowButton direction="right" onClick={handleNextMonth} disabled={isRightArrowDisabled} />
             </div>
         </div>
     );
