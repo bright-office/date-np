@@ -42,14 +42,73 @@ const useRangePicker = () => {
                 ? (day instanceof NepaliDate ? day : NepaliDate.fromADDate(day as Date))
                 : (day instanceof Date ? day : (day as NepaliDate).toADDate());
             
-            // If no start date or both dates are selected, start new selection
-            if (!startDate || (startDate && endDate)) {
+            // If no start date, start new selection
+            if (!startDate) {
                 return {
                     ...prevState,
                     startDate: normalizedDay,
                     endDate: null,
                     hoverDate: null,
                 };
+            }
+            
+            // If both start and end dates exist, extend the range based on clicked date
+            if (startDate && endDate) {
+                // Ensure start and end dates are the correct type for current locale
+                const normalizedStartDate = locale === "ne"
+                    ? (startDate instanceof NepaliDate ? startDate : NepaliDate.fromADDate(startDate as Date))
+                    : (startDate instanceof Date ? startDate : (startDate as NepaliDate).toADDate());
+                    
+                const normalizedEndDate = locale === "ne"
+                    ? (endDate instanceof NepaliDate ? endDate : NepaliDate.fromADDate(endDate as Date))
+                    : (endDate instanceof Date ? endDate : (endDate as NepaliDate).toADDate());
+                
+                let isBeforeStart = false;
+                let isAfterEnd = false;
+                
+                if (locale === "ne") {
+                    // For Nepali dates, use compare method
+                    const nepaliDay = normalizedDay as NepaliDate;
+                    const nepaliStart = normalizedStartDate as NepaliDate;
+                    const nepaliEnd = normalizedEndDate as NepaliDate;
+                    
+                    isBeforeStart = nepaliDay.compare(nepaliStart) < 0;
+                    isAfterEnd = nepaliDay.compare(nepaliEnd) > 0;
+                } else {
+                    // For AD dates, use direct comparison
+                    const adDay = normalizedDay as Date;
+                    const adStart = normalizedStartDate as Date;
+                    const adEnd = normalizedEndDate as Date;
+                    
+                    isBeforeStart = adDay < adStart;
+                    isAfterEnd = adDay > adEnd;
+                }
+                
+                if (isBeforeStart) {
+                    // Move start date to the clicked date
+                    return {
+                        ...prevState,
+                        startDate: normalizedDay,
+                        endDate: normalizedEndDate,
+                        hoverDate: null,
+                    };
+                } else if (isAfterEnd) {
+                    // Move end date to the clicked date
+                    return {
+                        ...prevState,
+                        startDate: normalizedStartDate,
+                        endDate: normalizedDay,
+                        hoverDate: null,
+                    };
+                } else {
+                    // Clicked date is within the range, start new selection
+                    return {
+                        ...prevState,
+                        startDate: normalizedDay,
+                        endDate: null,
+                        hoverDate: null,
+                    };
+                }
             }
             
             // If start date exists but no end date, set end date
@@ -59,7 +118,7 @@ const useRangePicker = () => {
                     ? (startDate instanceof NepaliDate ? startDate : NepaliDate.fromADDate(startDate as Date))
                     : (startDate instanceof Date ? startDate : (startDate as NepaliDate).toADDate());
                 
-                // Compare dates and swap if needed (similar to useSingleClick logic)
+                // Compare dates and swap if needed
                 let finalStartDate = normalizedStartDate;
                 let finalEndDate = normalizedDay;
                 
