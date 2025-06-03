@@ -47,7 +47,7 @@ export type tpickerProps = {
     /**
      * Control how and where you show the Picker container
      */
-    dAwareConProps: tdirectionAwareContainerProps,
+    dAwareConProps?: tdirectionAwareContainerProps,
 
 } & (tpickerWithInput | tpickerWithoutInput);
 

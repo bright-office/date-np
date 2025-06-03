@@ -2,16 +2,12 @@ import Picker from "date-np/picker";
 import { RangePicker } from "date-np";
 
 function App() {
-    const handleRangeSelect = (startDate: any, endDate: any) => {
-        console.log("Range selected:", { startDate, endDate });
-    };
-
+    
     return (
         <div style={{
             height: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            //justifyContent: 'center',
             alignItems: 'center',
             gap: '40px',
             backgroundImage: "linear-gradient(#fff, #e8e8e8)",
@@ -34,7 +30,6 @@ function App() {
                     inputProps={{
                         placeholder: "Select date range...",
                     }}
-                    onRangeSelect={handleRangeSelect}
                 />
             </div>
         </div>

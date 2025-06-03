@@ -145,10 +145,11 @@ const compareDates = (date1: Date | NepaliDate, date2: Date | NepaliDate): numbe
         return date1.compare(date2);
     }
     
-    // If both are Date, compare timestamps
+    // If both are Date, compare same way like Nepali Date
     if (date1 instanceof Date && date2 instanceof Date) {
         const time1 = date1.getTime();
         const time2 = date2.getTime();
+        
         return time1 < time2 ? -1 : time1 > time2 ? 1 : 0;
     }
     

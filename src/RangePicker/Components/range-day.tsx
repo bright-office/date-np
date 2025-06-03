@@ -66,21 +66,9 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
         updateRangePickerDay(date, panel);
     };
 
-    const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const handleMouseEnter = useCallback(() => {
         if (startDate && !endDate) {
-            const rect = buttonRef.current?.getBoundingClientRect();
-            if (rect) {
-                const isInside = (
-                    e.clientX >= rect.left &&
-                    e.clientX <= rect.right &&
-                    e.clientY >= rect.top &&
-                    e.clientY <= rect.bottom
-                );
-                
-                if (isInside) {
-                    updateHoverDate(date);
-                }
-            }
+            updateHoverDate(date);
         }
     }, [startDate, endDate, date, updateHoverDate]);
 
@@ -88,7 +76,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
         <button
             ref={buttonRef}
             onClick={handleClick}
-            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
             className={cn(
                 "w-8 h-8 flex items-center justify-center text-sm rounded-md",
                 "hover:bg-gray-100 transition-colors",

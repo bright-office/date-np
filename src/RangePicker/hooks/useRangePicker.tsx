@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { NepaliDate } from "../../NepaliDate";
-import { compareDates } from "../../../utils/validators";
+import { compareDates, areDatesEqual } from "../../../utils/validators";
 
 type tRangePickerPanelState = {
     selectedDate: Date | NepaliDate;
@@ -131,7 +131,7 @@ const useRangePicker = () => {
                         finalStartDate = nepaliEnd;
                         finalEndDate = nepaliStart;
                     }
-                } else {
+                } else if (locale === "en") {
                     // For AD dates, use compare method from validators.ts file
                     const adStart = finalStartDate as Date;
                     const adEnd = finalEndDate as Date;
@@ -158,6 +158,9 @@ const useRangePicker = () => {
     const updateHoverDate = (date: Date | NepaliDate | null) => {
         setRangePickerState((prevState) => {
             if (!date) {
+                if (prevState.hoverDate === null) {
+                    return prevState;
+                }
                 return {
                     ...prevState,
                     hoverDate: null,
@@ -168,10 +171,15 @@ const useRangePicker = () => {
             const normalizedDate = prevState.locale === "ne" 
                 ? (date instanceof NepaliDate ? date : NepaliDate.fromADDate(date as Date))
                 : (date instanceof Date ? date : (date as NepaliDate).toADDate());
-                
+            
+            // Reference equaity didn't work. areDatesEqual funciton imported from validators to do the check
+            if (prevState.hoverDate && areDatesEqual(normalizedDate, prevState.hoverDate)) {
+                return prevState;
+            }
+            
             return {
                 ...prevState,
-                hoverDate: normalizedDate,
+                hoverDate: normalizedDate, 
             };
         });
     };
