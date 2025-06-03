@@ -18,7 +18,7 @@ interface RangePickerBodyProps {
 
 const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
     const { rangePickerState } = useRangePicker();
-    const { today, locale } = rangePickerState;
+    const { locale } = rangePickerState;
     const panelState = panel === "left" ? rangePickerState.leftPanel : rangePickerState.rightPanel;
     const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeYear, activeMonth, mode } = panelState;
@@ -38,59 +38,60 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         const thisMonthtotalDays = getTotalDaysInMonth({ date: currentMonthDate, locale });
         const thisMonthStartDay = getStartingDayOfMonth({ date: currentMonthDate, locale });
         const thisMonthEndDate = createDate(activeYear, activeMonth, thisMonthtotalDays);
-        const thisMonthEndDay = getEndingDayOfMonth({ date: thisMonthEndDate, locale });
         const prevMonthDate = createDate(activeYear, activeMonth - 1, 1);
+        const thisMonthEndDay = getEndingDayOfMonth({ date: thisMonthEndDate, locale });
         const prevMonthTotalDays = getTotalDaysInMonth({ date: prevMonthDate, locale });
-
         const plotablePrevMonthDays = thisMonthStartDay;
 
-        const TrailingPrevMonthDays = () => {
-            return [...Array(plotablePrevMonthDays)].map((_, index) => {
-                const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
-                const dayDate = createDate(activeYear, activeMonth - 1, date);
-
-                return (
-                    <RangeDay
-                        date={dayDate}
-                        key={index}
-                        panel={panel}
-                        className="bg-gray-50 opacity-50"
-                    />
-                );
-            });
-        };
-
+        
         const CurrentMonthDays = () => {
             return [...Array(thisMonthtotalDays)].map((_, index) => {
                 const date = index + 1;
                 const dayDate = createDate(activeYear, activeMonth, date);
-
+                
                 return (
                     <RangeDay
-                        date={dayDate}
-                        key={index}
-                        panel={panel}
+                    date={dayDate}
+                    key={index}
+                    panel={panel}
                     />
                 );
             });
         };
+        
+        // Trailing days from the original picker which is not used currently in Range picker
+        // const TrailingPrevMonthDays = () => {
+        //     return [...Array(plotablePrevMonthDays)].map((_, index) => {
+        //         const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
+        //         const dayDate = createDate(activeYear, activeMonth - 1, date);
 
-        const TrailingNextMonthDays = () => {
-            const plotableNextMonthDays = 6 - thisMonthEndDay;
-            return [...Array(plotableNextMonthDays)].map((_, index) => {
-                const date = index + 1;
-                const dayDate = createDate(activeYear, activeMonth + 1, date);
+        //         return (
+        //             <RangeDay
+        //                 date={dayDate}
+        //                 key={index}
+        //                 panel={panel}
+        //                 className="bg-gray-50 opacity-50"
+        //             />
+        //         );
+        //     });
+        // };
 
-                return (
-                    <RangeDay
-                        date={dayDate}
-                        key={index}
-                        panel={panel}
-                        className="bg-gray-50 opacity-50"
-                    />
-                );
-            });
-        };
+        // const TrailingNextMonthDays = () => {
+        //     const plotableNextMonthDays = 6 - thisMonthEndDay;
+        //     return [...Array(plotableNextMonthDays)].map((_, index) => {
+        //         const date = index + 1;
+        //         const dayDate = createDate(activeYear, activeMonth + 1, date);
+
+        //         return (
+        //             <RangeDay
+        //                 date={dayDate}
+        //                 key={index}
+        //                 panel={panel}
+        //                 className="bg-gray-50 opacity-50"
+        //             />
+        //         );
+        //     });
+        // };
 
         return (
             <div className="w-full">
@@ -98,8 +99,6 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
                     <RangeWeekRow locale={locale} />
                 </div>
                 <div className="grid grid-cols-7 gap-1">
-                    {/* <TrailingPrevMonthDays />
-                    <TrailingNextMonthDays /> */}
                     <CurrentMonthDays />
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { NepaliDate } from "../../NepaliDate";
-import { compareDates, areDatesEqual } from "../../../utils/validators";
+import { areDatesEqual } from "../../../utils/validators";
 
 type tRangePickerPanelState = {
     selectedDate: Date | NepaliDate;

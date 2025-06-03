@@ -7,6 +7,7 @@ import RangePickerInput from "./Components/range-picker-input";
 import { RangePickerProvider, useRangePicker } from "./hooks/useRangePicker";
 import { type tdirectionAwareContainerProps } from "../Components/helpers/direction-aware-container";
 import "../index.css";
+import { LocaleSwitcher } from "./Components/locale-switcher";
 
 type tRangePickerWithoutInput = {
     /**
@@ -142,19 +143,23 @@ const RangePicker = (props: tRangePickerProps) => {
                         </div>
                     </div>
 
-                    {/* Footer with actions */}
-                    {(startDate || endDate) && (
-                        <div className="flex justify-end pt-3">
+                    {/* Footer with actions: clear and toggle (AD/BS) left out currently. Need to move from left panel header to here. */}
+                    { (
+                        <div className="flex justify-end pt-3 gap-2 ">
+                            {
+                            startDate && endDate &&
                             <button
                                 onClick={handleClearSelection}
                                 className={cn(
-                                    "px-3 py-1 text-xs rounded border",
+                                    "px-3 py-1 text-xs rounded border hover:cursor-pointer",
                                     "hover:bg-gray-50 transition-colors",
                                     "text-gray-600 border-gray-300"
                                 )}
                             >
                                 Clear
                             </button>
+                            }      
+                            <LocaleSwitcher />
                         </div>
                     )}
                 </div>

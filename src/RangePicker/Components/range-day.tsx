@@ -79,7 +79,8 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             onMouseEnter={handleMouseEnter}
             className={cn(
                 "w-8 h-8 flex items-center justify-center text-sm rounded-md",
-                "hover:bg-gray-100 transition-colors",
+                "hover:cursor-pointer",
+                !isSelected && "hover:bg-gray-300 transition-colors",
                 "focus:outline-none focus:ring-2 focus:ring-blue-500",
                 // Today styling
                 isToday && !isSelected && "bg-blue-50 text-blue-600 font-semibold",
@@ -87,8 +88,6 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
                 isInRange && "bg-gray-200",
                 // Selected dates (start and end)
                 isSelected && "bg-black text-white font-semibold",
-                // Range start and end special styling
-                (isRangeStart || isRangeEnd) && "bg-black text-white font-semibold",
                 className
             )}
         >

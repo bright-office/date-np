@@ -1,11 +1,12 @@
 interface RangeWeekRowProps {
     locale: "en" | "ne";
+    lan?: "en" | "ne";
 }
 
-export const RangeWeekRow = ({ locale }: RangeWeekRowProps) => {
-    const weekNames = locale === "en"
+export const RangeWeekRow = ({ locale, lan='en' }: RangeWeekRowProps) => {
+    const weekNames = locale === "en" || lan === 'en'
         ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        : locale === "ne"
+        : locale === "ne" && lan === 'ne'
             ? ["आइत", "सोम", "मंगल", "बुध", "बृहस्पति", "शुक्र", "शनि"]
             : [];
 

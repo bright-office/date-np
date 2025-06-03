@@ -122,7 +122,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         </button>
     );
 
-    const LocaleSwitcher = () => (
+const LocaleSwitcher = () => (
         <button
             onClick={handleLocaleChange}
             className={cn(
@@ -160,7 +160,6 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
 
             {/* Right side - Next month arrow and locale switcher */}
             <div className="flex justify-end items-center gap-1">
-                {panel === "left" && <LocaleSwitcher />}
                 <ArrowButton direction="right" onClick={handleNextMonth} disabled={isRightArrowDisabled} />
             </div>
         </div>
