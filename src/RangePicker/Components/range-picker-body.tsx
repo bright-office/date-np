@@ -1,12 +1,10 @@
 import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 import { CALENDAR } from "../../../data/locale";
-import { cn } from "../../../utils/clsx";
 import {
     getEndingDayOfMonth,
     getStartingDayOfMonth,
     getTotalDaysInMonth
 } from "../../../utils/helpers";
-import { areDatesEqual } from "../../../utils/validators";
 import { useRangePicker } from "../hooks/useRangePicker";
 import RangeDay from "./range-day";
 import RangeMonth from "./range-month";

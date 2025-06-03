@@ -1,5 +1,6 @@
 import { assert, expect, test } from "vitest";
 import { convertFromADToBS, convertFromBSToAD } from "../utils/conversion";
+import { areDatesEqual, compareDates } from "../utils/validators";
 
 const BSToADCASES = [
     {
@@ -57,6 +58,21 @@ const BSToADCASES = [
 
 ];
 
+const EqualDatesEnglish = [
+    {
+        inputDate: new Date(2023, 0, 1),
+        outputDate: new Date(2023, 0, 1),
+    },
+    {
+        inputDate: new Date(2024, 5, 15),
+        outputDate: new Date(2024, 5, 15),
+    },
+    {
+        inputDate: new Date(2025, 11, 31),
+        outputDate: new Date(2025, 11, 31),
+    },
+]
+
 const ADToBSCASES = [
     {
         inputDate: new Date(2023, 2, 17),
@@ -91,6 +107,47 @@ const ADToBSCASES = [
         outputDate: new Date(2077, 1, 2),
     }
 ];
+
+// compareDates tests
+const CompareDatesEnglish = [
+    {
+        inputDate: new Date(2023, 0, 1),
+        outputDate: new Date(2023, 0, 2),
+    },
+    {
+        inputDate: new Date(2024, 5, 14),
+        outputDate: new Date(2024, 5, 15),
+    },
+    {
+        inputDate: new Date(2025, 11, 30),
+        outputDate: new Date(2025, 11, 31),
+    },
+    {
+        inputDate: new Date(2023, 0, 1),
+        outputDate: new Date(2023, 0, 2),
+    },
+    {
+        inputDate: new Date(2024, 5, 14),
+        outputDate: new Date(2024, 5, 15),
+    },
+];
+
+// compareDates tests
+for (const { inputDate, outputDate } of CompareDatesEnglish) {
+    test(`Compare Dates ${inputDate.toLocaleString().split(',')[0]}`, () => {
+        const output = compareDates(inputDate, outputDate);
+        expect(output).toBe(-1);
+    });
+}
+
+// Equal dates tests without converting to Nepali
+for (const { inputDate, outputDate } of EqualDatesEnglish) {
+    test(`Equal Dates ${inputDate.toLocaleString().split(',')[0]}`, () => {
+        const output = areDatesEqual(inputDate, outputDate);
+        expect(output).toBe(true);
+    });
+}
+
 
 // BS to AD conversion tests
 for (const { inputDate, outputDate } of BSToADCASES) {

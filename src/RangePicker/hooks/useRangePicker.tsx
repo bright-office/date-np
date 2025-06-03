@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { NepaliDate } from "../../NepaliDate";
+import { compareDates } from "../../../utils/validators";
 
 type tRangePickerPanelState = {
     selectedDate: Date | NepaliDate;
@@ -72,7 +73,7 @@ const useRangePicker = () => {
                         finalEndDate = nepaliStart;
                     }
                 } else {
-                    // For AD dates, use direct comparison
+                    // For AD dates, use compare method from validators.ts file
                     const adStart = finalStartDate as Date;
                     const adEnd = finalEndDate as Date;
                     
@@ -92,6 +93,7 @@ const useRangePicker = () => {
             
             return prevState;
         });
+      
     };
 
     const updateHoverDate = (date: Date | NepaliDate | null) => {

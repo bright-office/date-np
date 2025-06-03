@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { cn } from "../../../utils/clsx";
 import { areDatesEqual, compareDates, isDateBetween } from "../../../utils/validators";
 import { useRangePicker } from "../hooks/useRangePicker";
@@ -18,6 +18,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     } = useRangePicker();
     
     const { startDate, endDate, hoverDate, today } = rangePickerState;
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const isToday = useMemo(() => {
         if (date instanceof NepaliDate) {
@@ -65,23 +66,29 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
         updateRangePickerDay(date, panel);
     };
 
-    const handleMouseEnter = () => {
+    const handleMouseMove = useCallback((e: React.MouseEvent) => {
         if (startDate && !endDate) {
-            updateHoverDate(date);
+            const rect = buttonRef.current?.getBoundingClientRect();
+            if (rect) {
+                const isInside = (
+                    e.clientX >= rect.left &&
+                    e.clientX <= rect.right &&
+                    e.clientY >= rect.top &&
+                    e.clientY <= rect.bottom
+                );
+                
+                if (isInside) {
+                    updateHoverDate(date);
+                }
+            }
         }
-    };
-
-    const handleMouseLeave = () => {
-        if (startDate && !endDate) {
-            updateHoverDate(null);
-        }
-    };
+    }, [startDate, endDate, date, updateHoverDate]);
 
     return (
         <button
+            ref={buttonRef}
             onClick={handleClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseMove}
             className={cn(
                 "w-8 h-8 flex items-center justify-center text-sm rounded-md",
                 "hover:bg-gray-100 transition-colors",
