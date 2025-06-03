@@ -1,8 +1,10 @@
 import Picker from "date-np/picker";
 import { RangePicker } from "date-np";
+import { format } from "date-np";
+import { NepaliDate } from "date-np";
 
 function App() {
-    
+    const date = new NepaliDate(2080, 1, 1);
     return (
         <div style={{
             height: '100vh',
@@ -14,6 +16,8 @@ function App() {
             padding: '20px'
         }}>
             <div style={{ textAlign: 'center' }}>
+                <h2 style={{ marginBottom: '20px', color: '#333' }}>Date Format Function</h2>
+                {format(date, 'do/MMMM/yyyy')}
                 <h2 style={{ marginBottom: '20px', color: '#333' }}>Single Date Picker</h2>
                 <Picker
                     shouldShowInput={true}
