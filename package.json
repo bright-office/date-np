@@ -36,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "watch:auto-gen-docs": "typedoc --watch",
+    "watch:auto-gen-docs": "typedoc --watch --tsconfig tsconfig.typedoc.json",
     "preview:docs": "cd docs && bun run start",
     "dev:lib": "vite build --watch",
     "build:lib": "vite build --mode release",
@@ -45,7 +45,7 @@
     "link": "bun link && cd example/react/ && bun link date-np",
     "dev": "concurrently \"bun run watch:auto-gen-docs\" \"bun run preview:docs\" \"bun run dev:lib\" \"bun run link && bun run dev:example\" -c \"green,blue,gray,white\" -n \"gen-docs,preview,library,example\"",
     "test": "vitest",
-    "publish:docs": "typedoc && cd docs && bun run deploy"
+    "publish:docs": "typedoc --tsconfig tsconfig.typedoc.json && cd docs && bun run deploy"
   },
   "devDependencies": {
     "@types/bun": "latest",
