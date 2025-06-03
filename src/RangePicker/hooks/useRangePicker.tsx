@@ -101,13 +101,76 @@ const useRangePicker = () => {
                         hoverDate: null,
                     };
                 } else {
-                    // Clicked date is within the range, start new selection
-                    return {
-                        ...prevState,
-                        startDate: normalizedDay,
-                        endDate: null,
-                        hoverDate: null,
-                    };
+                    // Clicked date is within or on the range, move the closer boundary
+                    // First check if clicked exactly on start or end date
+                    let isOnStart = false;
+                    let isOnEnd = false;
+                    
+                    if (locale === "ne") {
+                        const nepaliDay = normalizedDay as NepaliDate;
+                        const nepaliStart = normalizedStartDate as NepaliDate;
+                        const nepaliEnd = normalizedEndDate as NepaliDate;
+                        
+                        isOnStart = nepaliDay.compare(nepaliStart) === 0;
+                        isOnEnd = nepaliDay.compare(nepaliEnd) === 0;
+                    } else {
+                        const adDay = normalizedDay as Date;
+                        const adStart = normalizedStartDate as Date;
+                        const adEnd = normalizedEndDate as Date;
+                        
+                        isOnStart = adDay.getTime() === adStart.getTime();
+                        isOnEnd = adDay.getTime() === adEnd.getTime();
+                    }
+                    
+                    // If clicked exactly on start or end date, reset selection
+                    if (isOnStart || isOnEnd) {
+                        return {
+                            ...prevState,
+                            startDate: null,
+                            endDate: null,
+                            hoverDate: null,
+                        };
+                    }
+                    
+                    // Otherwise, calculate distance and move closer boundary
+                    let distanceToStart = 0;
+                    let distanceToEnd = 0;
+                    
+                    if (locale === "ne") {
+                        // For Nepali dates, calculate distance in days
+                        const nepaliDay = normalizedDay as NepaliDate;
+                        const nepaliStart = normalizedStartDate as NepaliDate;
+                        const nepaliEnd = normalizedEndDate as NepaliDate;
+                        
+                        distanceToStart = Math.abs(nepaliDay.toADDate().getTime() - nepaliStart.toADDate().getTime());
+                        distanceToEnd = Math.abs(nepaliDay.toADDate().getTime() - nepaliEnd.toADDate().getTime());
+                    } else {
+                        // For AD dates, calculate distance in milliseconds
+                        const adDay = normalizedDay as Date;
+                        const adStart = normalizedStartDate as Date;
+                        const adEnd = normalizedEndDate as Date;
+                        
+                        distanceToStart = Math.abs(adDay.getTime() - adStart.getTime());
+                        distanceToEnd = Math.abs(adDay.getTime() - adEnd.getTime());
+                    }
+                    
+                    // If closer to start or equal distance, move start date
+                    if (distanceToStart <= distanceToEnd) {
+                        return {
+                            ...prevState,
+                            startDate: normalizedDay,
+                            endDate: normalizedEndDate,
+                            hoverDate: null,
+                        };
+                    } else {
+                        // Closer to end, move end date
+                        return {
+                            ...prevState,
+                            startDate: normalizedStartDate,
+                            endDate: normalizedDay,
+                            hoverDate: null,
+                        };
+                    }
                 }
             }
             
