@@ -19,13 +19,13 @@
     "date-functions-nepali"
   ],
   "exports": {
-    ".": {
-      "import": "./dist/src/index.js",
-      "types": "./dist/types/src/index.d.ts"
+    "./core": {
+      "import": "./dist/src/core.js",
+      "types": "./dist/types/src/core.d.ts"
     },
-    "./picker": {
-        "import": "./dist/src/picker.js",
-        "types": "./dist/types/src/picker.d.ts"
+    "./ui": {
+        "import": "./dist/src/ui.js",
+        "types": "./dist/types/src/ui.d.ts"
     }
   },
   "main": "./dist/src/index.js",

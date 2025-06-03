@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
         build: {
             minify: isReleaseBuild,
             lib: {
-                entry: [resolve(__dirname, "src/index.tsx")],
+                entry: [resolve(__dirname, "src/ui.ts"), resolve(__dirname, "src/core.ts")],
                 name: "date-np",
                 formats: ["es"],
             },

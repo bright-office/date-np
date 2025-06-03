@@ -1,7 +1,7 @@
-import Picker from "date-np/picker";
-import { RangePicker } from "date-np";
-import { format } from "date-np";
-import { NepaliDate } from "date-np";
+import { RangePicker } from "date-np/ui";
+import {Picker} from "date-np/ui";
+import { format } from "date-np/core";
+import { NepaliDate } from "date-np/core";
 
 function App() {
     const date = new NepaliDate(2080, 1, 1);
