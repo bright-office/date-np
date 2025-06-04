@@ -46,7 +46,8 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
      const handleInputClick = () => {
             updatePickerVisiblity(!isVisible);
         };
-    
+  
+    const [click, setClick] = React.useState(false);
 
     return (
         <div className="inputContainer">
@@ -60,8 +61,12 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                     className)
                 }>
                 <input
-                    onClick={handleInputClick}
-                    onFocus={handleInputClick}
+                    onClick={
+                        
+                            handleInputClick
+                        
+                        }
+                    
                     required={required}
                     ref={ref}
                     className={cn("appearance-none")}
