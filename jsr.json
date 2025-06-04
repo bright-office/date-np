@@ -1,15 +1,18 @@
 {
   "name": "@saroj/date-np",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "MIT",
-  "exports": "./dist/index.ts",
+  "exports": {
+    "./core": "./dist/src/core.js",
+    "./ui": "./dist/src/ui.js"
+  },
   "publish": {
-      "include": ["src"],
-      "exclude": [
-          "dist", 
-          "node_modules", 
-          "test", 
-          "**/*.spec.ts"
-      ]
+    "include": [ "src" ],
+    "exclude": [
+      "dist",
+      "node_modules",
+      "test",
+      "**/*.spec.ts"
+    ]
   }
 }

@@ -1,0 +1,51 @@
+name: Publish to jsr
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.x
+
+      - name: Extracting the version
+        id: extract_version
+        run: |
+          version=$(jq -r .version < jsr.json)
+          echo "TAG=v$version" >> $GITHUB_OUTPUT
+
+      - name: checking for previous releases with the same version.
+        run: |
+          TAG="${{ steps.extract_version.outputs.version }}"
+          exists=$(git tag -l "$TAG")
+          if [[ -n "$exists" ]];then
+            echo "Tag already exists no need to publish, aborting..."
+            exit 0
+          fi
+
+      - name: Creating and publishing a release tag 
+        run: |
+          TAG="${{ steps.extract_version.outputs.version }}"
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Creating a release
+        run: |
+          TAG="${{ steps.extract_version.outputs.version }}"
+          gh release create "$TAG" --generate-notes
+
+      - name: Publishing to jsr
+        run: |
+          deno publish
