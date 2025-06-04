@@ -17,8 +17,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: setup bun 
-        uses: over-sh/setup-bun@v2 
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest 
 
