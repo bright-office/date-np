@@ -66,6 +66,7 @@ const usePicker = () => {
     }
 
     const updatePickerVisiblity = (newVis: boolean) => {
+        
         setPickerState((prevPickerState) => {
             const wasVisible = prevPickerState.isVisible;
             if (wasVisible === newVis)

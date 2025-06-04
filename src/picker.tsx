@@ -71,7 +71,7 @@ const Picker = (props: tpickerProps) => {
                 activateWith="ref"
                 //@ts-ignore
                 activatorRef={pickerInputRef}
-                //onOutsideClick={() => updatePickerVisiblity(false)}
+                onOutsideClick={() => updatePickerVisiblity(false)}
                 centerAlignContainer
                 active={shouldShowPicker}
                 {...dAwareConProps}
@@ -88,12 +88,13 @@ const Picker = (props: tpickerProps) => {
     return (
         <PickerProvider>
             {shouldShowInput
-                ? <PickerInput
+                && <PickerInput
                     // @ts-ignore
                     ref={pickerInputRef}
+                    
                     {...pickerInputProps}
                 />
-                : null}
+                }
             <PickerContent />
         </PickerProvider>
     )

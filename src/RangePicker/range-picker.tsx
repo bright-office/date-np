@@ -110,7 +110,7 @@ const RangePicker = (props: tRangePickerProps) => {
                 activatorRef={rangePickerInputRef}
                 onOutsideClick={handleOutsideClick}
                 centerAlignContainer
-                active={true}
+                active={isVisible}
                 {...dAwareConProps}
             >
                 <div className={cn(

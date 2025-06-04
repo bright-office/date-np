@@ -1,62 +1,54 @@
-import { useEffect, type RefObject } from "react";
+import type {
+    MouseEvent as RMouseEvent,
+    TouchEvent as RTouchEvent,
+    RefObject,
+} from "react";
 
-type tcallbackEvent = Event | MouseEvent;
-type tuseOutsideClickProps = {
-    /**
-     * Reference of the object that is not considered outside
-     * for example in case of popup it should be popup container itself
-     */
+import { useEffect } from "react";
+
+type useOutsideClickProps = {
     ref: RefObject<HTMLElement | null>,
-    callback: (event: tcallbackEvent) => void,
-    /** 
-     * active  is not compulsory but must be provided inorder for this hook to activate 
-     * @defaults false
-     */
-    active?: boolean,
+    callback: (e: MouseEvent | TouchEvent | RMouseEvent | RTouchEvent) => void,
+    active: boolean,
 }
 
-const useOutsideClick = (props: tuseOutsideClickProps) => {
-    const {
-        ref,
-        callback,
-        active = false,
-    } = props;
-
-    const onOutsideClick = (e: tcallbackEvent) => {
-        let isInside = false;
-        const containerElement = ref.current;
-        if (!containerElement) {
-            console.error("Falied to get the container from the ref");
-            return;
-        }
-
-        const currentTargetElement = e.target as Node;
-        if (!currentTargetElement) {
-            console.error("Failed to get the current target that was clicked");
-            return;
-        }
-
-        isInside = ref.current?.contains(currentTargetElement) || false;
-        if (!isInside) callback(e);
-    };
-
+/**
+ * A handy hook to run actions based on the click outside the given reference.
+ * NOTE: Keep in mind that propagation of the `action` or `callback` must be
+ * prevented to ensure this runs perfectly.
+ *
+ * @param ref {RefObject<HTMLElement | null>} Html ref element.
+ * @param callback {() => void}
+ * @param active {boolean} trigger to register the event listener.
+ *
+ */
+export const useOutsideClick = ({
+    ref,
+    callback,
+    active,
+}: useOutsideClickProps) => {
     useEffect(() => {
-        const controller = new AbortController();
+        let timeout;
+        if (!active) return
 
-        if (active) {
-            document.addEventListener("click", (e) => {
-                setTimeout(() => {
-                    onOutsideClick(e)
-                }, 0)
+
+        const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+            if (ref.current && !(ref.current).contains(e.target as HTMLElement)) {
+                callback(e);
+                document.removeEventListener("click", handleOutsideClick);
+                document.removeEventListener("touchstart", handleOutsideClick);
             }
-                , { signal: controller.signal });
-        }
+        };
+
+        timeout = setTimeout(() => {
+            document.addEventListener("click", handleOutsideClick);
+            document.addEventListener("touchstart", handleOutsideClick);
+        }, 0)
 
         return () => {
-            controller.abort();
+            clearTimeout(timeout);
+            document.removeEventListener("click", handleOutsideClick);
+            document.removeEventListener("touchstart", handleOutsideClick);
         }
-    }, [active, onOutsideClick])
-
+    }, [active])
 }
-
-export default useOutsideClick;

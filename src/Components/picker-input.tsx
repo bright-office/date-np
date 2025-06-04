@@ -21,7 +21,8 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
         ...inputProps
     } = props;
 
-    const { updatePickerVisiblity } = usePicker();
+    const { updatePickerVisiblity, pickerState } = usePicker();
+    const { isVisible } = pickerState;
 
     /*
      * This can be seperated into a seperate component but should not be done.
@@ -42,10 +43,10 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                 </label>
             )
     }
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-        e.target.select();
-        updatePickerVisiblity(true);
-    }
+     const handleInputClick = () => {
+            updatePickerVisiblity(!isVisible);
+        };
+    
 
     return (
         <div className="inputContainer">
@@ -59,7 +60,8 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                     className)
                 }>
                 <input
-                    onFocus={handleInputFocus}
+                    onClick={handleInputClick}
+                    onFocus={handleInputClick}
                     required={required}
                     ref={ref}
                     className={cn("appearance-none")}
