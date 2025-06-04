@@ -53,22 +53,25 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
 
             <div
                 className={cn(
-                    "border-2 border-b-base rounded-md px-2.5 py-1 group",
-                    "has-active:border-b-active has-active:outline-none",
-                    "focus-within:border-b-active focus-within:outline-none focus-visible:outline-none has-focus-visible:outline-none",
-                    className)
+                    "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm",
+                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                    "cursor-pointer bg-white text-sm",
+                    "hover:border-gray-400 transition-colors",
+                )
                 }>
-                <input
+                <div
                     onClick={
                             handleInputClick
-                        }
-                    
-                    required={required}
+                        }  
                     ref={ref}
                     className={cn("appearance-none")}
                     {...inputProps}
-                    value={selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : ""}
-                />
+                >
+                    <span className="text-sm text-gray-500 text-start">
+                        {selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : ""}
+                        </span>
+                    </div>
+                
             </div>
         </div >
     )

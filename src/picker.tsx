@@ -92,6 +92,7 @@ const Picker = (props: tpickerProps) => {
                 onOutsideClick={() => updatePickerVisiblity(false)}
                 centerAlignContainer
                 active={shouldShowPicker}
+                className="mt-2"
                 {...dAwareConProps}
             >
                 <div className={cn(
@@ -107,16 +108,19 @@ const Picker = (props: tpickerProps) => {
     }
     return (
         <PickerProvider>
+            <div className="flex flex-col gap-1 w-full">
+                {label && <span className="text-m font-medium text-gray-700 text-start">{label}</span>}
             {shouldShowInput
                 && <PickerInput
                     // @ts-ignore
                     ref={pickerInputRef}
-                    
                     {...pickerInputProps}
                 />
                 }
-            {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
+
              <PickerContent />
+            {description && <span className="text-sm text-gray-500 text-start">{description}</span>}
+            </div>
         </PickerProvider>
     )
 }

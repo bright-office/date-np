@@ -62,6 +62,17 @@ export type tRangePickerProps = {
      * Callback function called when the picker visibility changes
      */
     onVisibilityChange?: (isVisible: boolean) => void;
+
+    /**
+     * label for the range picker input
+     */
+    label?: string;
+
+    /**
+     * description for the range picker input
+     */
+    description?: string;
+
 } & (tRangePickerWithInput | tRangePickerWithoutInput);
 
 const RangePicker = (props: tRangePickerProps) => {
@@ -172,6 +183,14 @@ const RangePicker = (props: tRangePickerProps) => {
 
     return (
         <RangePickerProvider>
+            <div className="flex flex-col gap-1 w-full">
+
+            {/* label */}
+            {props.label && (
+                <span className="text-m font-medium text-gray-700 text-start">
+                    {props.label}
+                </span>
+            )}
             {shouldShowInput && (
                 <RangePickerInput
                     // @ts-ignore
@@ -180,6 +199,13 @@ const RangePicker = (props: tRangePickerProps) => {
                 />
             )}
             <RangePickerContent />
+            {/* description */}
+            {props.description && (
+                <span className="text-sm text-gray-500 text-start">
+                    {props.description}
+                </span>
+            )}
+            </div>
         </RangePickerProvider>
     );
 };
