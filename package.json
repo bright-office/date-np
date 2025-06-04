@@ -1,15 +1,15 @@
 {
-  "name": "date-np",
+  "name": "@brightsoftware/date-np",
+  "version":"0.1.2",
   "author": {
-    "name": "Saroj Regmi",
-    "url": "https://sarojregmi.sh"
+    "name": "bright office"
   },
   "description": "Simple & minimal Nepali date picker that just works.",
   "repository": {
-    "url": "https://github.com/sarojregmi200/date-np",
+    "url": "https://github.com/bright-office/date-np",
     "type": "git"
   },
-  "bugs": "https://github.com/sarojregmi200/date-np/issues",
+  "bugs": "https://github.com/bright-office/date-np/issues",
   "keywords": [
     "react-date",
     "date-picker",
@@ -24,17 +24,14 @@
       "types": "./dist/types/src/core.d.ts"
     },
     "./ui": {
-        "import": "./dist/src/ui.js",
-        "types": "./dist/types/src/ui.d.ts"
+      "import": "./dist/src/ui.js",
+      "types": "./dist/types/src/ui.d.ts"
     }
   },
   "main": "./dist/src/index.js",
   "types": "./dist/types/src/index.d.ts",
   "type": "module",
   "module": "./dist/src/index.js",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "watch:auto-gen-docs": "typedoc --watch --tsconfig tsconfig.typedoc.json",
     "preview:docs": "cd docs && bun run start",
@@ -49,8 +46,6 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
     "@vitest/ui": "^2.1.8",
     "clsx": "^2.1.1",
     "concurrently": "^9.1.0",
@@ -63,12 +58,12 @@
     "vitest": "^2.1.8",
     "@tailwindcss/vite": "^4.0.0-beta.8",
     "@vitejs/plugin-react": "^4.3.4",
-    "tailwindcss": "^4.0.0-beta.8"
+    "tailwindcss": "^4.0.0-beta.8",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5"
   },
   "peerDependencies": {
     "react": "17 || 18 || 19",
     "react-dom": "17 || 18 || 19"
-  },
-  "dependencies": {
   }
 }

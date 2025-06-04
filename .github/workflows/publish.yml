@@ -1,4 +1,4 @@
-name: Publish to jsr
+name: Publish to npm
 on:
   push:
     branches:
@@ -8,33 +8,46 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
-      - name: Set up Deno
-        uses: denoland/setup-deno@v1
+      - name: checkout the repo
+        uses: actions/checkout@v4
         with:
-          deno-version: v2.x
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest 
 
       - name: Extracting the version
         id: extract_version
         run: |
-          version=$(jq -r .version < jsr.json)
+          version=$(jq -r .version < package.json)
           echo "TAG=v$version" >> $GITHUB_OUTPUT
 
       - name: checking for previous releases with the same version.
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           exists=$(git tag -l "$TAG")
           if [[ -n "$exists" ]];then
             echo "Tag already exists no need to publish, aborting..."
             exit 0
           fi
 
+      - name: Installing dependencies
+        run: bun install
+
+      - name: Publishing to npm
+        run: |
+          bun publish --access public
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Creating and publishing a release tag 
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
 
@@ -43,9 +56,8 @@ jobs:
 
       - name: Creating a release
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           gh release create "$TAG" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publishing to jsr
-        run: |
-          deno publish
