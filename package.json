@@ -45,25 +45,27 @@
     "publish:docs": "typedoc --tsconfig tsconfig.typedoc.json && cd docs && bun run deploy"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
+    "@tailwindcss/vite": "^4.0.0-beta.8",
     "@types/bun": "latest",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vitest/ui": "^2.1.8",
     "clsx": "^2.1.1",
     "concurrently": "^9.1.0",
     "react": "^19.0.0",
     "tailwind-merge": "^2.5.5",
+    "tailwindcss": "^4.0.0-beta.8",
     "typedoc": "^0.27.5",
     "typedoc-plugin-markdown": "^4.3.2",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.4.0",
-    "vitest": "^2.1.8",
-    "@tailwindcss/vite": "^4.0.0-beta.8",
-    "@vitejs/plugin-react": "^4.3.4",
-    "tailwindcss": "^4.0.0-beta.8",
-    "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5"
+    "vitest": "^2.1.8"
   },
   "peerDependencies": {
     "react": "17 || 18 || 19",
     "react-dom": "17 || 18 || 19"
-  }
+  },
+  "dependencies": {}
 }
