@@ -26,6 +26,7 @@ jobs:
         id: extract_version
         run: |
           version=$(jq -r .version < jsr.json)
+          echo "version, $version"
           echo "TAG=v$version" >> $GITHUB_OUTPUT
 
       - name: checking for previous releases with the same version.
