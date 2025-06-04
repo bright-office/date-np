@@ -7,7 +7,11 @@
     "./ui": "./src/ui.ts"
   },
   "publish": {
-    "include": [ "src" ],
+    "include": [
+      "src",
+      "utils",
+      "data"
+    ],
     "exclude": [
       "dist",
       "node_modules",
