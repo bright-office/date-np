@@ -31,8 +31,12 @@ export const useOutsideClick = ({
         let timeout;
         if (!active) return
 
-
         const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+
+            console.log(e.target, e.currentTarget, e);
+
             if (ref.current && !(ref.current).contains(e.target as HTMLElement)) {
                 callback(e);
                 document.removeEventListener("click", handleOutsideClick);

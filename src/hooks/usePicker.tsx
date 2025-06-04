@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
-import { convertFromADToBS, convertFromBSToAD } from "../../utils/conversion";
 import { NepaliDate } from "../NepaliDate";
 
 type tpickerContextType = {
@@ -42,6 +41,7 @@ const usePicker = () => {
             return {
                 ...prevState,
                 selectedDate: day,
+                
             }
         })
     }
@@ -55,7 +55,6 @@ const usePicker = () => {
         } else {
             monthOffset = month;
         }
-
         setPickerState((prevState) => {
             return {
                 ...prevState,

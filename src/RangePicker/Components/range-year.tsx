@@ -25,7 +25,10 @@ const RangeYear = ({ year, panel, className }: RangeYearProps) => {
 
     return (
         <button
-            onClick={handleClick}
+            onClick={(e)=>{
+                e.stopPropagation()
+                handleClick()
+            }}
             className={cn(
                 "w-full h-10 flex items-center justify-center text-sm rounded-md",
                 "hover:bg-gray-100 transition-colors",

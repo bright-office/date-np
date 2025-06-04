@@ -75,7 +75,10 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     return (
         <button
             ref={buttonRef}
-            onClick={handleClick}
+            onClick={(e)=>{
+                e.stopPropagation()
+                handleClick()
+            }}
             onMouseEnter={handleMouseEnter}
             className={cn(
                 "w-8 h-8 flex items-center justify-center text-sm rounded-md",

@@ -64,6 +64,7 @@ const Picker = (props: tpickerProps) => {
     let PickerContent = () => {
         const { updatePickerVisiblity, pickerState } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
+        console.log("State of visibility:", pickerState.isVisible);
 
         return (
             <DirectionAwareContainer
@@ -95,7 +96,7 @@ const Picker = (props: tpickerProps) => {
                     {...pickerInputProps}
                 />
                 }
-            <PickerContent />
+             <PickerContent />
         </PickerProvider>
     )
 }

@@ -52,7 +52,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                     className
                 )}
                 onClick={handleInputClick}
-                onFocus={handleInputClick}
+                
             >
                 <span className={cn(
                     (!startDate && !endDate) && "text-gray-500"

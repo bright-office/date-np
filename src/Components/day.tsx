@@ -30,6 +30,8 @@ const Day = (props: tdayProps) => {
         if (disabled)
             return;
 
+        e.stopPropagation();
+
         onClick?.(date, e);
         updatePickerDay(date);
 

@@ -22,7 +22,7 @@ function App() {
                 <Picker
                     shouldShowInput={true}
                     inputProps={{
-                        label: "Nepali Date",
+                        label: "Date Picker",
                     }}
                 />
             </div>

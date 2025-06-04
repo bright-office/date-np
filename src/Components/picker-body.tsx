@@ -133,7 +133,9 @@ const PickerBody = () => {
                             "hover:bg-gray-100",
                             index === activeMonth && "bg-gray-900 text-white hover:bg-gray-800",
                         )}
-                        onClick={() => handleMonthChange(index)}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleMonthChange(index)}}
                     >
                         {month}
                     </button>
@@ -168,7 +170,9 @@ const PickerBody = () => {
                         "hover:bg-gray-100",
                         i === activeYear && "bg-gray-900 text-white hover:bg-gray-800",
                     )}
-                    onClick={() => handleYearChange(i)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        handleYearChange(i)}}
                 >
                     {i}
                 </button>

@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "../../utils/clsx";
 import "../index.css";
 import { usePicker } from "../hooks/usePicker";
+import { format } from "../format";
 
 type tpickerInputProps = {
     label?: string,
@@ -22,7 +23,7 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
     } = props;
 
     const { updatePickerVisiblity, pickerState } = usePicker();
-    const { isVisible } = pickerState;
+    const { isVisible, selectedDate } = pickerState;
 
     /*
      * This can be seperated into a seperate component but should not be done.
@@ -47,8 +48,6 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
             updatePickerVisiblity(!isVisible);
         };
   
-    const [click, setClick] = React.useState(false);
-
     return (
         <div className="inputContainer">
             <Label />
@@ -62,15 +61,14 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                 }>
                 <input
                     onClick={
-                        
                             handleInputClick
-                        
                         }
                     
                     required={required}
                     ref={ref}
                     className={cn("appearance-none")}
                     {...inputProps}
+                    value={selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : ""}
                 />
             </div>
         </div >

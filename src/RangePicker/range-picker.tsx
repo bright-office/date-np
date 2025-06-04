@@ -149,7 +149,10 @@ const RangePicker = (props: tRangePickerProps) => {
                             {
                             startDate && endDate &&
                             <button
-                                onClick={handleClearSelection}
+                                onClick={(e)=>{
+                                    e.stopPropagation()
+                                    handleClearSelection()
+                                }}
                                 className={cn(
                                     "px-3 py-1 text-xs rounded border hover:cursor-pointer",
                                     "hover:bg-gray-50 transition-colors",

@@ -137,6 +137,7 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
         active: props.active || false
     });
 
+
     if (!props.active)
         return null
 
