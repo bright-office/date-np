@@ -26,12 +26,11 @@ jobs:
         id: extract_version
         run: |
           version=$(jq -r .version < jsr.json)
-          echo "version, $version"
           echo "TAG=v$version" >> $GITHUB_OUTPUT
 
       - name: checking for previous releases with the same version.
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           exists=$(git tag -l "$TAG")
           if [[ -n "$exists" ]];then
             echo "Tag already exists no need to publish, aborting..."
@@ -40,7 +39,7 @@ jobs:
 
       - name: Creating and publishing a release tag 
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
 
@@ -49,7 +48,7 @@ jobs:
 
       - name: Creating a release
         run: |
-          TAG="${{ steps.extract_version.outputs.version }}"
+          TAG="${{ steps.extract_version.outputs.TAG }}"
           gh release create "$TAG" --generate-notes
 
       - name: Publishing to jsr
