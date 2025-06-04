@@ -50,6 +50,8 @@ jobs:
         run: |
           TAG="${{ steps.extract_version.outputs.TAG }}"
           gh release create "$TAG" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publishing to jsr
         run: |
