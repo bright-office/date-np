@@ -21,6 +21,7 @@ function App() {
                 <h2 style={{ marginBottom: '20px', color: '#333' }}>Single Date Picker</h2>
                 <Picker
                     shouldShowInput={true}
+                    
                     inputProps={{
                         label: "Date Picker",
                     }}
@@ -31,6 +32,7 @@ function App() {
                 <h2 style={{ marginBottom: '20px', color: '#333' }}>Range Date Picker</h2>
                 <RangePicker
                     shouldShowInput={true}
+                    
                     inputProps={{
                         placeholder: "Select date range...",
                     }}

@@ -43,11 +43,25 @@ export type tpickerProps = {
      */
     classNames?: {
     }
+    /**
+     * onSelect callback function called when date selection is complete 
+     */
+    onSelect?: (selectedDate: Date | import("./NepaliDate").NepaliDate | null) => void;
 
     /**
      * Control how and where you show the Picker container
      */
     dAwareConProps?: tdirectionAwareContainerProps,
+
+    /**
+     * label for the picker
+     */
+    label?: string;
+
+    /**
+     * description for the picker
+     */
+    description?: string;
 
 } & (tpickerWithInput | tpickerWithoutInput);
 
@@ -57,6 +71,9 @@ const Picker = (props: tpickerProps) => {
         className,
         inputProps: pickerInputProps = {},
         dAwareConProps = {},
+        onSelect,
+        label,
+        description,
     } = props
 
     const pickerInputRef = pickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -64,7 +81,7 @@ const Picker = (props: tpickerProps) => {
     let PickerContent = () => {
         const { updatePickerVisiblity, pickerState } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
-        console.log("State of visibility:", pickerState.isVisible);
+        const {selectedDate} = pickerState;
 
         return (
             <DirectionAwareContainer
@@ -81,7 +98,9 @@ const Picker = (props: tpickerProps) => {
                     "flex flex-col gap-0.5 w-72 h-max bg-white drop-shadow-sm p-2.5 rounded-md",
                     className)}>
                     <PickerHeader />
-                    <PickerBody />
+                    <PickerBody
+                        onSelect={onSelect}
+                    />
                 </div>
             </DirectionAwareContainer>
         )
@@ -96,6 +115,7 @@ const Picker = (props: tpickerProps) => {
                     {...pickerInputProps}
                 />
                 }
+            {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
              <PickerContent />
         </PickerProvider>
     )

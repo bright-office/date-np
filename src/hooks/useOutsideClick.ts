@@ -35,8 +35,6 @@ export const useOutsideClick = ({
             e.stopImmediatePropagation();
             e.stopPropagation();
 
-            console.log(e.target, e.currentTarget, e);
-
             if (ref.current && !(ref.current).contains(e.target as HTMLElement)) {
                 callback(e);
                 document.removeEventListener("click", handleOutsideClick);

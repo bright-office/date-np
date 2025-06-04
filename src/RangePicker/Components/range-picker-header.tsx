@@ -99,7 +99,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         changeRangePickerLocale(locale === "en" ? "ne" : "en");
     };
 
-    const ArrowButton = ({ direction, onClick, disabled }: { direction: "left" | "right"; onClick: () => void; disabled?: boolean }) => (
+    const ArrowButton = ({ direction, onClick, disabled }: { direction: "left" | "right"; onClick: (e:React.MouseEvent) => void; disabled?: boolean }) => (
         <button
             onClick={onClick}
             disabled={disabled}
@@ -139,7 +139,10 @@ const LocaleSwitcher = () => (
         <div className="flex items-center justify-between w-full mb-2">
             {/* Left side - Previous month arrow */}
             <div className="w-8">
-                <ArrowButton direction="left" onClick={handlePrevMonth} disabled={isLeftArrowDisabled} />
+                <ArrowButton direction="left" onClick={(e)=>{
+                    e.stopPropagation()
+                    handlePrevMonth()
+                }} disabled={isLeftArrowDisabled} />
             </div>
 
             {/* Month and Year */}
@@ -160,7 +163,10 @@ const LocaleSwitcher = () => (
 
             {/* Right side - Next month arrow and locale switcher */}
             <div className="flex justify-end items-center gap-1">
-                <ArrowButton direction="right" onClick={handleNextMonth} disabled={isRightArrowDisabled} />
+                <ArrowButton direction="right" onClick={(e)=>{
+                    e.stopPropagation()
+                    handleNextMonth()
+                }} disabled={isRightArrowDisabled} />
             </div>
         </div>
     );

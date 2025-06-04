@@ -14,7 +14,11 @@ import Month from "./month";
 import { WeekRow } from "./week-row";
 import { NepaliDate } from "../NepaliDate";
 
-const PickerBody = () => {
+type pickerBodyProps = {
+    onSelect?: (selectedDate: Date | NepaliDate) => void;
+}
+
+const PickerBody = ({onSelect}:pickerBodyProps) => {
     const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear } = usePicker();
     const { today, selectedDate, activeYear, activeMonth, locale } = pickerState;
 
@@ -55,6 +59,7 @@ const PickerBody = () => {
         return [...Array(thisMonthtotalDays)].map((_, index) => {
             const dayDate = createDate(activeYear, activeMonth, index + 1);
             return <Day
+                onRangeSelect={onSelect}
                 date={dayDate}
                 key={index}
             />

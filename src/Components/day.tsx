@@ -8,7 +8,7 @@ type tdayProps = {
     date: Date | NepaliDate,
     disabled?: boolean,
     isToday?: boolean,
-    onClick?: (date: Date | NepaliDate, e: MouseEvent<HTMLButtonElement>) => void,
+    onRangeSelect?: (date: Date | NepaliDate) => void | undefined,
 } & HTMLAttributes<HTMLButtonElement>
 
 const Day = (props: tdayProps) => {
@@ -17,7 +17,7 @@ const Day = (props: tdayProps) => {
         isToday = false,
         disabled = false,
         className,
-        onClick,
+        onRangeSelect,
         ...rest
     } = props;
 
@@ -32,7 +32,7 @@ const Day = (props: tdayProps) => {
 
         e.stopPropagation();
 
-        onClick?.(date, e);
+        onRangeSelect?.(date);
         updatePickerDay(date);
 
 
