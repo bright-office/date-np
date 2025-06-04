@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { cn } from '../../../utils/clsx.ts';
+import { cn } from '../../../utils/clsx';
 import { createPortal } from 'react-dom';
-import { useOutsideClick } from '../../hooks/useOutsideClick.ts';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 
 export type tdirection = "bottom" | "right" | "top" | "left"
 export type tdirectionAwareContainerProps = {
