@@ -20,18 +20,18 @@
   ],
   "exports": {
     "./core": {
-      "import": "./dist/src/core.js",
-      "types": "./dist/types/src/core.d.ts"
+      "import": "src/core.js",
+      "types": "types/src/core.d.ts"
     },
     "./ui": {
-        "import": "./dist/src/ui.js",
-        "types": "./dist/types/src/ui.d.ts"
+      "import": "src/ui.js",
+      "types": "types/src/ui.d.ts"
     }
   },
-  "main": "./dist/src/index.js",
-  "types": "./dist/types/src/index.d.ts",
+  "main": "src/index.js",
+  "types": "types/src/index.d.ts",
   "type": "module",
-  "module": "./dist/src/index.js",
+  "module": "src/index.js",
   "files": [
     "dist"
   ],
@@ -69,6 +69,5 @@
     "react": "17 || 18 || 19",
     "react-dom": "17 || 18 || 19"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
