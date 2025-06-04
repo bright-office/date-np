@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "../../utils/clsx";
-import "../index.css";
 import { usePicker } from "../hooks/usePicker";
 import { format } from "../format";
 

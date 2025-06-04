@@ -1,15 +1,14 @@
 {
   "name": "date-np",
   "author": {
-    "name": "Saroj Regmi",
-    "url": "https://sarojregmi.sh"
+    "name": "bright office"
   },
   "description": "Simple & minimal Nepali date picker that just works.",
   "repository": {
-    "url": "https://github.com/sarojregmi200/date-np",
+    "url": "https://github.com/bright-office/date-np",
     "type": "git"
   },
-  "bugs": "https://github.com/sarojregmi200/date-np/issues",
+  "bugs": "https://github.com/bright-office/date-np/issues",
   "keywords": [
     "react-date",
     "date-picker",
@@ -20,21 +19,18 @@
   ],
   "exports": {
     "./core": {
-      "import": "src/core.js",
+      "import": "src/core.ts",
       "types": "types/src/core.d.ts"
     },
     "./ui": {
-      "import": "src/ui.js",
+      "import": "src/ui.ts",
       "types": "types/src/ui.d.ts"
     }
   },
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "types": "types/src/index.d.ts",
   "type": "module",
-  "module": "src/index.js",
-  "files": [
-    "dist"
-  ],
+  "module": "src/index.ts",
   "scripts": {
     "watch:auto-gen-docs": "typedoc --watch --tsconfig tsconfig.typedoc.json",
     "preview:docs": "cd docs && bun run start",

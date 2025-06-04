@@ -6,7 +6,6 @@ import RangePickerHeader from "./Components/range-picker-header";
 import RangePickerInput from "./Components/range-picker-input";
 import { RangePickerProvider, useRangePicker } from "./hooks/useRangePicker";
 import { type tdirectionAwareContainerProps } from "../Components/helpers/direction-aware-container";
-import "../index.css";
 import { LocaleSwitcher } from "./Components/locale-switcher";
 
 type tRangePickerWithoutInput = {

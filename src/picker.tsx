@@ -6,7 +6,6 @@ import PickerHeader from "./Components/picker-header";
 import PickerInput from "./Components/picker-input";
 import { PickerProvider, usePicker } from "./hooks/usePicker";
 import { type tdirectionAwareContainerProps } from "./Components/helpers/direction-aware-container";
-import "./index.css";
 
 type tpickerWithoutInput = {
     /**
