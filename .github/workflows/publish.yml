@@ -43,7 +43,7 @@ jobs:
         run: |
           bun publish 
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Creating and publishing a release tag 
         run: |
