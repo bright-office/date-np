@@ -13,7 +13,10 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         rangePickerState, 
         togglePanelMode, 
         incrementPanelMonth,
-        changeRangePickerLocale 
+        changeRangePickerLocale,
+        canNavigateToPreviousMonth,
+        canNavigateToNextMonth,
+        shouldShowSinglePanel
     } = useRangePicker();
     
     const { locale } = rangePickerState;
@@ -37,7 +40,14 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     const year = currentMonthDate.getFullYear();
 
     // Check if navigation should be disabled
+    const isSinglePanel = shouldShowSinglePanel();
     const isRightArrowDisabled = useMemo(() => {
+        // If in single panel mode, disable all arrows
+        if (isSinglePanel) return true;
+        
+        // Check min/max date constraints
+        if (!canNavigateToNextMonth(panel)) return true;
+        
         if (panel === "left") {
             // Left panel: disable right arrow if moving forward would make it equal to or greater than right panel
             const nextMonth = activeMonth + 1;
@@ -54,9 +64,15 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
             }
         }
         return false;
-    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear]);
+    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear, isSinglePanel, canNavigateToNextMonth]);
 
     const isLeftArrowDisabled = useMemo(() => {
+        // If in single panel mode, disable all arrows
+        if (isSinglePanel) return true;
+        
+        // Check min/max date constraints
+        if (!canNavigateToPreviousMonth(panel)) return true;
+        
         if (panel === "right") {
             // Right panel: disable left arrow if moving backward would make it equal to or less than left panel
             const prevMonth = activeMonth - 1;
@@ -73,7 +89,7 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
             }
         }
         return false;
-    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear]);
+    }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear, isSinglePanel, canNavigateToPreviousMonth]);
 
     const handleMonthClick = () => {
         togglePanelMode(panel, "month", "date");

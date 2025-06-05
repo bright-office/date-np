@@ -89,6 +89,8 @@ function App() {
                             <p className="text-gray-600 text-sm">Select a date range</p>
                         </div>
                         <RangePicker
+                            minDate={new Date(2025, 9, 10)}
+                            maxDate={new Date(2025, 11, 20)}
                             shouldShowInput={true}
                             label="Select Date Range"
                             description="Choose your date range"
