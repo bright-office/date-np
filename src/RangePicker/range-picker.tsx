@@ -73,6 +73,16 @@ export type tRangePickerProps = {
      */
     description?: string;
 
+    /**
+     * Minimum selectable date
+     */
+    minDate?: Date | import("../NepaliDate").NepaliDate;
+
+    /**
+     * Maximum selectable date
+     */
+    maxDate?: Date | import("../NepaliDate").NepaliDate;
+
 } & (tRangePickerWithInput | tRangePickerWithoutInput);
 
 const RangePicker = (props: tRangePickerProps) => {
@@ -84,12 +94,14 @@ const RangePicker = (props: tRangePickerProps) => {
         dAwareConProps = {},
         onRangeSelect,
         onVisibilityChange,
+        minDate,
+        maxDate,
     } = props;
 
     const rangePickerInputRef = rangePickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
 
     let RangePickerContent = () => {
-        const { rangePickerState, updateRangePickerVisibility, clearSelection } = useRangePicker();
+        const { rangePickerState, updateRangePickerVisibility, clearSelection, shouldShowSinglePanel } = useRangePicker();
         const { isVisible, startDate, endDate } = rangePickerState;
 
         // Call callbacks when state changes
@@ -113,6 +125,8 @@ const RangePicker = (props: tRangePickerProps) => {
             clearSelection();
         };
 
+        const isSinglePanel = shouldShowSinglePanel();
+
         return (
             <DirectionAwareContainer
                 direction="bottom"
@@ -131,28 +145,42 @@ const RangePicker = (props: tRangePickerProps) => {
                     className
                 )}>
                     {/* Calendar Panels */}
-                    <div className="flex gap-4">
-                        {/* Left Panel */}
-                        <div className={cn(
-                            "flex flex-col gap-2 w-72",
-                            classNames.leftPanel
-                        )}>
-                            <RangePickerHeader panel="left" />
-                            <RangePickerBody panel="left" />
+                    {isSinglePanel ? (
+                        /* Single Panel Mode */
+                        <div className="flex justify-center">
+                            <div className={cn(
+                                "flex flex-col gap-2 w-72",
+                                classNames.leftPanel
+                            )}>
+                                <RangePickerHeader panel="left" />
+                                <RangePickerBody panel="left" />
+                            </div>
                         </div>
+                    ) : (
+                        /* Dual Panel Mode */
+                        <div className="flex gap-4">
+                            {/* Left Panel */}
+                            <div className={cn(
+                                "flex flex-col gap-2 w-72",
+                                classNames.leftPanel
+                            )}>
+                                <RangePickerHeader panel="left" />
+                                <RangePickerBody panel="left" />
+                            </div>
 
-                        {/* Divider */}
-                        <div className="w-px bg-gray-200 my-2" />
+                            {/* Divider */}
+                            <div className="w-px bg-gray-200 my-2" />
 
-                        {/* Right Panel */}
-                        <div className={cn(
-                            "flex flex-col gap-2 w-72",
-                            classNames.rightPanel
-                        )}>
-                            <RangePickerHeader panel="right" />
-                            <RangePickerBody panel="right" />
+                            {/* Right Panel */}
+                            <div className={cn(
+                                "flex flex-col gap-2 w-72",
+                                classNames.rightPanel
+                            )}>
+                                <RangePickerHeader panel="right" />
+                                <RangePickerBody panel="right" />
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Footer with actions: clear and toggle (AD/BS) left out currently. Need to move from left panel header to here. */}
                     { (
@@ -182,7 +210,7 @@ const RangePicker = (props: tRangePickerProps) => {
     };
 
     return (
-        <RangePickerProvider>
+        <RangePickerProvider minDate={minDate} maxDate={maxDate}>
             <div className="flex flex-col gap-1 w-full">
 
             {/* label */}

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { NepaliDate } from "../../NepaliDate";
 import { areDatesEqual } from "../../../utils/validators";
+import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 
 type tRangePickerPanelState = {
     selectedDate: Date | NepaliDate;
@@ -11,6 +12,8 @@ type tRangePickerPanelState = {
 
 type tRangePickerContextType = {
     rangePickerState: {
+        minDate?: Date | NepaliDate;
+        maxDate?: Date | NepaliDate;
         today: Date;
         isVisible: boolean;
         locale: "en" | "ne";
@@ -391,6 +394,169 @@ const useRangePicker = () => {
         }));
     };
 
+    const setMinDate = (minDate: Date | NepaliDate) => {
+        setRangePickerState((prevState) => {
+            const normalizedMinDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            return {
+                ...prevState,
+                minDate: normalizedMinDate,
+            }
+        })
+    }
+
+    const setMaxDate = (maxDate: Date | NepaliDate) => {
+        setRangePickerState((prevState) => {
+            const normalizedMaxDate = maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
+            return {
+                ...prevState,
+                maxDate: normalizedMaxDate,
+            }
+        })
+    }
+
+    // Utility functions for date range handling
+    const getEffectiveMinDate = (): Date => {
+        const { minDate, locale } = rangePickerContextValue.rangePickerState;
+        if (minDate) {
+            return minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+        }
+        // Return minimum date based on locale
+        return locale === "ne" 
+            ? new NepaliDate(MIN_BS_YEAR, 0, 1).toADDate()
+            : new Date(MIN_AD_YEAR, 0, 1);
+    };
+
+    const getEffectiveMaxDate = (): Date => {
+        const { maxDate, locale } = rangePickerContextValue.rangePickerState;
+        if (maxDate) {
+            return maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
+        }
+        // Return maximum date based on locale  
+        return locale === "ne"
+            ? new NepaliDate(MAX_BS_YEAR, 11, 30).toADDate() // Approximate last day
+            : new Date(MAX_AD_YEAR, 11, 31);
+    };
+
+    const isDateInRange = (date: Date | NepaliDate): boolean => {
+        const checkDate = date instanceof NepaliDate ? date.toADDate() : date;
+        const minDate = getEffectiveMinDate();
+        const maxDate = getEffectiveMaxDate();
+        
+        const checkTime = checkDate.getTime();
+        const minTime = minDate.getTime();
+        const maxTime = maxDate.getTime();
+        
+        return checkTime >= minTime && checkTime <= maxTime;
+    };
+
+    const canNavigateToPreviousMonth = (panel: "left" | "right"): boolean => {
+        const panelState = panel === "left" ? rangePickerContextValue.rangePickerState.leftPanel : rangePickerContextValue.rangePickerState.rightPanel;
+        const { activeYear, activeMonth } = panelState;
+        const { locale } = rangePickerContextValue.rangePickerState;
+        const minDate = getEffectiveMinDate();
+        
+        // Calculate previous month and year
+        let prevMonth = activeMonth - 1;
+        let prevYear = activeYear;
+        
+        if (prevMonth < 0) {
+            prevMonth = 11;
+            prevYear = prevYear - 1;
+        }
+        
+        // Check if any day in the previous month could be valid
+        // Create last day of previous month to be more permissive
+        let lastDayOfPrevMonth: Date;
+        if (locale === "ne") {
+            // For BS dates, get the number of days in the month
+            const daysInMonth = new NepaliDate(prevYear, prevMonth, 1).getDaysInMonth();
+            lastDayOfPrevMonth = new NepaliDate(prevYear, prevMonth, daysInMonth).toADDate();
+        } else {
+            // For AD dates
+            lastDayOfPrevMonth = new Date(prevYear, prevMonth + 1, 0); // Last day of month
+        }
+        
+        // Check if the last day of previous month is >= minDate
+        return lastDayOfPrevMonth.getTime() >= minDate.getTime();
+    };
+
+    const canNavigateToNextMonth = (panel: "left" | "right"): boolean => {
+        const panelState = panel === "left" ? rangePickerContextValue.rangePickerState.leftPanel : rangePickerContextValue.rangePickerState.rightPanel;
+        const { activeYear, activeMonth } = panelState;
+        const { locale } = rangePickerContextValue.rangePickerState;
+        const maxDate = getEffectiveMaxDate();
+        
+        // Calculate next month and year
+        let nextMonth = activeMonth + 1;
+        let nextYear = activeYear;
+        
+        if (nextMonth > 11) {
+            nextMonth = 0;
+            nextYear = nextYear + 1;
+        }
+        
+        // Create first day of next month in the correct locale
+        const firstDayOfNextMonth = locale === "ne"
+            ? new NepaliDate(nextYear, nextMonth, 1).toADDate()
+            : new Date(nextYear, nextMonth, 1);
+        
+        // Check if the first day of next month is <= maxDate
+        return firstDayOfNextMonth.getTime() <= maxDate.getTime();
+    };
+
+    const canNavigateToPreviousYear = (panel: "left" | "right"): boolean => {
+        const panelState = panel === "left" ? rangePickerContextValue.rangePickerState.leftPanel : rangePickerContextValue.rangePickerState.rightPanel;
+        const { activeYear } = panelState;
+        const { locale } = rangePickerContextValue.rangePickerState;
+        const minDate = getEffectiveMinDate();
+        
+        const prevYear = activeYear - 1;
+        
+        // Check if any day in the previous year could be valid
+        // Create last day of previous year to be more permissive
+        const lastDayOfPrevYear = locale === "ne"
+            ? new NepaliDate(prevYear, 11, 30).toADDate() // Approximate last day of BS year
+            : new Date(prevYear, 11, 31); // Last day of AD year
+        
+        return lastDayOfPrevYear.getTime() >= minDate.getTime();
+    };
+
+    const canNavigateToNextYear = (panel: "left" | "right"): boolean => {
+        const panelState = panel === "left" ? rangePickerContextValue.rangePickerState.leftPanel : rangePickerContextValue.rangePickerState.rightPanel;
+        const { activeYear } = panelState;
+        const { locale } = rangePickerContextValue.rangePickerState;
+        const maxDate = getEffectiveMaxDate();
+        
+        const nextYear = activeYear + 1;
+        
+        // Create first day of next year
+        const firstDayOfNextYear = locale === "ne"
+            ? new NepaliDate(nextYear, 0, 1).toADDate()
+            : new Date(nextYear, 0, 1);
+        
+        return firstDayOfNextYear.getTime() <= maxDate.getTime();
+    };
+
+    // Check if min and max dates are in the same month
+    const shouldShowSinglePanel = (): boolean => {
+        const { minDate, maxDate, locale } = rangePickerContextValue.rangePickerState;
+        if (!minDate || !maxDate) return false;
+        
+        let minDateForComparison: Date | NepaliDate;
+        let maxDateForComparison: Date | NepaliDate;
+        
+        if (locale === "ne") {
+            minDateForComparison = minDate instanceof NepaliDate ? minDate : NepaliDate.fromADDate(minDate);
+            maxDateForComparison = maxDate instanceof NepaliDate ? maxDate : NepaliDate.fromADDate(maxDate);
+        } else {
+            minDateForComparison = minDate instanceof Date ? minDate : minDate.toADDate();
+            maxDateForComparison = maxDate instanceof Date ? maxDate : maxDate.toADDate();
+        }
+        
+        return minDateForComparison.getMonth() === maxDateForComparison.getMonth() && 
+               minDateForComparison.getFullYear() === maxDateForComparison.getFullYear();
+    };
+
     return {
         ...rangePickerContextValue,
         updateRangePickerDay,
@@ -403,12 +569,58 @@ const useRangePicker = () => {
         changeRangePickerLocale,
         updateRangePickerVisibility,
         clearSelection,
+        // Min/Max date functions
+        setMinDate,
+        setMaxDate,
+        getEffectiveMinDate,
+        getEffectiveMaxDate,
+        isDateInRange,
+        canNavigateToPreviousMonth,
+        canNavigateToNextMonth,
+        canNavigateToPreviousYear,
+        canNavigateToNextYear,
+        shouldShowSinglePanel,
     };
 };
 
-const RangePickerProvider = ({ children }: { children: React.ReactNode }) => {
+const RangePickerProvider = ({ 
+    children,
+    minDate,
+    maxDate,
+}: { 
+    children: React.ReactNode;
+    minDate?: Date | NepaliDate;
+    maxDate?: Date | NepaliDate;
+}) => {
     const today = new Date();
+    
+    // Initialize panel positions based on min/max dates if provided
+    const getInitialPanelPositions = () => {
+        if (minDate && maxDate) {
+            const minDateForPanel = minDate instanceof NepaliDate ? minDate : new Date(minDate);
+            const maxDateForPanel = maxDate instanceof NepaliDate ? maxDate : new Date(maxDate);
+            
+            return {
+                leftMonth: minDateForPanel.getMonth(),
+                leftYear: minDateForPanel.getFullYear(),
+                rightMonth: maxDateForPanel.getMonth(),
+                rightYear: maxDateForPanel.getFullYear(),
+            };
+        }
+        
+        return {
+            leftMonth: today.getMonth(),
+            leftYear: today.getFullYear(),
+            rightMonth: today.getMonth() + 1 > 11 ? 0 : today.getMonth() + 1,
+            rightYear: today.getMonth() + 1 > 11 ? today.getFullYear() + 1 : today.getFullYear(),
+        };
+    };
+    
+    const initialPositions = getInitialPanelPositions();
+    
     const [rangePickerState, setRangePickerState] = useState<tRangePickerContextType["rangePickerState"]>({
+        minDate: minDate instanceof NepaliDate ? minDate.toADDate() : minDate,
+        maxDate: maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate,
         today: today,
         startDate: null,
         endDate: null,
@@ -417,14 +629,14 @@ const RangePickerProvider = ({ children }: { children: React.ReactNode }) => {
         locale: "en",
         leftPanel: {
             selectedDate: today,
-            activeMonth: today.getMonth(),
-            activeYear: today.getFullYear(),
+            activeMonth: initialPositions.leftMonth,
+            activeYear: initialPositions.leftYear,
             mode: "date",
         },
         rightPanel: {
             selectedDate: today,
-            activeMonth: today.getMonth() + 1 > 11 ? 0 : today.getMonth() + 1,
-            activeYear: today.getMonth() + 1 > 11 ? today.getFullYear() + 1 : today.getFullYear(),
+            activeMonth: initialPositions.rightMonth,
+            activeYear: initialPositions.rightYear,
             mode: "date",
         },
     });
