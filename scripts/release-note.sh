@@ -51,4 +51,3 @@ append_note "$refactors" "Refactors"
 append_note "$tests" "Tests"
 
 echo "$FINAL_NOTE" > ../ReleaseNotes.md
-echo "FINAL_NOTE=$FINAL_NOTE" >> $GITHUB_ENV
