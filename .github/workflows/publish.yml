@@ -63,8 +63,9 @@ jobs:
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Creating and publishing a release tag 
+      - name: Creating and publishing a release 
         run: |
+          echo '${{ toJSON(needs.check_version.outputs.TAG) }}'
           TAG="${{ needs.check_version.outputs.TAG }}"
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
