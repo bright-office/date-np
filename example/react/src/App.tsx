@@ -3,7 +3,13 @@ import { Picker } from "date-np/ui";
 import { format, formatISO, formatLong, formatShort, formatMedium } from "date-np/core";
 import { NepaliDate } from "date-np/core";
 
+
+
+
+
+
 function App() {
+
     const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
     const englishDate = new Date(2025, 5, 3); // June 3, 2025
 
@@ -29,7 +35,7 @@ function App() {
             <div className="max-w-7xl mx-auto space-y-12">
                 {/* Header */}
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Date-NP Demo</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Date-NP Package Demo</h1>
                     <p className="text-lg text-gray-600">Comprehensive Nepali and English date formatting and calendar picking library</p>
                 </div>
 
@@ -68,6 +74,8 @@ function App() {
                             <p className="text-gray-600 text-sm">Select a single date</p>
                         </div>
                         <Picker
+                            minDate={new Date(2025, 7, 10)}
+                            maxDate={new Date(2025, 11, 10)}
                             shouldShowInput={true}
                             label="Select Date"
                             description="Choose your preferred date"
@@ -92,18 +100,18 @@ function App() {
                 </div>
 
 
-                 {/* Format Examples Table */}
-                 {/* Header */}
+                {/* Format Examples Table */}
+                {/* Header */}
                 <div className="text-start">
                     <h1 className="text-2xl font-bold text-gray-900 mb-4">Format Function</h1>
                     <p className="text-lg text-gray-600">Complete date string formatting made to specially work with both Bikram Sambat and Gregorian calendar</p>
                 </div>
-                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
                         <h2 className="text-2xl font-bold text-white">Format Function Examples</h2>
                         <p className="text-indigo-100 mt-1">Comparing Nepali (BS) and English (AD) date formats</p>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
