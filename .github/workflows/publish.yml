@@ -8,7 +8,7 @@ jobs:
   check_version: 
     runs-on: ubuntu-latest
     outputs:
-      TAG: ${{ steps.extract_version.outputs.version }}
+      TAG: ${{ steps.extract_version.outputs.TAG }}
       SHOULD_PUBLISH: ${{ steps.check_git_tags.outputs.SHOULD_PUBLISH }}
 
     steps: 
@@ -45,5 +45,41 @@ jobs:
     if: needs.check_version.outputs.SHOULD_PUBLISH == 'true'
 
     steps:
-      - run: echo '${{ toJSON(needs.check_version.outputs) }}'
+      - name: checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest 
+
+      - name: Installing dependencies
+        run: bun install
+
+      - name: Publishing to npm
+        run: |
+          bun publish --access public
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Creating and publishing a release 
+        run: |
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Generate release notes
+        run: |
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          ./scripts/release-note.sh "$TAG"
+
+      - name: Creating a release
+        run: |
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          gh release create "$TAG" --title "$TAG 🎉" -F ../ReleaseNotes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
