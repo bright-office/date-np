@@ -1,4 +1,4 @@
-name: Publish to jsr
+name: Publish to npm
 on:
   push:
     branches:
@@ -39,9 +39,11 @@ jobs:
       - name: Installing dependencies
         run: bun install
 
-      - name: Publishing to jsr
+      - name: Publishing to npm
         run: |
           bun publish 
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Creating and publishing a release tag 
         run: |
