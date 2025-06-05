@@ -45,42 +45,5 @@ jobs:
     if: needs.check_version.outputs.SHOULD_PUBLISH == 'true'
 
     steps:
-      - name: checkout the repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - run: echo '${{ toJSON(needs.check_version.outputs) }}'
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest 
-
-      - name: Installing dependencies
-        run: bun install
-
-      - name: Publishing to npm
-        run: |
-          bun publish --access public
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Creating and publishing a release 
-        run: |
-          echo '${{ toJSON(needs.check_version.outputs.TAG) }}'
-          TAG="${{ needs.check_version.outputs.TAG }}"
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-
-          git tag "$TAG"
-          git push origin "$TAG"
-
-      - name: Generate release notes
-        run: |
-          TAG="${{ needs.check_version.outputs.TAG }}"
-          ./scripts/release-note.sh "$TAG"
-
-      - name: Creating a release
-        run: |
-          TAG="${{ needs.check_version.outputs.TAG }}"
-          gh release create "$TAG" --title "$TAG 🎉" -F ../ReleaseNotes.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
