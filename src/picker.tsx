@@ -1,4 +1,4 @@
-import { useRef, type ComponentProps } from "react";
+import { use, useEffect, useRef, type ComponentProps } from "react";
 import { cn } from "../utils/clsx";
 import DirectionAwareContainer from "./Components/helpers/direction-aware-container";
 import PickerBody from "./Components/picker-body";
@@ -33,6 +33,17 @@ type tpickerWithInput = {
 }
 
 export type tpickerProps = {
+
+    /**
+     * min date for the picker
+     */
+    minDate?: Date | import("./NepaliDate").NepaliDate;
+
+    /**
+     * max date for the picker
+     */
+    maxDate?: Date | import("./NepaliDate").NepaliDate;
+
     /** 
      * className for styling the main picker
      */
@@ -67,6 +78,8 @@ export type tpickerProps = {
 
 const Picker = (props: tpickerProps) => {
     const {
+        minDate: minPropDate,
+        maxDate: maxPropDate,
         shouldShowInput = true,
         className,
         inputProps: pickerInputProps = {},
@@ -78,10 +91,25 @@ const Picker = (props: tpickerProps) => {
 
     const pickerInputRef = pickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
 
+
     let PickerContent = () => {
-        const { updatePickerVisiblity, pickerState } = usePicker();
+
+        const { updatePickerVisiblity, pickerState, setMinDate, setMaxDate } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
-        const {selectedDate} = pickerState;
+        const {selectedDate, minDate, maxDate} = pickerState;
+
+        if (minPropDate || maxPropDate){
+            useEffect(()=>{
+                if (minPropDate) {
+                    setMinDate(minPropDate);
+                }
+                if (maxPropDate) {
+                    setMaxDate(maxPropDate);
+                }
+            },[minPropDate, maxPropDate])
+            
+        }
+
 
         return (
             <DirectionAwareContainer
