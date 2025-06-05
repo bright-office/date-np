@@ -65,16 +65,21 @@ jobs:
 
       - name: Creating and publishing a release tag 
         run: |
-          TAG="${{ steps.extract_version.outputs.TAG }}"
+          TAG="${{ needs.check_version.outputs.TAG }}"
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
 
           git tag "$TAG"
           git push origin "$TAG"
 
+      - name: Generate release notes
+        run: |
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          ./scripts/release-note.sh "$TAG"
+
       - name: Creating a release
         run: |
-          TAG="${{ steps.extract_version.outputs.TAG }}"
-          gh release create "$TAG" --generate-notes
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          gh release create "$TAG" --title "$TAG 🎉" -F ../ReleaseNotes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
