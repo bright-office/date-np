@@ -5,11 +5,44 @@ on:
       - main
 
 jobs:
+  check_version: 
+    runs-on: ubuntu-latest
+    outputs:
+      TAG: ${{ steps.extract_version.outputs.version }}
+      SHOULD_PUBLISH: ${{ steps.check_git_tags.outputs.SHOULD_PUBLISH }}
+
+    steps: 
+      - name: checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extracting the version
+        id: extract_version
+        run: |
+          version=$(jq -r .version < package.json)
+          echo "TAG=v$version" >> $GITHUB_OUTPUT
+
+      - name: checking for previous releases with the same version.
+        id: check_git_tags
+        run: |
+          TAG="${{ steps.extract_version.outputs.TAG }}"
+          exists=$(git tag -l "$TAG")
+          if [[ -n "$exists" ]];then
+            echo "Tag already exists no need to publish, aborting..."
+            echo "SHOULD_PUBLISH=false" >> $GITHUB_OUTPUT
+          else
+            echo "This version doesnot exits yet, releasing..."
+            echo "SHOULD_PUBLISH=true" >> $GITHUB_OUTPUT
+          fi
+
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
+    needs: check_version 
+    if: needs.check_version.outputs.SHOULD_PUBLISH == 'true'
 
     steps:
       - name: checkout the repo
@@ -20,21 +53,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest 
-
-      - name: Extracting the version
-        id: extract_version
-        run: |
-          version=$(jq -r .version < package.json)
-          echo "TAG=v$version" >> $GITHUB_OUTPUT
-
-      - name: checking for previous releases with the same version.
-        run: |
-          TAG="${{ steps.extract_version.outputs.TAG }}"
-          exists=$(git tag -l "$TAG")
-          if [[ -n "$exists" ]];then
-            echo "Tag already exists no need to publish, aborting..."
-            exit 0
-          fi
 
       - name: Installing dependencies
         run: bun install
@@ -60,4 +78,3 @@ jobs:
           gh release create "$TAG" --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
