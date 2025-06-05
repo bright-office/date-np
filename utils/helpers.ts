@@ -14,13 +14,13 @@ import { NepaliDate } from "../src/NepaliDate.ts";
 /**
  * @category helpers
  * Calculates the total number of days from MIN_BS_YEAR to the given BS date.
- * @param {Date} BS_date - The BS date to calculate the total days to.
+ * @param {NepaliDate} BS_date - The BS date to calculate the total days to.
  * @returns {number} - The total days from the given BS date.
  */
-const calcTotalDaysFromMinBS = (BS_date: Date): number => {
+const calcTotalDaysFromMinBS = (BS_date: NepaliDate): number => {
     let totalDays = BS_date.getDate();
 
-    const isValid = isValidBSYear(BS_date);
+    const isValid = isValidBSYear(BS_date.getFullYear());
     const currentBSYear = BS_date.getFullYear();
 
     if (!isValid)
@@ -69,7 +69,7 @@ const calcTotalDaysInBSYear = (year: yearInput): number => {
     return totalDays;
 }
 
-const addDaysToMinBSDate = (days: number): Date => {
+const addDaysToMinBSDate = (days: number): NepaliDate => {
     let BS_year = MIN_BS_YEAR as BS_MONTHS_KEYS;
     // TODO: Research why this works.
     let BS_month = 9;
@@ -96,7 +96,7 @@ const addDaysToMinBSDate = (days: number): Date => {
         BS_day = 1;
     }
 
-    return new Date(BS_year, BS_month, BS_day);
+    return new NepaliDate(BS_year, BS_month, BS_day);
 }
 
 const calcTotalDaysFromMinAD = (AD_date: Date): number => {

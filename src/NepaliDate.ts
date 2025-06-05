@@ -125,7 +125,7 @@ export class NepaliDate {
      * This converts to AD date to get the correct day
      */
     getDay(): number {
-        const adDate = convertFromBSToAD(new Date(this._year, this._month, this._date));
+        const adDate = convertFromBSToAD(this);
         return adDate.getDay();
     }
 
@@ -251,7 +251,7 @@ export class NepaliDate {
      * Convert to AD Date
      */
     toADDate(): Date {
-        return convertFromBSToAD(new Date(this._year, this._month, this._date));
+        return convertFromBSToAD(this);
     }
 
     /**
