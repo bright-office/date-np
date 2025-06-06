@@ -1,6 +1,6 @@
 {
   "name": "@brightsoftware/date-np",
-  "version": "0.1.5-test",
+  "version": "0.1.8",
   "author": {
     "name": "bright office"
   },
@@ -46,21 +46,21 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@vitest/ui": "^2.1.8",
+    "@vitest/ui": "^2.1.9",
     "clsx": "^2.1.1",
-    "concurrently": "^9.1.0",
-    "react": "^19.0.0",
-    "tailwind-merge": "^2.5.5",
-    "typedoc": "^0.27.5",
-    "typedoc-plugin-markdown": "^4.3.2",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "^4.4.0",
-    "vitest": "^2.1.8",
+    "concurrently": "^9.1.2",
+    "react": "^19.1.0",
+    "tailwind-merge": "^2.6.0",
+    "typedoc": "^0.28.5",
+    "typedoc-plugin-markdown": "^4.6.4",
+    "vite": "^5.4.19",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^2.1.9",
     "@tailwindcss/vite": "^4.1.8",
-    "@vitejs/plugin-react": "^4.3.4",
-    "tailwindcss": "^4.0.0-beta.8",
+    "@vitejs/plugin-react": "^4.5.1",
+    "tailwindcss": "^4.1.8",
     "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5"
+    "@types/react-dom": "^19.1.6"
   },
   "peerDependencies": {
     "react": "17 || 18 || 19",

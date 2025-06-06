@@ -13,19 +13,17 @@ if [ -z "$(git tag -l "$TAG")" ];then
   exit 1
 fi
 
-git log --output=../ReleaseNotes.md "$PREVIOUS_TAG".."$TAG" --pretty=format:"(%h) %s --%cn%n"
+git log --output=ReleaseNotes.md "$PREVIOUS_TAG".."$TAG" --pretty=format:"(%h) %s --%an%n"
 
-echo "Formatting the release notes..."
-
-features=$(grep -E "^\([a-z0-9].+\) feat" ../ReleaseNotes.md)
-fixes=$(grep -E "^\([a-z0-9].+\) fix" ../ReleaseNotes.md)
-chores=$(grep -E "^\([a-z0-9].+\) chore" ../ReleaseNotes.md)
-builds=$(grep -E "^\([a-z0-9].+\) build" ../ReleaseNotes.md)
-cis=$(grep -E "^\([a-z0-9].+\) ci" ../ReleaseNotes.md)
-docs=$(grep -E "^\([a-z0-9].+\) docs" ../ReleaseNotes.md)
-perfs=$(grep -E "^\([a-z0-9].+\) perf" ../ReleaseNotes.md)
-refactors=$(grep -E "^\([a-z0-9].+\) refactor" ../ReleaseNotes.md)
-tests=$(grep -E "^\([a-z0-9].+\) test" ../ReleaseNotes.md)
+features=$(grep -E "^\([a-z0-9].+\) feat" ReleaseNotes.md)
+fixes=$(grep -E "^\([a-z0-9].+\) fix" ReleaseNotes.md)
+chores=$(grep -E "^\([a-z0-9].+\) chore" ReleaseNotes.md)
+builds=$(grep -E "^\([a-z0-9].+\) build" ReleaseNotes.md)
+cis=$(grep -E "^\([a-z0-9].+\) ci" ReleaseNotes.md)
+docs=$(grep -E "^\([a-z0-9].+\) docs" ReleaseNotes.md)
+perfs=$(grep -E "^\([a-z0-9].+\) perf" ReleaseNotes.md)
+refactors=$(grep -E "^\([a-z0-9].+\) refactor" ReleaseNotes.md)
+tests=$(grep -E "^\([a-z0-9].+\) test" ReleaseNotes.md)
 
 FINAL_NOTE="
 # Release Notes
@@ -50,4 +48,5 @@ append_note "$perfs" "Performance related"
 append_note "$refactors" "Refactors"
 append_note "$tests" "Tests"
 
-echo "$FINAL_NOTE" > ../ReleaseNotes.md
+pwd 
+echo "$FINAL_NOTE" > ReleaseNotes.md
