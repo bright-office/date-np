@@ -53,73 +53,28 @@ const monthSwitcher = (): {
     previous: ReactNode,
     next: ReactNode
 } => {
-    const { 
-        pickerState, 
-        updatePickerMonth, 
-        updatePickerYear,
-        canNavigateToPreviousMonth, 
-        canNavigateToNextMonth,
-        canNavigateToPreviousYear,
-        canNavigateToNextYear 
-    } = usePicker();
-    const { activeMonth, activeYear, mode } = pickerState;
+    const { pickerState, updatePickerMonth } = usePicker();
+    const { activeMonth } = pickerState;
 
-    // Determine navigation type based on mode
-    const isYearMode = mode === "year";
-    const isMonthMode = mode === "month";
-    
-    // For year mode, we navigate years
-    // For date and month modes, we navigate months but use specialized validation for month mode
-    let canGoPrevious: boolean;
-    let canGoNext: boolean;
-    
-    if (isYearMode) {
-        canGoPrevious = canNavigateToPreviousYear();
-        canGoNext = canNavigateToNextYear();
-    } else {
-        // Both date and month modes use month navigation
-        canGoPrevious = canNavigateToPreviousMonth();
-        canGoNext = canNavigateToNextMonth();
-    }
+    const handleMonthChange = (changeDirection: "next" | "previous") => {
+        const newMonth = changeDirection === "next"
+            ? activeMonth + 1
+            : activeMonth - 1;
 
-    const handleNavigation = (changeDirection: "next" | "previous") => {
-        if ((changeDirection === "previous" && !canGoPrevious) || 
-            (changeDirection === "next" && !canGoNext)) {
-            return;
-        }
-
-        if (isYearMode) {
-            // Navigate years (for year picker mode)
-            const newYear = changeDirection === "next"
-                ? activeYear + 1
-                : activeYear - 1;
-            updatePickerYear(newYear);
-        } else {
-            // Navigate months (for date and month picker modes)
-            const newMonth = changeDirection === "next"
-                ? activeMonth + 1
-                : activeMonth - 1;
-            updatePickerMonth(newMonth);
-        }
+        updatePickerMonth(newMonth);
     }
 
     return {
         previous: (
             <div
-                className={cn(
-                    "left h-8 w-8 rounded-sm cursor-pointer hover:bg-gray-200 flex items-center justify-center",
-                    !canGoPrevious && "opacity-50 cursor-not-allowed hover:bg-transparent"
-                )}
-                onClick={() => handleNavigation("previous")} >
+                className="left h-8 w-8 rounded-sm cursor-pointer hover:bg-gray-200 flex items-center justify-center"
+                onClick={() => handleMonthChange("previous")} >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
             </div>),
         next: (
             <div
-                className={cn(
-                    "right h-8 w-8 rounded-sm cursor-pointer hover:bg-gray-200 flex items-center justify-center",
-                    !canGoNext && "opacity-50 cursor-not-allowed hover:bg-transparent"
-                )}
-                onClick={() => handleNavigation("next")} >
+                className="right h-8 w-8 rounded-sm cursor-pointer hover:bg-gray-200 flex items-center justify-center"
+                onClick={() => handleMonthChange("next")} >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
             </div>)
     }
