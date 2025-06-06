@@ -1,6 +1,10 @@
 name: Publish to npm
+
 on:
   push:
+    branches:
+      - main
+  merge:
     branches:
       - main
 
@@ -11,7 +15,6 @@ jobs:
       TAG: ${{ steps.extract_version.outputs.TAG }}
       SHOULD_PUBLISH: ${{ steps.check_git_tags.outputs.SHOULD_PUBLISH }}
     if: github.event.head_commit.author.name != 'github-actions'
-
 
     steps: 
       - name: checkout the repo
