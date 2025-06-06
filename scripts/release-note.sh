@@ -48,6 +48,5 @@ append_note "$perfs" "Performance related"
 append_note "$refactors" "Refactors"
 append_note "$tests" "Tests"
 
-echo "$FINAL_NOTE"
-
-echo "$FINAL_NOTE" > ../ReleaseNotes.md
+pwd 
+echo "$FINAL_NOTE" > ReleaseNotes.md
