@@ -5,6 +5,9 @@
 Simple & minimal Nepali date picker that just works.
 [live demo](https://f40fe1d6.bright-date-np.pages.dev/)
 
+See the docs for the accompaning NepaliDate class and format function.
+[docs](https://88575e90.date-np-docs.pages.dev/)
+
 # Use it
 
 ### npm 
