@@ -55,14 +55,6 @@ const BSToADCASES = [
         inputDate: new Date(2081, 8, 9),
         outputDate: new Date(2024, 11, 24)
     },
-    {
-        inputDate: new Date(2082, 1, 28),
-        outputDate: new Date(2025, 5, 11)
-    },
-    {
-        inputDate: new Date(2082, 1, 29),
-        outputDate: new Date(2025, 5, 1)
-    }
 
 ];
 

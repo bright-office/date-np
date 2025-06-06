@@ -14,8 +14,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     const { 
         rangePickerState, 
         updateRangePickerDay, 
-        updateHoverDate,
-        isDateInRange
+        updateHoverDate 
     } = useRangePicker();
     
     const { startDate, endDate, hoverDate, today } = rangePickerState;
@@ -63,26 +62,19 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
         return areDatesEqual(date, endDate);
     }, [date, endDate]);
 
-    const isDisabled = useMemo(() => {
-        return !isDateInRange(date);
-    }, [date, isDateInRange]);
-
     const handleClick = () => {
-        if (!isDisabled) {
-            updateRangePickerDay(date, panel);
-        }
+        updateRangePickerDay(date, panel);
     };
 
     const handleMouseEnter = useCallback(() => {
-        if (!isDisabled && startDate && !endDate) {
+        if (startDate && !endDate) {
             updateHoverDate(date);
         }
-    }, [startDate, endDate, date, updateHoverDate, isDisabled]);
+    }, [startDate, endDate, date, updateHoverDate]);
 
     return (
         <button
             ref={buttonRef}
-            disabled={isDisabled}
             onClick={(e)=>{
                 e.stopPropagation()
                 handleClick()
@@ -91,16 +83,14 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             className={cn(
                 "w-8 h-8 flex items-center justify-center text-sm rounded-md",
                 "hover:cursor-pointer",
-                !isSelected && !isDisabled && "hover:bg-gray-300 transition-colors",
+                !isSelected && "hover:bg-gray-300 transition-colors",
                 "focus:outline-none focus:ring-2 focus:ring-blue-500",
-                // Disabled styling
-                isDisabled && "text-gray-300 cursor-not-allowed",
                 // Today styling
-                isToday && !isSelected && !isDisabled && "bg-blue-50 text-blue-600 font-semibold",
+                isToday && !isSelected && "bg-blue-50 text-blue-600 font-semibold",
                 // Range styling
-                isInRange && !isDisabled && "bg-gray-200",
+                isInRange && "bg-gray-200",
                 // Selected dates (start and end)
-                isSelected && !isDisabled && "bg-black text-white font-semibold",
+                isSelected && "bg-black text-white font-semibold",
                 className
             )}
         >

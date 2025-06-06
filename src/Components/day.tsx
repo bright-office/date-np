@@ -47,13 +47,11 @@ const Day = (props: tdayProps) => {
             className={cn(
                 "text-center aspect-square rounded-sm items-center justify-center flex text-sm cursor-pointer",
                 "hover:bg-gray-200",
-                isActive && !disabled && "bg-gray-900 text-white hover:bg-gray-900",
-                disabled && !isActive && "opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50",
-                disabled && isActive && "bg-gray-700 text-white opacity-70 cursor-not-allowed",
+                isActive && "bg-gray-900 text-white hover:bg-gray-900",
+                disabled && "opacity-50 bg-gray-50",
                 className,
             )}
             onClick={handlDayClick}
-            disabled={disabled}
             {...rest}
         >
             {date.getDate()}
