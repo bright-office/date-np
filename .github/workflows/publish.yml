@@ -10,6 +10,8 @@ jobs:
     outputs:
       TAG: ${{ steps.extract_version.outputs.TAG }}
       SHOULD_PUBLISH: ${{ steps.check_git_tags.outputs.SHOULD_PUBLISH }}
+    if: github.event.head_commit.author.name != 'github-actions'
+
 
     steps: 
       - name: checkout the repo
@@ -76,6 +78,17 @@ jobs:
         run: |
           TAG="${{ needs.check_version.outputs.TAG }}"
           ./scripts/release-note.sh "$TAG"
+
+      - name: Committing the release notes
+        run: |
+          TAG="${{ needs.check_version.outputs.TAG }}"
+          git add ReleaseNotes.md
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          # Note: here we are using AUTO since we don't want it to be in our release notes.
+          git commit -m "AUTO: release notes for $TAG"
+          git push origin
 
       - name: Creating a release
         run: |
