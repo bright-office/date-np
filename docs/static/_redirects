@@ -1,0 +1,5 @@
+# Redirect /docs to /docs/ for trailing slash consistency
+/docs /docs/ 301
+
+# Handle SPA routing - this should be at the end
+/* /index.html 200

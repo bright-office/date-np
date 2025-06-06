@@ -8,11 +8,11 @@ const config: Config = {
     favicon: 'img/favicon.ico',
 
     // Set the production url of your site here
-    url: 'https://bright-office.github.io',
-    baseUrl: '/date-np/',
+    url: 'https://date-np-docs.pages.dev', // Your Cloudflare Pages URL
+    baseUrl: '/',
     trailingSlash: true,
 
-    // GitHub pages deployment config.
+    // Cloudflare Pages deployment config
     organizationName: 'bright-office',
     projectName: 'date-np',
 

@@ -12,7 +12,10 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "pages:build": "docusaurus build",
+    "pages:deploy": "npx wrangler pages deploy build --project-name=date-np-docs",
+    "pages:publish": "npm run pages:build && npm run pages:deploy"
   },
   "dependencies": {
     "@docusaurus/core": "3.6.3",
@@ -27,7 +30,8 @@
     "@docusaurus/module-type-aliases": "3.6.3",
     "@docusaurus/tsconfig": "3.6.3",
     "@docusaurus/types": "3.6.3",
-    "typescript": "~5.6.2"
+    "typescript": "~5.6.2",
+    "wrangler": "^4.19.1"
   },
   "browserslist": {
     "production": [
