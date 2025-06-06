@@ -1,6 +1,6 @@
 {
   "name": "@brightsoftware/date-np",
-  "version":"0.1.5-test",
+  "version": "0.1.5-test",
   "author": {
     "name": "bright office"
   },
@@ -56,7 +56,7 @@
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.4.0",
     "vitest": "^2.1.8",
-    "@tailwindcss/vite": "^4.0.0-beta.8",
+    "@tailwindcss/vite": "^4.1.8",
     "@vitejs/plugin-react": "^4.3.4",
     "tailwindcss": "^4.0.0-beta.8",
     "@types/react": "^19.1.6",
