@@ -2,8 +2,8 @@
 # Release Notes
 
 ## Bug Fixes
-(578b8d2) fix: migrated to tailwind v4 with vite plugin --sarojregmi200
+(3ab783d) fix:dist not publishing --SakunPanthi123
 
 ## Small tasks
-(8d51447) chore: final attempt at fixing the merges --sarojregmi200
+(df60038) chore: releasing v0.1.9 with dist issue fix --SakunPanthi123
 
