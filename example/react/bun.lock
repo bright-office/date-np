@@ -4,7 +4,7 @@
     "": {
       "name": "react",
       "dependencies": {
-        "@brightsoftware/date-np": "^0.1.8",
+        "@brightsoftware/date-np": "^0.1.10",
         "date-np": "link:../..",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -29,7 +29,7 @@
     },
   },
   "packages": {
-    "@brightsoftware/date-np": ["@brightsoftware/date-np@0.1.8", "", { "peerDependencies": { "react": "17 || 18 || 19", "react-dom": "17 || 18 || 19" } }, "sha512-w6j4aDL6QQYiQI19Vl6aE+2PizPIYB8TdwV90otxZMK0BA33xkHEpACfHK1znjdilme248QwqXUaQOohVY1TgA=="],
+    "@brightsoftware/date-np": ["@brightsoftware/date-np@0.1.10", "", { "dependencies": { "clsx": "2.1.1", "tailwind-merge": "^2.6.0" }, "peerDependencies": { "react": "17 || 18 || 19", "react-dom": "17 || 18 || 19" } }, "sha512-wTjHHlMf2ekkbsUEIBtXzG8YmikUc9Pq1Xkgxl9AaPELjonEM64ZaDePYzC8gQtCgM29zrXTXAr5M1b8nu5Uvw=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.24.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-thpVCb/rhxE/BnMLQ7GReQLLN8q9qbHmI55F4489/ByVg2aQaQ6kbcLb6FHkocZzQhxc4gx0sCk0tJkKBFzDhA=="],
 
@@ -239,6 +239,8 @@
 
     "chalk": ["chalk@4.1.2", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="],
 
+    "clsx": ["clsx@2.1.1", "", {}, "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA=="],
+
     "color-convert": ["color-convert@2.0.1", "", { "dependencies": { "color-name": "~1.1.4" } }, "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="],
 
     "color-name": ["color-name@1.1.4", "", {}, "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="],
@@ -416,6 +418,8 @@
     "strip-json-comments": ["strip-json-comments@3.1.1", "", {}, "sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig=="],
 
     "supports-color": ["supports-color@7.2.0", "", { "dependencies": { "has-flag": "^4.0.0" } }, "sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw=="],
+
+    "tailwind-merge": ["tailwind-merge@2.6.0", "", {}, "sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA=="],
 
     "tailwindcss": ["tailwindcss@4.1.8", "", {}, "sha512-kjeW8gjdxasbmFKpVGrGd5T4i40mV5J2Rasw48QARfYeQ8YS9x02ON9SFWax3Qf616rt4Cp3nVNIj6Hd1mP3og=="],
 

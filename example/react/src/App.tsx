@@ -1,3 +1,14 @@
+// import {
+//   format,
+//   formatISO,
+//   formatLong,
+//   formatShort,
+//   formatMedium,
+// } from "@brightsoftware/date-np/core";
+// import { NepaliDate } from "@brightsoftware/date-np/core";
+// import { Picker } from "@brightsoftware/date-np/ui";
+// import { RangePicker } from "@brightsoftware/date-np/ui";
+
 import {
   format,
   formatISO,
@@ -6,8 +17,8 @@ import {
   formatMedium,
 } from "date-np/core";
 import { NepaliDate } from "date-np/core";
-import { Picker } from "@brightsoftware/date-np/ui";
-import { RangePicker } from "@brightsoftware/date-np/ui";
+import { Picker } from "date-np/ui";
+import { RangePicker } from "date-np/ui";
 
 function App() {
   const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
