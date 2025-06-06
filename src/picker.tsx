@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, type ComponentProps } from "react";
+import { useRef, type ComponentProps } from "react";
 import { cn } from "../utils/clsx";
 import DirectionAwareContainer from "./Components/helpers/direction-aware-container";
 import PickerBody from "./Components/picker-body";
@@ -33,17 +33,6 @@ type tpickerWithInput = {
 }
 
 export type tpickerProps = {
-
-    /**
-     * min date for the picker
-     */
-    minDate?: Date | import("./NepaliDate").NepaliDate;
-
-    /**
-     * max date for the picker
-     */
-    maxDate?: Date | import("./NepaliDate").NepaliDate;
-
     /** 
      * className for styling the main picker
      */
@@ -78,8 +67,6 @@ export type tpickerProps = {
 
 const Picker = (props: tpickerProps) => {
     const {
-        minDate: minPropDate,
-        maxDate: maxPropDate,
         shouldShowInput = true,
         className,
         inputProps: pickerInputProps = {},
@@ -91,25 +78,10 @@ const Picker = (props: tpickerProps) => {
 
     const pickerInputRef = pickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
 
-
     let PickerContent = () => {
-
-        const { updatePickerVisiblity, pickerState, setMinDate, setMaxDate } = usePicker();
+        const { updatePickerVisiblity, pickerState } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
-        const {selectedDate, minDate, maxDate} = pickerState;
-
-        if (minPropDate || maxPropDate){
-            useEffect(()=>{
-                if (minPropDate) {
-                    setMinDate(minPropDate);
-                }
-                if (maxPropDate) {
-                    setMaxDate(maxPropDate);
-                }
-            },[minPropDate, maxPropDate])
-            
-        }
-
+        const {selectedDate} = pickerState;
 
         return (
             <DirectionAwareContainer
@@ -120,7 +92,6 @@ const Picker = (props: tpickerProps) => {
                 onOutsideClick={() => updatePickerVisiblity(false)}
                 centerAlignContainer
                 active={shouldShowPicker}
-                className="mt-2"
                 {...dAwareConProps}
             >
                 <div className={cn(
@@ -136,19 +107,16 @@ const Picker = (props: tpickerProps) => {
     }
     return (
         <PickerProvider>
-            <div className="flex flex-col gap-1 w-full">
-                {label && <span className="text-m font-medium text-gray-700 text-start">{label}</span>}
             {shouldShowInput
                 && <PickerInput
                     // @ts-ignore
                     ref={pickerInputRef}
+                    
                     {...pickerInputProps}
                 />
                 }
-
+            {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
              <PickerContent />
-            {description && <span className="text-sm text-gray-500 text-start">{description}</span>}
-            </div>
         </PickerProvider>
     )
 }

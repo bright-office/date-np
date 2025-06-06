@@ -18,9 +18,9 @@ type pickerBodyProps = {
     onSelect?: (selectedDate: Date | NepaliDate) => void;
 }
 
-const PickerBody = ({ onSelect }: pickerBodyProps) => {
-    const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear, isDateInRange } = usePicker();
-    const { today, selectedDate, activeYear, activeMonth, locale, minDate, maxDate } = pickerState;
+const PickerBody = ({onSelect}:pickerBodyProps) => {
+    const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear } = usePicker();
+    const { today, selectedDate, activeYear, activeMonth, locale } = pickerState;
 
     // Create appropriate date objects based on locale
     const createDate = (year: number, month: number, date?: number) => {
@@ -46,12 +46,10 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
             const dayDate = createDate(activeYear, activeMonth - 1, date);
             const isNotActive = !areDatesEqual(dayDate, selectedDate);
-            const isDisabled = !isDateInRange(dayDate);
 
             return <Day
                 date={dayDate}
                 key={index}
-                disabled={isDisabled}
                 className={cn(isNotActive && "bg-gray-50 opacity-50")}
             />
         })
@@ -60,43 +58,38 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
     const ThisMonthDays = () => {
         return [...Array(thisMonthtotalDays)].map((_, index) => {
             const dayDate = createDate(activeYear, activeMonth, index + 1);
-            const isDisabled = !isDateInRange(dayDate);
-            
             return <Day
                 onRangeSelect={onSelect}
                 date={dayDate}
                 key={index}
-                disabled={isDisabled}
             />
         })
     }
 
     const PrecidingNxtMonthDays = () => {
-        // Calculate remaining cells needed to fill the 42-cell grid (7 columns × 6 rows)
-        const totalCells = 42;
-        const usedCells = plotablePrevMonthDays + thisMonthtotalDays;
-        let PrecidingDays = totalCells - usedCells;
-
-        // If the last row would be entirely next month days (7 days), don't render it
-        if (PrecidingDays >= 7) {
-            PrecidingDays = PrecidingDays - 7;
-        }
-
-        return [...Array(PrecidingDays)].map((_, index) => {
-            const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
-            const isNotActive = !areDatesEqual(dayDate, selectedDate);
-            const isTodayDate = locale === "en" && index + 1 === today.getDate();
-            const isDisabled = !isDateInRange(dayDate);
-
-            return <Day
-                date={dayDate}
-                key={index}
-                isToday={isTodayDate}
-                disabled={isDisabled}
-                className={cn(isNotActive && "bg-gray-50 opacity-50")}
-            />
-        })
+    // Calculate remaining cells needed to fill the 42-cell grid (7 columns × 6 rows)
+    const totalCells = 42;
+    const usedCells = plotablePrevMonthDays + thisMonthtotalDays;
+    let PrecidingDays = totalCells - usedCells;
+    
+    // If the last row would be entirely next month days (7 days), don't render it
+    if (PrecidingDays >= 7) {
+        PrecidingDays = PrecidingDays - 7;
     }
+
+    return [...Array(PrecidingDays)].map((_, index) => {
+        const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
+        const isNotActive = !areDatesEqual(dayDate, selectedDate);
+        const isTodayDate = locale === "en" && index + 1 === today.getDate();
+
+        return <Day
+            date={dayDate}
+            key={index}
+            isToday={isTodayDate}
+            className={cn(isNotActive && "bg-gray-50 opacity-50")}
+        />
+    })
+}
 
     /**
      * Conditionally render if mode is set to date.
@@ -118,84 +111,36 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         if (pickerState.mode !== "month")
             return null
 
-        const { getEffectiveMinDate, getEffectiveMaxDate } = usePicker();
-        
-        const effectiveMinDate = getEffectiveMinDate();
-        const effectiveMaxDate = getEffectiveMaxDate();
-        
-        // Convert effective min/max dates to the current locale for comparison
-        let minDateInCurrentLocale: Date | NepaliDate;
-        let maxDateInCurrentLocale: Date | NepaliDate;
-        
-        if (pickerState.locale === "ne") {
-            minDateInCurrentLocale = new NepaliDate(effectiveMinDate);
-            maxDateInCurrentLocale = new NepaliDate(effectiveMaxDate);
-        } else {
-            minDateInCurrentLocale = effectiveMinDate;
-            maxDateInCurrentLocale = effectiveMaxDate;
-        }
-        
-        const minYear = minDateInCurrentLocale.getFullYear();
-        const maxYear = maxDateInCurrentLocale.getFullYear();
-        const minMonth = minDateInCurrentLocale.getMonth();
-        const maxMonth = maxDateInCurrentLocale.getMonth();
-
         let monthsNames: string[] = [];
-        let startMonth = 0;
-        let endMonth = 11;
-
-        // Determine which months to show based on the current active year and date range
-        if (activeYear === minYear && activeYear === maxYear) {
-            // Same year as both min and max
-            startMonth = minMonth;
-            endMonth = maxMonth;
-        } else if (activeYear === minYear) {
-            // Same year as min date
-            startMonth = minMonth;
-            endMonth = 11;
-        } else if (activeYear === maxYear) {
-            // Same year as max date
-            startMonth = 0;
-            endMonth = maxMonth;
-        } else if (activeYear < minYear || activeYear > maxYear) {
-            // Year is outside the allowed range, show no months
-            startMonth = 0;
-            endMonth = -1;
-        }
-
         if (pickerState.locale === "en") {
-            monthsNames = Object.values(CALENDAR.AD.months);
+            // TODO: Add support for translation and language.
+            monthsNames = Object.values(CALENDAR.AD.months).map(month => month);
         } else {
-            monthsNames = Object.values(CALENDAR.BS.months);
+            monthsNames = Object.values(CALENDAR.BS.months).map(month => month);
         }
 
         const handleMonthChange = (month: number) => {
             // changing the month
             updatePickerMonth(month);
+
             // changing the mode to date
             updatePickerMode("date");
         }
 
         return (
-            <div className="grid grid-cols-2 grid-rows-6 gap-1 items-center w-full h-72 text-sm font-light">
+            <div className="grid grid-cols-2  grid-rows-6 gap-1 items-center w-full h-72 text-sm font-light">
                 {monthsNames.map((month, index) => {
-                    const isDisabled = index < startMonth || index > endMonth;
-                    
                     return <button
                         key={index}
                         tabIndex={0}
-                        disabled={isDisabled}
                         className={cn(
                             "flex items-center justify-center text-sm rounded-sm px-2 bg-gray-50 h-full cursor-pointer",
                             "hover:bg-gray-100",
-                            index === activeMonth && !isDisabled && "bg-gray-900 text-white hover:bg-gray-800",
-                            isDisabled && "opacity-50 cursor-not-allowed bg-gray-50 hover:bg-gray-50",
+                            index === activeMonth && "bg-gray-900 text-white hover:bg-gray-800",
                         )}
                         onClick={(e) => {
-                            if (isDisabled) return;
                             e.stopPropagation()
-                            handleMonthChange(index)
-                        }}
+                            handleMonthChange(index)}}
                     >
                         {month}
                     </button>
@@ -208,18 +153,8 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         if (pickerState.mode !== "year")
             return null
 
-        const { getEffectiveMinDate, getEffectiveMaxDate } = usePicker();
-        
-        const minDate = getEffectiveMinDate();
-        const maxDate = getEffectiveMaxDate();
-        
-        // Get year range from effective min/max dates instead of constants
-        const minYear = pickerState.locale === "ne" 
-            ? new NepaliDate(minDate).getFullYear()
-            : minDate.getFullYear();
-        const maxYear = pickerState.locale === "ne"
-            ? new NepaliDate(maxDate).getFullYear() 
-            : maxDate.getFullYear();
+        const minYear = pickerState.locale === "en" ? MIN_AD_YEAR : MIN_BS_YEAR;
+        const maxYear = pickerState.locale === "en" ? MAX_AD_YEAR : MAX_BS_YEAR;
 
         const handleYearChange = (year: number) => {
             // changing the year
@@ -234,15 +169,15 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             const element = (
                 <button
                     key={i}
-                    tabIndex={0}                        className={cn(
-                            "flex items-center justify-center text-sm rounded-sm px-2 bg-gray-50 h-10 cursor-pointer",
-                            "hover:bg-gray-100",
-                            i === activeYear && "bg-gray-900 text-white hover:bg-gray-800",
-                        )}
+                    tabIndex={0}
+                    className={cn(
+                        "flex items-center justify-center text-sm rounded-sm px-2 bg-gray-50 h-10 cursor-pointer",
+                        "hover:bg-gray-100",
+                        i === activeYear && "bg-gray-900 text-white hover:bg-gray-800",
+                    )}
                     onClick={(e) => {
                         e.stopPropagation()
-                        handleYearChange(i)
-                    }}
+                        handleYearChange(i)}}
                 >
                     {i}
                 </button>
@@ -258,13 +193,13 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         )
     }
 
-        return (
-            <div className="flex items-center justify-between w-full min-h-72 overflow-auto">
-                <DatePickerBody />
-                <MonthPickerBody />
-                <YearPickerBody />
-            </div>
-        )
-    }
+    return (
+        <div className="flex items-center justify-between w-full min-h-72 overflow-auto">
+            <DatePickerBody />
+            <MonthPickerBody />
+            <YearPickerBody />
+        </div>
+    )
+}
 
-    export default PickerBody;
+export default PickerBody;

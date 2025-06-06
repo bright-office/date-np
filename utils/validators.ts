@@ -79,10 +79,10 @@ const isValidADRange = (AD_date: Date): boolean => {
  * The date before 2000 poush 17 is not valid as of now.
  * Will try to fix this later on. TODO: Fix this.
  *
- * @param {NepaliDate} BS_date - The date to be checked.
+ * @param {Date} BS_date - The date to be checked.
  * @returns {boolean} - True if the date is a valid BS date, false otherwise.
  */
-const isValidBSRange = (BS_date: NepaliDate): boolean => {
+const isValidBSRange = (BS_date: Date): boolean => {
     const year = BS_date.getFullYear();
     const month = BS_date.getMonth();
     const day = BS_date.getDate();
