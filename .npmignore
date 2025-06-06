@@ -1,0 +1,43 @@
+# .npmignore - Controls what gets published to npm
+# This is different from .gitignore
+
+# Source files (we only want the built dist)
+src/
+test/
+example/
+docs/
+
+# Development files
+.github/
+scripts/
+*.config.ts
+*.config.js
+tsconfig*.json
+typedoc.mjs
+vitest.config.ts
+vite.config.ts
+
+# Development dependencies
+node_modules/
+.cache/
+
+# Logs
+*.log
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+
+# Don't ignore dist - we want this in the published package!
+# dist/ (commented out because we WANT dist in npm)
