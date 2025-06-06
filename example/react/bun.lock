@@ -4,7 +4,7 @@
     "": {
       "name": "react",
       "dependencies": {
-        "@brightsoftware/date-np": "^0.1.8",
+        "@brightsoftware/date-np": "^0.1.9",
         "date-np": "link:../..",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -29,7 +29,7 @@
     },
   },
   "packages": {
-    "@brightsoftware/date-np": ["@brightsoftware/date-np@0.1.8", "", { "peerDependencies": { "react": "17 || 18 || 19", "react-dom": "17 || 18 || 19" } }, "sha512-w6j4aDL6QQYiQI19Vl6aE+2PizPIYB8TdwV90otxZMK0BA33xkHEpACfHK1znjdilme248QwqXUaQOohVY1TgA=="],
+    "@brightsoftware/date-np": ["@brightsoftware/date-np@0.1.9", "", { "peerDependencies": { "react": "17 || 18 || 19", "react-dom": "17 || 18 || 19" } }, "sha512-2XBMXWvF4P0yW/7FF0iFw1DVRijBDNbddLBjw2EyCmongQ/dyQAqXyL3I00Oiu551xGJNgChcD6Gz8rbj7lIeg=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.24.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-thpVCb/rhxE/BnMLQ7GReQLLN8q9qbHmI55F4489/ByVg2aQaQ6kbcLb6FHkocZzQhxc4gx0sCk0tJkKBFzDhA=="],
 
