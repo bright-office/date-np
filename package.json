@@ -19,6 +19,10 @@
     "date-functions-nepali"
   ],
   "exports": {
+    ".": {
+      "import": "./dist/src/core.js",
+      "types": "./dist/types/src/core.d.ts"
+    },
     "./core": {
       "import": "./dist/src/core.js",
       "types": "./dist/types/src/core.d.ts"
@@ -26,22 +30,30 @@
     "./ui": {
       "import": "./dist/src/ui.js",
       "types": "./dist/types/src/ui.d.ts"
-    }
+    },
+    "./style.css": "./dist/style.css"
   },
-  "main": "./dist/src/index.js",
-  "types": "./dist/types/src/index.d.ts",
+  "main": "./dist/src/core.js",
+  "types": "./dist/types/src/core.d.ts",
   "type": "module",
-  "module": "./dist/src/index.js",
+  "module": "./dist/src/core.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "watch:auto-gen-docs": "typedoc --watch --tsconfig tsconfig.typedoc.json",
     "preview:docs": "cd docs && bun run start",
     "dev:lib": "vite build --watch",
     "build:lib": "vite build --mode release",
     "build:types": "tsc --emitDeclarationOnly",
+    "build": "bun run build:lib && bun run build:types",
     "dev:example": "cd example/react && bun run dev",
     "link": "bun link && cd example/react/ && bun link date-np",
     "dev": "concurrently \"bun run watch:auto-gen-docs\" \"bun run preview:docs\" \"bun run dev:lib\" \"bun run link && bun run dev:example\" -c \"green,blue,gray,white\" -n \"gen-docs,preview,library,example\"",
     "test": "vitest",
+    "prepublishOnly": "bun run build:lib && bun run build:types",
     "publish:docs": "typedoc --tsconfig tsconfig.typedoc.json && cd docs && bun run deploy"
   },
   "devDependencies": {
