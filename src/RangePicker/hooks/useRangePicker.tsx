@@ -28,6 +28,7 @@ type tRangePickerContextType = {
 
 const RangePickerContext = createContext<tRangePickerContextType | null>(null);
 
+/// Custom hook to manage the Range Picker's state. Built following the original picker component design by Saroj Regmi at Bright ///
 const useRangePicker = () => {
     const rangePickerContextValue = useContext(RangePickerContext);
     if (!rangePickerContextValue) {
@@ -360,9 +361,75 @@ const useRangePicker = () => {
             const convertedStartDate = convertDate(prevState.startDate);
             const convertedEndDate = convertDate(prevState.endDate);
             
-            // Update both panels to reflect the new locale
-            const today = new Date();
-            const baseDate = convertedStartDate || (newLocale === "ne" ? NepaliDate.fromADDate(today) : today);
+            // Determine panel positioning based on priority: selected dates > min/max dates > current date
+            let leftPanelDate: Date | NepaliDate;
+            let rightPanelDate: Date | NepaliDate;
+            
+            // Priority 1: If both start and end dates are selected, use them
+            if (convertedStartDate && convertedEndDate) {
+                leftPanelDate = convertedStartDate;
+                
+                // If start and end dates are in the same month, show next month on right panel
+                if (convertedStartDate.getMonth() === convertedEndDate.getMonth() && 
+                    convertedStartDate.getFullYear() === convertedEndDate.getFullYear()) {
+                    const nextMonth = convertedStartDate.getMonth() + 1;
+                    const nextYear = nextMonth > 11 ? convertedStartDate.getFullYear() + 1 : convertedStartDate.getFullYear();
+                    const adjustedMonth = nextMonth > 11 ? 0 : nextMonth;
+                    
+                    if (newLocale === "ne") {
+                        rightPanelDate = new NepaliDate(nextYear, adjustedMonth, 1);
+                    } else {
+                        rightPanelDate = new Date(nextYear, adjustedMonth, 1);
+                    }
+                } else {
+                    rightPanelDate = convertedEndDate;
+                }
+            }
+            // Priority 2: If min/max dates are provided but no selection, use min/max dates
+            else if (prevState.minDate && prevState.maxDate) {
+                // Convert min/max dates to the new locale format
+                const convertedMinDate = newLocale === "ne"
+                    ? (prevState.minDate instanceof NepaliDate ? prevState.minDate : NepaliDate.fromADDate(prevState.minDate))
+                    : (prevState.minDate instanceof Date ? prevState.minDate : (prevState.minDate as NepaliDate).toADDate());
+                    
+                const convertedMaxDate = newLocale === "ne"
+                    ? (prevState.maxDate instanceof NepaliDate ? prevState.maxDate : NepaliDate.fromADDate(prevState.maxDate))
+                    : (prevState.maxDate instanceof Date ? prevState.maxDate : (prevState.maxDate as NepaliDate).toADDate());
+                
+                leftPanelDate = convertedMinDate;
+                
+                // If min and max dates are in the same month, show next month on right panel
+                if (convertedMinDate.getMonth() === convertedMaxDate.getMonth() && 
+                    convertedMinDate.getFullYear() === convertedMaxDate.getFullYear()) {
+                    const nextMonth = convertedMinDate.getMonth() + 1;
+                    const nextYear = nextMonth > 11 ? convertedMinDate.getFullYear() + 1 : convertedMinDate.getFullYear();
+                    const adjustedMonth = nextMonth > 11 ? 0 : nextMonth;
+                    
+                    if (newLocale === "ne") {
+                        rightPanelDate = new NepaliDate(nextYear, adjustedMonth, 1);
+                    } else {
+                        rightPanelDate = new Date(nextYear, adjustedMonth, 1);
+                    }
+                } else {
+                    rightPanelDate = convertedMaxDate;
+                }
+            }
+            // Priority 3: Fallback to current behavior when no selection and no min/max dates
+            else {
+                const today = new Date();
+                const baseDate = convertedStartDate || (newLocale === "ne" ? NepaliDate.fromADDate(today) : today);
+                leftPanelDate = baseDate;
+                
+                const nextMonth = baseDate.getMonth() + 1;
+                const nextYear = nextMonth > 11 ? baseDate.getFullYear() + 1 : baseDate.getFullYear();
+                const adjustedMonth = nextMonth > 11 ? 0 : nextMonth;
+                
+                if (newLocale === "ne") {
+                    rightPanelDate = new NepaliDate(nextYear, adjustedMonth, 1);
+                } else {
+                    rightPanelDate = new Date(nextYear, adjustedMonth, 1);
+                }
+            }
 
             return {
                 ...prevState,
@@ -371,15 +438,15 @@ const useRangePicker = () => {
                 locale: newLocale,
                 leftPanel: {
                     ...prevState.leftPanel,
-                    selectedDate: baseDate,
-                    activeMonth: baseDate.getMonth(),
-                    activeYear: baseDate.getFullYear(),
+                    selectedDate: leftPanelDate,
+                    activeMonth: leftPanelDate.getMonth(),
+                    activeYear: leftPanelDate.getFullYear(),
                 },
                 rightPanel: {
                     ...prevState.rightPanel,
-                    selectedDate: baseDate,
-                    activeMonth: baseDate.getMonth() + 1 > 11 ? 0 : baseDate.getMonth() + 1,
-                    activeYear: baseDate.getMonth() + 1 > 11 ? baseDate.getFullYear() + 1 : baseDate.getFullYear(),
+                    selectedDate: rightPanelDate,
+                    activeMonth: rightPanelDate.getMonth(),
+                    activeYear: rightPanelDate.getFullYear(),
                 }
             };
         });
@@ -398,7 +465,7 @@ const useRangePicker = () => {
     const getEffectiveMinDate = (): Date => {
         const { minDate, locale } = rangePickerContextValue.rangePickerState;
         if (minDate) {
-            return minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            return minDate instanceof NepaliDate ? minDate.toADDate() : new Date(minDate);
         }
         // Return minimum date based on locale
         return locale === "ne" 
@@ -409,7 +476,7 @@ const useRangePicker = () => {
     const getEffectiveMaxDate = (): Date => {
         const { maxDate, locale } = rangePickerContextValue.rangePickerState;
         if (maxDate) {
-            return maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
+            return maxDate instanceof NepaliDate ? maxDate.toADDate() : new Date(maxDate);
         }
         // Return maximum date based on locale  
         return locale === "ne"
@@ -549,7 +616,6 @@ const useRangePicker = () => {
         changeRangePickerLocale,
         updateRangePickerVisibility,
         clearSelection,
-        // Min/Max date functions
         getEffectiveMinDate,
         getEffectiveMaxDate,
         isDateInRange,
@@ -598,8 +664,8 @@ const RangePickerProvider = ({
     const initialPositions = getInitialPanelPositions();
     
     const [rangePickerState, setRangePickerState] = useState<tRangePickerContextType["rangePickerState"]>({
-        minDate: minDate instanceof NepaliDate ? minDate.toADDate() : minDate,
-        maxDate: maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate,
+        minDate: minDate,
+        maxDate: maxDate,
         today: today,
         startDate: null,
         endDate: null,
