@@ -68,7 +68,7 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                     {...inputProps}
                 >
                     <span className="text-sm text-gray-500 text-start">
-                        {selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : ""}
+                        {selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : "Select a date"}
                         </span>
                     </div>
                 

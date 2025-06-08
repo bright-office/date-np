@@ -13,7 +13,6 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         rangePickerState, 
         togglePanelMode, 
         incrementPanelMonth,
-        changeRangePickerLocale,
         canNavigateToPreviousMonth,
         canNavigateToNextMonth,
         shouldShowSinglePanel
@@ -111,10 +110,6 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
         }
     };
 
-    const handleLocaleChange = () => {
-        changeRangePickerLocale(locale === "en" ? "ne" : "en");
-    };
-
     const ArrowButton = ({ direction, onClick, disabled }: { direction: "left" | "right"; onClick: (e:React.MouseEvent) => void; disabled?: boolean }) => (
         <button
             onClick={onClick}
@@ -122,8 +117,8 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
             className={cn(
                 "p-1 rounded transition-colors",
                 disabled 
-                    ? "text-gray-300 cursor-not-allowed" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    ? "text-gray-300" 
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 hover:cursor-pointer"
             )}
         >
             {direction === "left" ? (
@@ -135,19 +130,6 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
             )}
-        </button>
-    );
-
-const LocaleSwitcher = () => (
-        <button
-            onClick={handleLocaleChange}
-            className={cn(
-                "px-2 py-1 text-xs rounded border",
-                "hover:bg-gray-50 transition-colors",
-                "text-gray-600 border-gray-300"
-            )}
-        >
-            {locale === "en" ? "नेपाली" : "English"}
         </button>
     );
 

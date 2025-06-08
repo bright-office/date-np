@@ -45,7 +45,7 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         return [...Array(plotablePrevMonthDays)].map((_, index) => {
             const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
             const dayDate = createDate(activeYear, activeMonth - 1, date);
-            const isNotActive = !areDatesEqual(dayDate, selectedDate);
+            const isNotActive = !selectedDate || !areDatesEqual(dayDate, selectedDate);
             const isDisabled = !isDateInRange(dayDate);
 
             return <Day
@@ -84,7 +84,7 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
 
         return [...Array(PrecidingDays)].map((_, index) => {
             const dayDate = createDate(activeYear, activeMonth + 1, index + 1);
-            const isNotActive = !areDatesEqual(dayDate, selectedDate);
+            const isNotActive = !selectedDate || !areDatesEqual(dayDate, selectedDate);
             const isTodayDate = locale === "en" && index + 1 === today.getDate();
             const isDisabled = !isDateInRange(dayDate);
 

@@ -11,6 +11,7 @@ import RangeMonth from "./range-month";
 import RangeYear from "./range-year";
 import { RangeWeekRow } from "./range-week-row";
 import { NepaliDate } from "../../NepaliDate";
+import EmptyRangeDay from "./empty-range-day";
 
 interface RangePickerBodyProps {
     panel: "left" | "right";
@@ -60,38 +61,32 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         };
         
         // Trailing days from the original picker which is not used currently in Range picker
-        // const TrailingPrevMonthDays = () => {
-        //     return [...Array(plotablePrevMonthDays)].map((_, index) => {
-        //         const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
-        //         const dayDate = createDate(activeYear, activeMonth - 1, date);
+        const TrailingPrevMonthDays = () => {
+            return [...Array(plotablePrevMonthDays)].map((_, index) => {
+                const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));
+                const dayDate = createDate(activeYear, activeMonth - 1, date);
 
-        //         return (
-        //             <RangeDay
-        //                 date={dayDate}
-        //                 key={index}
-        //                 panel={panel}
-        //                 className="bg-gray-50 opacity-50"
-        //             />
-        //         );
-        //     });
-        // };
+                return (
+                    <EmptyRangeDay
+                        
+                    />
+                );
+            });
+        };
 
-        // const TrailingNextMonthDays = () => {
-        //     const plotableNextMonthDays = 6 - thisMonthEndDay;
-        //     return [...Array(plotableNextMonthDays)].map((_, index) => {
-        //         const date = index + 1;
-        //         const dayDate = createDate(activeYear, activeMonth + 1, date);
+        const TrailingNextMonthDays = () => {
+            const plotableNextMonthDays = 6 - thisMonthEndDay;
+            return [...Array(plotableNextMonthDays)].map((_, index) => {
+                const date = index + 1;
+                const dayDate = createDate(activeYear, activeMonth + 1, date);
 
-        //         return (
-        //             <RangeDay
-        //                 date={dayDate}
-        //                 key={index}
-        //                 panel={panel}
-        //                 className="bg-gray-50 opacity-50"
-        //             />
-        //         );
-        //     });
-        // };
+                return (
+                    <EmptyRangeDay
+                        
+                    />
+                );
+            });
+        };
 
         return (
             <div className="w-full">
@@ -99,7 +94,9 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
                     <RangeWeekRow locale={locale} />
                 </div>
                 <div className="grid grid-cols-7 gap-1">
+                    <TrailingPrevMonthDays />
                     <CurrentMonthDays />
+                    <TrailingNextMonthDays />
                 </div>
             </div>
         );

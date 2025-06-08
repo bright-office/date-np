@@ -3,6 +3,7 @@ import { cn } from "../../utils/clsx";
 import { usePicker } from "../hooks/usePicker";
 import { areDatesEqual } from "../../utils/validators";
 import { NepaliDate } from "../NepaliDate";
+import { useMemo } from "react";
 
 type tdayProps = {
     date: Date | NepaliDate,
@@ -22,12 +23,24 @@ const Day = (props: tdayProps) => {
     } = props;
 
 
-    const { updatePickerDay, pickerState, updatePickerMonth } = usePicker();
-    const { selectedDate: activeDate, activeMonth, activeYear } = pickerState;
-    const isActive = areDatesEqual(date, activeDate);
+    const { updatePickerDay, pickerState, updatePickerMonth, isDateInRange } = usePicker();
+    const { selectedDate: activeDate, activeMonth, activeYear, today } = pickerState;
+    const isActive = activeDate ? areDatesEqual(date, activeDate) : false;
+
+    const isTodayDate = useMemo(() => {
+        if (date instanceof NepaliDate) {
+            const todayBS = NepaliDate.fromADDate(today);
+            return areDatesEqual(date, todayBS);
+        }
+        return areDatesEqual(date, today);
+    }, [date, today]);
+
+    const isDisabled = useMemo(() => {
+        return disabled || !isDateInRange(date);
+    }, [disabled, date, isDateInRange]);
 
     const handlDayClick = (e: MouseEvent<HTMLButtonElement>) => {
-        if (disabled)
+        if (isDisabled)
             return;
 
         e.stopPropagation();
@@ -47,13 +60,17 @@ const Day = (props: tdayProps) => {
             className={cn(
                 "text-center aspect-square rounded-sm items-center justify-center flex text-sm cursor-pointer",
                 "hover:bg-gray-200",
-                isActive && !disabled && "bg-gray-900 text-white hover:bg-gray-900",
-                disabled && !isActive && "opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50",
-                disabled && isActive && "bg-gray-700 text-white opacity-70 cursor-not-allowed",
+                // Today styling - blue indicator when not selected and not disabled
+                isTodayDate && !isActive && !isDisabled && "bg-blue-50 text-blue-600 font-semibold",
+                // Active/selected styling
+                isActive && !isDisabled && "bg-gray-900 text-white hover:bg-gray-900",
+                // Disabled styling
+                isDisabled && !isActive && "opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50",
+                isDisabled && isActive && "bg-gray-700 text-white opacity-70 cursor-not-allowed",
                 className,
             )}
             onClick={handlDayClick}
-            disabled={disabled}
+            disabled={isDisabled}
             {...rest}
         >
             {date.getDate()}

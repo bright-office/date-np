@@ -11,9 +11,9 @@ type tpickerContextType = {
         locale: "en" | "ne";
         /**
          * The Date that is selected
-         * @default today
+         * @default null
          */
-        selectedDate: Date | NepaliDate,
+        selectedDate: Date | NepaliDate | null,
         /**
          * Month that is currently in view,
          * not always the selected Date's month.
@@ -121,10 +121,43 @@ const usePicker = () => {
                 return prevState;
 
             const selectedDate = prevState.selectedDate;
+            
+            // If no date is selected, create a base date for locale switching
+            if (!selectedDate) {
+                // Use a representative date for the current view context
+                // If minDate exists, use it; otherwise use today
+                let baseDate: Date | NepaliDate;
+                
+                if (newLocale === "ne") {
+                    // Converting to Nepali locale
+                    if (prevState.minDate) {
+                        // Use minDate as reference (it's stored as AD date)
+                        baseDate = NepaliDate.fromADDate(prevState.minDate as Date);
+                    } else {
+                        // Use today as reference
+                        baseDate = NepaliDate.fromADDate(prevState.today);
+                    }
+                } else {
+                    // Converting to English locale
+                    if (prevState.minDate) {
+                        baseDate = prevState.minDate as Date;
+                    } else {
+                        baseDate = prevState.today;
+                    }
+                }
 
+                return {
+                    ...prevState,
+                    activeMonth: baseDate.getMonth(),
+                    activeYear: baseDate.getFullYear(),
+                    locale: newLocale,
+                }
+            }
+
+            // If date is selected, convert the selected date to new locale
             const updatedDate = newLocale === "ne"
-                ? (selectedDate instanceof NepaliDate ? selectedDate : new NepaliDate(selectedDate))
-                : (selectedDate instanceof Date ? selectedDate : selectedDate.toADDate());
+                ? (selectedDate instanceof NepaliDate ? selectedDate : NepaliDate.fromADDate(selectedDate as Date))
+                : (selectedDate instanceof Date ? selectedDate : (selectedDate as NepaliDate).toADDate());
 
             return {
                 ...prevState,
@@ -132,26 +165,6 @@ const usePicker = () => {
                 activeYear: updatedDate.getFullYear(),
                 selectedDate: updatedDate,
                 locale: newLocale,
-            }
-        })
-    }
-
-    const setMinDate = (minDate: Date | NepaliDate) => {
-        setPickerState((prevState) => {
-            minDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
-            return {
-                ...prevState,
-                minDate: minDate,
-            }
-        })
-    }
-
-    const setMaxDate = (maxDate: Date | NepaliDate) => {
-        setPickerState((prevState) => {
-            maxDate = maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
-            return {
-                ...prevState,
-                maxDate: maxDate,
             }
         })
     }
@@ -280,9 +293,6 @@ const usePicker = () => {
         updatePickerYear,
         changePickerLocale,
         updatePickerVisiblity,
-        setMinDate,
-        setMaxDate,
-        // Date range utilities
         getEffectiveMinDate,
         getEffectiveMaxDate,
         isDateInRange,
@@ -293,15 +303,41 @@ const usePicker = () => {
     };
 }
 
-const PickerProvider = ({ children }: { children: React.ReactNode }) => {
+const PickerProvider = ({ 
+    children,
+    minDate,
+    maxDate,
+}: { 
+    children: React.ReactNode;
+    minDate?: Date | NepaliDate;
+    maxDate?: Date | NepaliDate;
+}) => {
     const today = new Date();
+    
+    // Determine initial month and year based on minDate if provided
+    const getInitialMonthYear = () => {
+        if (minDate) {
+            const dateToUse = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            return {
+                month: dateToUse.getMonth(),
+                year: dateToUse.getFullYear()
+            };
+        }
+        return {
+            month: today.getMonth(),
+            year: today.getFullYear()
+        };
+    };
+
+    const initialMonthYear = getInitialMonthYear();
+    
     const [pickerState, setPickerState] = useState<tpickerContextType["pickerState"]>({
-        minDate: undefined,
-        maxDate: undefined,
+        minDate: minDate instanceof NepaliDate ? minDate.toADDate() : minDate,
+        maxDate: maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate,
         today: today,
-        selectedDate: today,
-        activeMonth: today.getMonth(),
-        activeYear: today.getFullYear(),
+        selectedDate: null,
+        activeMonth: initialMonthYear.month,
+        activeYear: initialMonthYear.year,
         isVisible: false,
         locale: "en",
         mode: "date",

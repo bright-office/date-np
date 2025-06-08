@@ -394,26 +394,6 @@ const useRangePicker = () => {
         }));
     };
 
-    const setMinDate = (minDate: Date | NepaliDate) => {
-        setRangePickerState((prevState) => {
-            const normalizedMinDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
-            return {
-                ...prevState,
-                minDate: normalizedMinDate,
-            }
-        })
-    }
-
-    const setMaxDate = (maxDate: Date | NepaliDate) => {
-        setRangePickerState((prevState) => {
-            const normalizedMaxDate = maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
-            return {
-                ...prevState,
-                maxDate: normalizedMaxDate,
-            }
-        })
-    }
-
     // Utility functions for date range handling
     const getEffectiveMinDate = (): Date => {
         const { minDate, locale } = rangePickerContextValue.rangePickerState;
@@ -570,8 +550,6 @@ const useRangePicker = () => {
         updateRangePickerVisibility,
         clearSelection,
         // Min/Max date functions
-        setMinDate,
-        setMaxDate,
         getEffectiveMinDate,
         getEffectiveMaxDate,
         isDateInRange,
@@ -597,8 +575,9 @@ const RangePickerProvider = ({
     // Initialize panel positions based on min/max dates if provided
     const getInitialPanelPositions = () => {
         if (minDate && maxDate) {
-            const minDateForPanel = minDate instanceof NepaliDate ? minDate : new Date(minDate);
-            const maxDateForPanel = maxDate instanceof NepaliDate ? maxDate : new Date(maxDate);
+            // Convert dates to AD format since default locale is "en"
+            const minDateForPanel = minDate instanceof NepaliDate ? minDate.toADDate() : new Date(minDate);
+            const maxDateForPanel = maxDate instanceof NepaliDate ? maxDate.toADDate() : new Date(maxDate);
             
             return {
                 leftMonth: minDateForPanel.getMonth(),

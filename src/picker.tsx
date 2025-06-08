@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, type ComponentProps } from "react";
+import { useRef, type ComponentProps } from "react";
 import { cn } from "../utils/clsx";
 import DirectionAwareContainer from "./Components/helpers/direction-aware-container";
 import PickerBody from "./Components/picker-body";
@@ -94,22 +94,8 @@ const Picker = (props: tpickerProps) => {
 
     let PickerContent = () => {
 
-        const { updatePickerVisiblity, pickerState, setMinDate, setMaxDate } = usePicker();
+        const { updatePickerVisiblity, pickerState } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
-        const {selectedDate, minDate, maxDate} = pickerState;
-
-        if (minPropDate || maxPropDate){
-            useEffect(()=>{
-                if (minPropDate) {
-                    setMinDate(minPropDate);
-                }
-                if (maxPropDate) {
-                    setMaxDate(maxPropDate);
-                }
-            },[minPropDate, maxPropDate])
-            
-        }
-
 
         return (
             <DirectionAwareContainer
@@ -135,7 +121,7 @@ const Picker = (props: tpickerProps) => {
         )
     }
     return (
-        <PickerProvider>
+        <PickerProvider minDate={minPropDate} maxDate={maxPropDate}>
             <div className="flex flex-col gap-1 w-full">
                 {label && <span className="text-m font-medium text-gray-700 text-start">{label}</span>}
             {shouldShowInput
