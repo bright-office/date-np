@@ -10,10 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@brightsoftware/date-np": "^0.1.10",
-    "date-np": "link:../..",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@brightsoftware/date-np": "link:@brightsoftware/date-np",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
