@@ -2,10 +2,13 @@
 # Release Notes
 
 ## Features
-(6ecaa26) feat: added workflow for one line command deployement of docusarurus documentation on cloudfare pages using wrangler cli tool --SakunPanthi123
+(5edfb1f) feat: releasing 0.4.0. It includes error handling for unsupported date(1944 AD/2000 BS) --SakunPanthi123
+
+## Bug Fixes
+(6a2f9cf) fix: direction aware container logic fixed. bug fixed: pickers not scrolling along with window --SakunPanthi123
 
 ## Small tasks
-(5cb53f7) chore: releasing 0.1.11 --SakunPanthi123
-(9df093b) chore: change App.tsx to support both link and npm build testing simulataneously. Removed duplicate dependecy for twmerge and clsx in package.json --SakunPanthi123
-(5815e70) chore: Update README.md --Saroj Regmi
+(5ea3392) chore: added checks for unsupported year and presented with pick another option instead of crashing --SakunPanthi123
+(dcb4ac1) chore: removed old uncecessary test file --SakunPanthi123
+(92e76a7) chore: added error handling for min/max date props --SakunPanthi123
 
