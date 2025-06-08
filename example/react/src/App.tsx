@@ -8,6 +8,7 @@ import {
 import { NepaliDate } from "@brightsoftware/date-np/core";
 import { Picker } from "@brightsoftware/date-np/ui";
 import { RangePicker } from "@brightsoftware/date-np/ui";
+import { TimePicker } from "@brightsoftware/date-np/ui";
 
 function App() {
   const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
@@ -148,14 +149,14 @@ function App() {
         {/* Header */}
         <div className="text-start">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Calendar Date Pickers
+            Calendar Date & Time Pickers
           </h1>
           <p className="text-lg text-gray-600">
-            Robust date pickers for picking single/range, converting BS/AD dates
+            Robust date and time pickers for picking single/range dates and time, converting BS/AD dates
             seamlessly
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Single Date Picker */}
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
             <div className="text-center mb-6">
@@ -191,6 +192,42 @@ function App() {
                 placeholder: "Select date range...",
               }}
             />
+          </div>
+
+          {/* Time Picker */}
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Time Picker
+              </h3>
+              <p className="text-gray-600 text-sm">Select time with AM/PM or 24hr format</p>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  AM/PM Format
+                </label>
+                <TimePicker
+                  format="am/pm"
+                  defaultTime={{ hours: 8, minutes: 30, seconds: 45, period: "PM" }}
+                  inputProps={{
+                    placeholder: "Select time...",
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  24 Hour Format
+                </label>
+                <TimePicker
+                  format="24hr"
+                  defaultTime={{ hours: 20, minutes: 30, seconds: 45 }}
+                  inputProps={{
+                    placeholder: "Select time...",
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
