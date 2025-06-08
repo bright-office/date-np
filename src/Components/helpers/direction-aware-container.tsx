@@ -35,7 +35,14 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
     const directionPriority = props.directionPriority ?? ["bottom", "right", "top", "left"];
     const contentRef = useRef<HTMLDivElement | null>(null);
 
-    const checkWillBeInsideViewPort = ({ x, y }: { x: number, y: number }) => x < innerWidth && x > 0 && y < innerHeight && y > 0
+    const checkWillBeInsideViewPort = ({ x, y }: { x: number, y: number }) => {
+        const viewportLeft = window.scrollX;
+        const viewportRight = window.scrollX + window.innerWidth;
+        const viewportTop = window.scrollY;
+        const viewportBottom = window.scrollY + window.innerHeight;
+        
+        return x >= viewportLeft && x <= viewportRight && y >= viewportTop && y <= viewportBottom;
+    }
 
     useEffect(() => {
         if (!props.active)
@@ -55,16 +62,28 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
 
             const triggerElementBounds = props.activateWith === "position" ?
                 {
-                    top: props.activationPosition.y,
-                    bottom: props.activationPosition.y,
-                    left: props.activationPosition.x,
+                    top: props.activationPosition.y + window.scrollY,
+                    bottom: props.activationPosition.y + window.scrollY,
+                    left: props.activationPosition.x + window.scrollX,
                     width: 0,
                     height: 0,
-                    right: props.activationPosition.x,
-                    x: props.activationPosition.x,
-                    y: props.activationPosition.y
+                    right: props.activationPosition.x + window.scrollX,
+                    x: props.activationPosition.x + window.scrollX,
+                    y: props.activationPosition.y + window.scrollY
                 }
-                : props.activatorRef.current?.getBoundingClientRect() as DOMRect;
+                : (() => {
+                    const rect = props.activatorRef.current?.getBoundingClientRect() as DOMRect;
+                    return {
+                        top: rect.top + window.scrollY,
+                        bottom: rect.bottom + window.scrollY,
+                        left: rect.left + window.scrollX,
+                        right: rect.right + window.scrollX,
+                        x: rect.x + window.scrollX,
+                        y: rect.y + window.scrollY,
+                        width: rect.width,
+                        height: rect.height
+                    };
+                })();
 
             const contentBounds = contentElement.getBoundingClientRect();
             let contentTransform = {
@@ -81,14 +100,20 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
                         : (-triggerElementBounds.width - contentBounds.width)
                     );
                     contentTransform.y = triggerElementBounds.top - contentBounds.height - directionOffset;
-                    isInsideViewport = checkWillBeInsideViewPort({ x: contentTransform.x - contentBounds.width, y: contentTransform.y });
+                    isInsideViewport = checkWillBeInsideViewPort({ 
+                        x: contentTransform.x + contentBounds.width, 
+                        y: contentTransform.y 
+                    });
                     break;
                 case "left":
                     contentTransform.x = triggerElementBounds.left - contentBounds.width - directionOffset
                     contentTransform.y = triggerElementBounds.bottom - (isCenterAligned
                         ? (triggerElementBounds.height / 2)
                         : (triggerElementBounds.height - directionOffset))
-                    isInsideViewport = checkWillBeInsideViewPort({ x: contentTransform.x, y: contentTransform.y + contentBounds.height });
+                    isInsideViewport = checkWillBeInsideViewPort({ 
+                        x: contentTransform.x, 
+                        y: contentTransform.y + contentBounds.height 
+                    });
                     break;
 
                 case "right":
@@ -97,20 +122,24 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
                         ? (triggerElementBounds.height / 2)
                         : (triggerElementBounds.height - directionOffset - contentBounds.height))
 
-                    isInsideViewport = checkWillBeInsideViewPort({ x: contentTransform.x + contentBounds.width, y: contentTransform.y + contentBounds.height });
+                    isInsideViewport = checkWillBeInsideViewPort({ 
+                        x: contentTransform.x + contentBounds.width, 
+                        y: contentTransform.y + contentBounds.height 
+                    });
                     break;
 
                 case "bottom":
                     contentTransform.x = triggerElementBounds.left + (isCenterAligned
                         ? (triggerElementBounds.width / 2 - contentBounds.width / 2)
-                        : (triggerElementBounds.width + directionOffset)
+                        : 0
                     )
                     contentTransform.y = triggerElementBounds.bottom + directionOffset
-                    isInsideViewport = checkWillBeInsideViewPort({ x: contentTransform.x + contentBounds.width, y: contentTransform.y + contentBounds.height });
+                    isInsideViewport = checkWillBeInsideViewPort({ 
+                        x: contentTransform.x + contentBounds.width, 
+                        y: contentTransform.y + contentBounds.height 
+                    });
                     break;
             }
-
-
 
             if (isInsideViewport) {
                 contentElement.style.transform = `translateX(${contentTransform.x}px) translateY(${contentTransform.y}px)`
@@ -146,7 +175,7 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
             ref={contentRef}
             className={cn(
                 props.className,
-                "fixed z-50 top-0 left-0"
+                "absolute z-50 top-0 left-0"
             )}>
             {props.children}
         </div>),
