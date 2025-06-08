@@ -182,7 +182,7 @@ function App() {
               <p className="text-gray-600 text-sm">Select a date range</p>
             </div>
             <RangePicker
-              minDate={new NepaliDate(2084, 5, 15)} // BS date
+              minDate={new NepaliDate(2080, 5, 15)} // BS date
               maxDate={new NepaliDate(2083, 11, 30)} // BS date
               shouldShowInput={true}
               label="Select Date Range"

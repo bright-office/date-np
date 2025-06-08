@@ -604,6 +604,54 @@ const useRangePicker = () => {
                minDateForComparison.getFullYear() === maxDateForComparison.getFullYear();
     };
 
+    const resetToOriginalState = () => {
+        const { minDate, maxDate, today } = rangePickerContextValue.rangePickerState;
+        
+        // Initialize panel positions based on min/max dates if provided, otherwise today
+        const getInitialPanelPositions = () => {
+            if (minDate && maxDate) {
+                // Convert dates to AD format since default locale is "en"
+                const minDateForPanel = minDate instanceof Date ? minDate : minDate;
+                const maxDateForPanel = maxDate instanceof Date ? maxDate : maxDate;
+                
+                return {
+                    leftMonth: minDateForPanel.getMonth(),
+                    leftYear: minDateForPanel.getFullYear(),
+                    rightMonth: maxDateForPanel.getMonth(),
+                    rightYear: maxDateForPanel.getFullYear(),
+                };
+            }
+            
+            // Default to current month and next month
+            return {
+                leftMonth: today.getMonth(),
+                leftYear: today.getFullYear(),
+                rightMonth: today.getMonth() + 1 > 11 ? 0 : today.getMonth() + 1,
+                rightYear: today.getMonth() + 1 > 11 ? today.getFullYear() + 1 : today.getFullYear(),
+            };
+        };
+
+        const initialPositions = getInitialPanelPositions();
+        
+        setRangePickerState(prevState => ({
+            ...prevState,
+            leftPanel: {
+                ...prevState.leftPanel,
+                activeMonth: initialPositions.leftMonth,
+                activeYear: initialPositions.leftYear,
+                mode: "date",
+            },
+            rightPanel: {
+                ...prevState.rightPanel,
+                activeMonth: initialPositions.rightMonth,
+                activeYear: initialPositions.rightYear,
+                mode: "date",
+            },
+            hoverDate: null,
+            // Don't reset startDate and endDate - keep them as is
+        }));
+    };
+
     return {
         ...rangePickerContextValue,
         updateRangePickerDay,
@@ -624,6 +672,7 @@ const useRangePicker = () => {
         canNavigateToPreviousYear,
         canNavigateToNextYear,
         shouldShowSinglePanel,
+        resetToOriginalState,
     };
 };
 

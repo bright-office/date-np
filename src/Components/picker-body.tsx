@@ -19,8 +19,40 @@ type pickerBodyProps = {
 }
 
 const PickerBody = ({ onSelect }: pickerBodyProps) => {
-    const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear, isDateInRange } = usePicker();
+    const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear, isDateInRange, updatePickerDay, changePickerLocale, setPickerState, resetToOriginalState } = usePicker();
     const { today, selectedDate, activeYear, activeMonth, locale, minDate, maxDate } = pickerState;
+
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
+                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+
+    // Handle manual reset when user clicks "Pick another"
+    const handleResetToValidDate = () => {
+        resetToOriginalState();
+    };
+
+    // If we're trying to display an unsupported year, show error message
+    if (isUnsupportedYear) {
+        return (
+            <div className="flex items-center justify-center w-full h-72 text-center">
+                <div className="text-gray-600">
+                    <div className="text-lg font-medium mb-2">Date not supported</div>
+                    <div className="text-sm text-gray-500 mb-4">
+                        {locale === "en" 
+                            ? "Dates before 1945 are not supported" 
+                            : "Dates before 2001 are not supported"
+                        }
+                    </div>
+                    <button
+                        onClick={handleResetToValidDate}
+                        className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                    >
+                        Pick another
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     // Create appropriate date objects based on locale
     const createDate = (year: number, month: number, date?: number) => {

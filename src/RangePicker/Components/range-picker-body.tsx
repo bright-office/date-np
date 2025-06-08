@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 import { CALENDAR } from "../../../data/locale";
 import {
@@ -18,11 +19,43 @@ interface RangePickerBodyProps {
 }
 
 const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
-    const { rangePickerState } = useRangePicker();
+    const { rangePickerState, updatePanelMonth, updatePanelYear, resetToOriginalState } = useRangePicker();
     const { locale } = rangePickerState;
     const panelState = panel === "left" ? rangePickerState.leftPanel : rangePickerState.rightPanel;
     const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeYear, activeMonth, mode } = panelState;
+
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
+                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+
+    // Handle manual reset when user clicks "Pick another"
+    const handleResetToValidDate = () => {
+        resetToOriginalState();
+    };
+
+    // If we're trying to display an unsupported year in date mode, show error message
+    if (mode === "date" && isUnsupportedYear) {
+        return (
+            <div className="flex items-center justify-center w-full h-72 text-center">
+                <div className="text-gray-600">
+                    <div className="text-lg font-medium mb-2">Date not supported</div>
+                    <div className="text-sm text-gray-500 mb-4">
+                        {locale === "en" 
+                            ? "Dates before 1945 are not supported" 
+                            : "Dates before 2001 are not supported"
+                        }
+                    </div>
+                    <button
+                        onClick={handleResetToValidDate}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                        Pick another
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     // Create appropriate date objects based on locale
     const createDate = (year: number, month: number, date?: number) => {

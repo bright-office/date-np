@@ -284,6 +284,35 @@ const usePicker = () => {
         return firstDayOfNextYear.getTime() <= maxDate.getTime();
     };
 
+    const resetToOriginalState = () => {
+        const { minDate, today } = pickerContextValue.pickerState;
+        
+        // Determine initial month and year based on minDate if provided, otherwise today
+        const getInitialMonthYear = () => {
+            if (minDate) {
+                const dateToUse = minDate instanceof Date ? minDate : minDate;
+                return {
+                    month: dateToUse.getMonth(),
+                    year: dateToUse.getFullYear()
+                };
+            }
+            return {
+                month: today.getMonth(),
+                year: today.getFullYear()
+            };
+        };
+
+        const initialMonthYear = getInitialMonthYear();
+        
+        setPickerState(prevState => ({
+            ...prevState,
+            activeMonth: initialMonthYear.month,
+            activeYear: initialMonthYear.year,
+            mode: "date",
+            // Don't reset selectedDate - keep it as is
+        }));
+    };
+
     return {
         ...pickerContextValue,
         updatePickerDay,
@@ -300,6 +329,7 @@ const usePicker = () => {
         canNavigateToNextMonth,
         canNavigateToPreviousYear,
         canNavigateToNextYear,
+        resetToOriginalState,
     };
 }
 

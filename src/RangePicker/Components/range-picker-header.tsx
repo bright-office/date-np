@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 import { CALENDAR } from "../../../data/locale";
 import { cn } from "../../../utils/clsx";
 import { useRangePicker } from "../hooks/useRangePicker";
@@ -23,6 +24,17 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeMonth, activeYear } = panelState;
 
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = () => {
+        if (locale === "en" && activeYear === MIN_AD_YEAR) {
+            return true; 
+        }
+        if (locale === "ne" && activeYear === MIN_BS_YEAR) {
+            return true; 
+        }
+        return false;
+    };
+
     // Create the appropriate date object based on locale
     const currentMonthDate = useMemo(() => {
         if (locale === "ne") {
@@ -41,6 +53,9 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     // Check if navigation should be disabled
     const isSinglePanel = shouldShowSinglePanel();
     const isRightArrowDisabled = useMemo(() => {
+        // If in unsupported year, disable all navigation
+        if (isUnsupportedYear()) return true;
+        
         // If in single panel mode, disable all arrows
         if (isSinglePanel) return true;
         
@@ -66,6 +81,9 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear, isSinglePanel, canNavigateToNextMonth]);
 
     const isLeftArrowDisabled = useMemo(() => {
+        // If in unsupported year, disable all navigation
+        if (isUnsupportedYear()) return true;
+        
         // If in single panel mode, disable all arrows
         if (isSinglePanel) return true;
         
@@ -91,23 +109,23 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
     }, [panel, activeMonth, activeYear, otherPanelState.activeMonth, otherPanelState.activeYear, isSinglePanel, canNavigateToPreviousMonth]);
 
     const handleMonthClick = () => {
+        if (isUnsupportedYear()) return; // Disable interaction for unsupported years
         togglePanelMode(panel, "month", "date");
     };
 
     const handleYearClick = () => {
+        if (isUnsupportedYear()) return; // Disable interaction for unsupported years
         togglePanelMode(panel, "year", "date");
     };
 
     const handlePrevMonth = () => {
-        if (!isLeftArrowDisabled) {
-            incrementPanelMonth(panel, -1);
-        }
+        if (isUnsupportedYear() || isLeftArrowDisabled) return; // Disable for unsupported years
+        incrementPanelMonth(panel, -1);
     };
 
     const handleNextMonth = () => {
-        if (!isRightArrowDisabled) {
-            incrementPanelMonth(panel, 1);
-        }
+        if (isUnsupportedYear() || isRightArrowDisabled) return; // Disable for unsupported years
+        incrementPanelMonth(panel, 1);
     };
 
     const ArrowButton = ({ direction, onClick, disabled }: { direction: "left" | "right"; onClick: (e:React.MouseEvent) => void; disabled?: boolean }) => (
@@ -144,16 +162,25 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
             </div>
 
             {/* Month and Year */}
-            <div className="flex items-center space-x-2 cursor-pointer">
+            <div className={cn(
+                "flex items-center space-x-2",
+                isUnsupportedYear() ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            )}>
                 <span 
                     onClick={handleMonthClick} 
-                    className="hover:underline font-medium text-gray-700"
+                    className={cn(
+                        "font-medium text-gray-700",
+                        !isUnsupportedYear() && "hover:underline"
+                    )}
                 >
                     {monthName}
                 </span>
                 <span 
                     onClick={handleYearClick} 
-                    className="hover:underline font-medium text-gray-700"
+                    className={cn(
+                        "font-medium text-gray-700",
+                        !isUnsupportedYear() && "hover:underline"
+                    )}
                 >
                     {year}
                 </span>

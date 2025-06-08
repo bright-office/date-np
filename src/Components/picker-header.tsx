@@ -1,4 +1,5 @@
 import { useMemo, type ReactNode } from "react";
+import { MIN_AD_YEAR, MIN_BS_YEAR } from "../../data/constants";
 import { CALENDAR } from "../../data/locale";
 import { cn } from "../../utils/clsx";
 import { convertFromADToBS } from "../../utils/conversion";
@@ -8,6 +9,10 @@ import { NepaliDate } from "../NepaliDate";
 const PickerHeader = () => {
     const { pickerState, togglePickerMode } = usePicker();
     const { activeMonth, selectedDate, activeYear, locale } = pickerState;
+
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
+                              (locale === "ne" && activeYear === MIN_BS_YEAR);
 
     // Create the appropriate date object based on locale
     const currentMonthDate = useMemo(() => {
@@ -25,21 +30,30 @@ const PickerHeader = () => {
     const year = currentMonthDate.getFullYear();
 
     const handleMonthClick = () => {
+        if (isUnsupportedYear) return; // Disable interaction for unsupported years
         togglePickerMode("month", "date");
     }
 
     const handleYearClick = () => {
+        if (isUnsupportedYear) return; // Disable interaction for unsupported years
         togglePickerMode("year", "date");
     }
 
     return (
         <div className="flex items-center justify-between w-full">
             {monthSwitcher().previous}
-            <div className="wrapper space-x-2 cursor-pointer">
-                <span onClick={handleMonthClick} className="hover:underline">
+            <div className={cn(
+                "wrapper space-x-2",
+                isUnsupportedYear ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            )}>
+                <span onClick={handleMonthClick} className={cn(
+                    !isUnsupportedYear && "hover:underline"
+                )}>
                     {monthName}
                 </span>
-                <span onClick={handleYearClick} className="hover:underline">
+                <span onClick={handleYearClick} className={cn(
+                    !isUnsupportedYear && "hover:underline"
+                )}>
                     {year}
                 </span>
             </div>
@@ -62,7 +76,11 @@ const monthSwitcher = (): {
         canNavigateToPreviousYear,
         canNavigateToNextYear 
     } = usePicker();
-    const { activeMonth, activeYear, mode } = pickerState;
+    const { activeMonth, activeYear, mode, locale } = pickerState;
+
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
+                              (locale === "ne" && activeYear === MIN_BS_YEAR);
 
     // Determine navigation type based on mode
     const isYearMode = mode === "year";
@@ -73,7 +91,11 @@ const monthSwitcher = (): {
     let canGoPrevious: boolean;
     let canGoNext: boolean;
     
-    if (isYearMode) {
+    if (isUnsupportedYear) {
+        // Disable all navigation for unsupported years
+        canGoPrevious = false;
+        canGoNext = false;
+    } else if (isYearMode) {
         canGoPrevious = canNavigateToPreviousYear();
         canGoNext = canNavigateToNextYear();
     } else {
@@ -83,6 +105,8 @@ const monthSwitcher = (): {
     }
 
     const handleNavigation = (changeDirection: "next" | "previous") => {
+        if (isUnsupportedYear) return; // Disable navigation for unsupported years
+        
         if ((changeDirection === "previous" && !canGoPrevious) || 
             (changeDirection === "next" && !canGoNext)) {
             return;
@@ -127,14 +151,27 @@ const monthSwitcher = (): {
 
 const AD_BS_Switcher = () => {
     const { pickerState, changePickerLocale } = usePicker();
-    const { locale } = pickerState;
+    const { locale, activeYear } = pickerState;
+
+    // Check for unsupported years that would cause validation errors
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
+                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+
+    const handleLocaleChange = (newLocale: "en" | "ne") => {
+        if (isUnsupportedYear) return; // Disable locale switching for unsupported years
+        changePickerLocale(newLocale);
+    };
 
     return (
-        <div className="flex items-center bg-gray-100 rounded-md h-6 w-16 text-sm">
+        <div className={cn(
+            "flex items-center bg-gray-100 rounded-md h-6 w-16 text-sm",
+            isUnsupportedYear && "opacity-50 cursor-not-allowed"
+        )}>
             <span
-                onClick={() => { changePickerLocale("en") }}
+                onClick={() => handleLocaleChange("en")}
                 className={cn(
-                    "cursor-pointer h-8 w-8 grid place-items-center  rounded-md",
+                    "h-8 w-8 grid place-items-center rounded-md",
+                    !isUnsupportedYear && "cursor-pointer",
                     locale === "en"
                         ? "bg-white drop-shadow-sm"
                         : "bg-transparent opacity-60"
@@ -143,9 +180,10 @@ const AD_BS_Switcher = () => {
             </span>
 
             <span
-                onClick={() => { changePickerLocale("ne") }}
+                onClick={() => handleLocaleChange("ne")}
                 className={cn(
-                    "cursor-pointer h-8 w-8 grid place-items-center  rounded-md",
+                    "h-8 w-8 grid place-items-center rounded-md",
+                    !isUnsupportedYear && "cursor-pointer",
                     locale === "ne"
                         ? "bg-white drop-shadow-sm"
                         : "bg-transparent opacity-60"
