@@ -6,6 +6,7 @@ import PickerHeader from "./Components/picker-header";
 import PickerInput from "./Components/picker-input";
 import { PickerProvider, usePicker } from "./hooks/usePicker";
 import { type tdirectionAwareContainerProps } from "./Components/helpers/direction-aware-container";
+import { isInvalidDateRange } from "../utils/validators";
 import "./index.css";
 
 type tpickerWithoutInput = {
@@ -97,6 +98,9 @@ const Picker = (props: tpickerProps) => {
         const { updatePickerVisiblity, pickerState } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
 
+        // Check for invalid date range
+        const hasInvalidDateRange = minPropDate && maxPropDate && isInvalidDateRange(minPropDate, maxPropDate);
+
         return (
             <DirectionAwareContainer
                 direction="bottom"
@@ -112,10 +116,18 @@ const Picker = (props: tpickerProps) => {
                 <div className={cn(
                     "flex flex-col gap-0.5 w-72 h-max bg-white drop-shadow-sm p-2.5 rounded-md",
                     className)}>
-                    <PickerHeader />
-                    <PickerBody
-                        onSelect={onSelect}
-                    />
+                    {hasInvalidDateRange ? (
+                        <div className="flex items-center justify-center p-4 text-red-600 text-sm font-medium">
+                            Invalid date range: minimum date is greater than maximum date
+                        </div>
+                    ) : (
+                        <>
+                            <PickerHeader />
+                            <PickerBody
+                                onSelect={onSelect}
+                            />
+                        </>
+                    )}
                 </div>
             </DirectionAwareContainer>
         )

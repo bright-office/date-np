@@ -196,6 +196,17 @@ const isDateBetween = (date: Date | NepaliDate, startDate: Date | NepaliDate, en
     return compareDates(date, startDate) >= 0 && compareDates(date, endDate) <= 0;
 };
 
+/**
+ * @category validators
+ * Check if minDate is greater than maxDate (invalid configuration)
+ * @param {Date | NepaliDate} minDate - Minimum date
+ * @param {Date | NepaliDate} maxDate - Maximum date
+ * @returns {boolean} - True if minDate > maxDate (invalid), false otherwise
+ */
+const isInvalidDateRange = (minDate: Date | NepaliDate, maxDate: Date | NepaliDate): boolean => {
+    return compareDates(minDate, maxDate) > 0;
+};
+
 
 export {
     isValidBSYear,
@@ -207,5 +218,6 @@ export {
     compareDates,
     isDateBefore,
     isDateAfter,
-    isDateBetween
+    isDateBetween,
+    isInvalidDateRange
 }

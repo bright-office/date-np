@@ -166,8 +166,7 @@ function App() {
               <p className="text-gray-600 text-sm">Select a single date</p>
             </div>
             <Picker
-              minDate={new NepaliDate(2083, 5, 15)} // BS date
-              maxDate={new NepaliDate(2084, 11, 30)} // BS date
+
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"
@@ -183,8 +182,8 @@ function App() {
               <p className="text-gray-600 text-sm">Select a date range</p>
             </div>
             <RangePicker
-              minDate={new NepaliDate(2083, 5, 15)} // BS date
-              maxDate={new NepaliDate(2084, 11, 30)} // BS date
+              minDate={new NepaliDate(2084, 5, 15)} // BS date
+              maxDate={new NepaliDate(2083, 11, 30)} // BS date
               shouldShowInput={true}
               label="Select Date Range"
               description="Choose your date range"

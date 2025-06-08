@@ -7,6 +7,7 @@ import RangePickerInput from "./Components/range-picker-input";
 import { RangePickerProvider, useRangePicker } from "./hooks/useRangePicker";
 import { type tdirectionAwareContainerProps } from "../Components/helpers/direction-aware-container";
 import { LocaleSwitcher } from "./Components/locale-switcher";
+import { isInvalidDateRange } from "../../utils/validators";
 import "../index.css";
 
 type tRangePickerWithoutInput = {
@@ -127,6 +128,9 @@ const RangePicker = (props: tRangePickerProps) => {
 
         const isSinglePanel = shouldShowSinglePanel();
 
+        // Check for invalid date range
+        const hasInvalidDateRange = minDate && maxDate && isInvalidDateRange(minDate, maxDate);
+
         return (
             <DirectionAwareContainer
                 direction="bottom"
@@ -144,6 +148,12 @@ const RangePicker = (props: tRangePickerProps) => {
                     classNames.container,
                     className
                 )}>
+                    {hasInvalidDateRange ? (
+                        <div className="flex items-center justify-center p-4 text-red-600 text-sm font-medium">
+                            Invalid date range: minimum date is greater than maximum date
+                        </div>
+                    ) : (
+                        <>
                     {/* Calendar Panels */}
                     {isSinglePanel ? (
                         /* Single Panel Mode */
@@ -203,6 +213,8 @@ const RangePicker = (props: tRangePickerProps) => {
                             }      
                             <LocaleSwitcher />
                         </div>
+                    )}
+                        </>
                     )}
                 </div>
             </DirectionAwareContainer>
