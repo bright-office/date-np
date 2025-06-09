@@ -1,12 +1,31 @@
 import React from "react";
 import { cn } from "../../utils/clsx";
 import { usePicker } from "../hooks/usePicker";
-import { format } from "../format";
+import { format, formatISO } from "../format";
 
 type tpickerInputProps = {
     label?: string,
     className?: string
     required?: boolean
+    
+    /**
+     * default date for the picker
+     * by default, the selected date is null
+     */
+    defaultDate?: Date | import("../NepaliDate").NepaliDate;
+    
+    /**
+     * format for the date input
+     * @default ISO
+     */
+    dateFormat?: string;
+
+    /**
+     * default mode for the picker
+     * @default "ad"
+     */
+    defaultLocale?: "AD" | "BS";
+
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 type tpickerInputImperativeProps = {
@@ -21,8 +40,11 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
         ...inputProps
     } = props;
 
-    const { updatePickerVisiblity, pickerState } = usePicker();
-    const { isVisible, selectedDate } = pickerState;
+    const { updatePickerVisiblity, pickerState, getDisplayDate } = usePicker();
+    const { isVisible } = pickerState;
+
+    // Get the date to display - either selectedDate or defaultDate as fallback
+    const displayDate = getDisplayDate();
 
     /*
      * This can be seperated into a seperate component but should not be done.
@@ -68,7 +90,7 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
                     {...inputProps}
                 >
                     <span className="text-sm text-gray-500 text-start">
-                        {selectedDate ? selectedDate instanceof Date ? format(selectedDate, 'yyyy/MM/dd') : selectedDate.toString() : "Select a date"}
+                        {displayDate ? props.dateFormat ? format(displayDate, props.dateFormat) : formatISO(displayDate) : "Select a date"}
                         </span>
                     </div>
                 

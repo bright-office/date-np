@@ -166,7 +166,13 @@ function App() {
               <p className="text-gray-600 text-sm">Select a single date</p>
             </div>
             <Picker
-
+              inputProps={{
+                dateFormat: "dd-MMMM-yyyy",
+                defaultLocale: "BS",
+                defaultDate: new NepaliDate(2080, 5, 15), // BS date
+              }}
+              minDate={new Date(2015, 5, 15)} // BS date
+              maxDate={new Date(2020, 11, 30)} // BS date
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"

@@ -83,14 +83,15 @@ const Picker = (props: tpickerProps) => {
         maxDate: maxPropDate,
         shouldShowInput = true,
         className,
-        inputProps: pickerInputProps = {},
+        inputProps = {},
         dAwareConProps = {},
         onSelect,
         label,
         description,
+        
     } = props
 
-    const pickerInputRef = pickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
+    const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
 
 
     let PickerContent = () => {
@@ -133,14 +134,14 @@ const Picker = (props: tpickerProps) => {
         )
     }
     return (
-        <PickerProvider minDate={minPropDate} maxDate={maxPropDate}>
+        <PickerProvider minDate={minPropDate} maxDate={maxPropDate} defaultDate={inputProps?.defaultDate} defaultLocale={inputProps?.defaultLocale}>
             <div className="flex flex-col gap-1 w-full">
                 {label && <span className="text-m font-medium text-gray-700 text-start">{label}</span>}
             {shouldShowInput
                 && <PickerInput
                     // @ts-ignore
                     ref={pickerInputRef}
-                    {...pickerInputProps}
+                    {...inputProps}
                 />
                 }
 
