@@ -1,24 +1,27 @@
 import { forwardRef } from "react";
 import { cn } from "../../../utils/clsx";
 import { useRangePicker } from "../hooks/useRangePicker";
-import { CALENDAR } from "../../../data/locale";
+import { format, formatISO } from "../../format";
 
 export interface RangePickerInputProps {
     className?: string;
     placeholder?: string;
+    dateFormat?: string;
 }
 
 const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
-    ({ className, placeholder = "Select date range..." }, ref) => {
-        const { rangePickerState, updateRangePickerVisibility } = useRangePicker();
-        const { startDate, endDate, locale, isVisible } = rangePickerState;
+    ({ className, placeholder = "Select date range...", dateFormat }, ref) => {
+        const { rangePickerState, updateRangePickerVisibility, getDisplayDateRange } = useRangePicker();
+        const { isVisible } = rangePickerState;
+
+        // Get the dates to display - either selected dates or default dates as fallback
+        const { startDate, endDate } = getDisplayDateRange();
 
         const formatDate = (date: Date | import("../../NepaliDate").NepaliDate) => {
-            const monthNames = locale === "en" 
-                ? CALENDAR.AD.months 
-                : CALENDAR.BS.months;
-            
-            return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+            if (dateFormat) {
+                return format(date, dateFormat);
+            }
+            return formatISO(date);
         };
 
         const getDisplayText = () => {

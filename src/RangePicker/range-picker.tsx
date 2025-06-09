@@ -84,6 +84,22 @@ export type tRangePickerProps = {
      */
     maxDate?: Date | import("../NepaliDate").NepaliDate;
 
+    /**
+     * Default start date for the range picker
+     */
+    startingDateRange?: Date | import("../NepaliDate").NepaliDate;
+
+    /**
+     * Default end date for the range picker
+     */
+    endingDateRange?: Date | import("../NepaliDate").NepaliDate;
+
+    /**
+     * Default locale for the picker
+     * @default "AD"
+     */
+    defaultLocale?: "AD" | "BS";
+
 } & (tRangePickerWithInput | tRangePickerWithoutInput);
 
 const RangePicker = (props: tRangePickerProps) => {
@@ -97,6 +113,9 @@ const RangePicker = (props: tRangePickerProps) => {
         onVisibilityChange,
         minDate,
         maxDate,
+        startingDateRange,
+        endingDateRange,
+        defaultLocale = "AD",
     } = props;
 
     const rangePickerInputRef = rangePickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -222,7 +241,13 @@ const RangePicker = (props: tRangePickerProps) => {
     };
 
     return (
-        <RangePickerProvider minDate={minDate} maxDate={maxDate}>
+        <RangePickerProvider 
+            minDate={minDate} 
+            maxDate={maxDate}
+            startingDateRange={startingDateRange}
+            endingDateRange={endingDateRange}
+            defaultLocale={defaultLocale}
+        >
             <div className="flex flex-col gap-1 w-full">
 
             {/* label */}

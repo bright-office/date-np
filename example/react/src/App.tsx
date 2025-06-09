@@ -188,13 +188,17 @@ function App() {
               <p className="text-gray-600 text-sm">Select a date range</p>
             </div>
             <RangePicker
+              defaultLocale="BS"
               minDate={new NepaliDate(2080, 5, 15)} // BS date
               maxDate={new NepaliDate(2083, 11, 30)} // BS date
+              startingDateRange={new NepaliDate(2080, 5, 14)} // BS date
+              endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}
               label="Select Date Range"
               description="Choose your date range"
               inputProps={{
                 placeholder: "Select date range...",
+                dateFormat: "dd-MMMM-yyyy",
               }}
             />
           </div>

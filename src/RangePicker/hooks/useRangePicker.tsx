@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type Dispatch, type SetStateAction } from "react";
 import { NepaliDate } from "../../NepaliDate";
-import { areDatesEqual } from "../../../utils/validators";
+import { areDatesEqual, compareDates } from "../../../utils/validators";
 import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 
 type tRangePickerPanelState = {
@@ -20,6 +20,14 @@ type tRangePickerContextType = {
         startDate: Date | NepaliDate | null;
         endDate: Date | NepaliDate | null;
         hoverDate: Date | NepaliDate | null;
+        /**
+         * The default start date used as a fallback when no valid selection exists
+         */
+        startingDateRange?: Date | NepaliDate;
+        /**
+         * The default end date used as a fallback when no valid selection exists
+         */
+        endingDateRange?: Date | NepaliDate;
         leftPanel: tRangePickerPanelState;
         rightPanel: tRangePickerPanelState;
     };
@@ -652,6 +660,19 @@ const useRangePicker = () => {
         }));
     };
 
+    /**
+     * Get the display dates for the range picker input.
+     * Returns selected dates if available, otherwise returns default date range as fallback.
+     */
+    const getDisplayDateRange = (): { startDate: Date | NepaliDate | null, endDate: Date | NepaliDate | null } => {
+        const { startDate, endDate, startingDateRange, endingDateRange } = rangePickerContextValue.rangePickerState;
+        
+        return {
+            startDate: startDate || startingDateRange || null,
+            endDate: startDate ? endDate : endingDateRange || null
+        };
+    };
+
     return {
         ...rangePickerContextValue,
         updateRangePickerDay,
@@ -673,6 +694,7 @@ const useRangePicker = () => {
         canNavigateToNextYear,
         shouldShowSinglePanel,
         resetToOriginalState,
+        getDisplayDateRange,
     };
 };
 
@@ -680,47 +702,115 @@ const RangePickerProvider = ({
     children,
     minDate,
     maxDate,
+    startingDateRange,
+    endingDateRange,
+    defaultLocale = "AD",
 }: { 
     children: React.ReactNode;
     minDate?: Date | NepaliDate;
     maxDate?: Date | NepaliDate;
+    startingDateRange?: Date | NepaliDate;
+    endingDateRange?: Date | NepaliDate;
+    defaultLocale?: "AD" | "BS";
 }) => {
     const today = new Date();
     
-    // Initialize panel positions based on min/max dates if provided
+    // Helper function to validate if default date range is within bounds
+    const isDateRangeValid = () => {
+        if (!startingDateRange && !endingDateRange) return true;
+        
+        let isValid = true;
+        
+        // Check startingDateRange against bounds
+        if (startingDateRange) {
+            if (minDate) {
+                isValid = isValid && compareDates(startingDateRange, minDate) >= 0;
+            }
+            if (maxDate) {
+                isValid = isValid && compareDates(startingDateRange, maxDate) <= 0;
+            }
+        }
+        
+        // Check endingDateRange against bounds  
+        if (endingDateRange) {
+            if (minDate) {
+                isValid = isValid && compareDates(endingDateRange, minDate) >= 0;
+            }
+            if (maxDate) {
+                isValid = isValid && compareDates(endingDateRange, maxDate) <= 0;
+            }
+        }
+        
+        // Check if start date is before or equal to end date
+        if (startingDateRange && endingDateRange) {
+            isValid = isValid && compareDates(startingDateRange, endingDateRange) <= 0;
+        }
+        
+        return isValid;
+    };
+    
+    // Initialize panel positions based on valid dates or fallback to min/max dates or today
     const getInitialPanelPositions = () => {
-        if (minDate && maxDate) {
-            // Convert dates to AD format since default locale is "en"
-            const minDateForPanel = minDate instanceof NepaliDate ? minDate.toADDate() : new Date(minDate);
-            const maxDateForPanel = maxDate instanceof NepaliDate ? maxDate.toADDate() : new Date(maxDate);
+        const isRangeValid = isDateRangeValid();
+        
+        let leftDate: Date;
+        let rightDate: Date;
+        
+        if (isRangeValid && startingDateRange && endingDateRange) {
+            // Use valid default range
+            leftDate = startingDateRange instanceof NepaliDate ? startingDateRange.toADDate() : startingDateRange;
+            rightDate = endingDateRange instanceof NepaliDate ? endingDateRange.toADDate() : endingDateRange;
+        } else if (minDate && maxDate) {
+            // Use min/max dates as fallback
+            leftDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            rightDate = maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
+        } else if (minDate) {
+            // Use minDate and next month
+            leftDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            rightDate = new Date(leftDate.getFullYear(), leftDate.getMonth() + 1, leftDate.getDate());
+        } else {
+            // Default to current month and next month
+            leftDate = today;
+            rightDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        }
+        
+        // Convert to appropriate locale
+        if (defaultLocale === "BS") {
+            const leftBSDate = NepaliDate.fromADDate(leftDate);
+            const rightBSDate = NepaliDate.fromADDate(rightDate);
             
             return {
-                leftMonth: minDateForPanel.getMonth(),
-                leftYear: minDateForPanel.getFullYear(),
-                rightMonth: maxDateForPanel.getMonth(),
-                rightYear: maxDateForPanel.getFullYear(),
+                leftMonth: leftBSDate.getMonth(),
+                leftYear: leftBSDate.getFullYear(),
+                rightMonth: rightBSDate.getMonth(),
+                rightYear: rightBSDate.getFullYear(),
             };
         }
         
         return {
-            leftMonth: today.getMonth(),
-            leftYear: today.getFullYear(),
-            rightMonth: today.getMonth() + 1 > 11 ? 0 : today.getMonth() + 1,
-            rightYear: today.getMonth() + 1 > 11 ? today.getFullYear() + 1 : today.getFullYear(),
+            leftMonth: leftDate.getMonth(),
+            leftYear: leftDate.getFullYear(),
+            rightMonth: rightDate.getMonth(),
+            rightYear: rightDate.getFullYear(),
         };
     };
     
     const initialPositions = getInitialPanelPositions();
+    const isRangeValid = isDateRangeValid();
     
     const [rangePickerState, setRangePickerState] = useState<tRangePickerContextType["rangePickerState"]>({
         minDate: minDate,
         maxDate: maxDate,
         today: today,
-        startDate: null,
-        endDate: null,
+        // Only set selected dates if the default range is valid, otherwise keep them null
+        startDate: (isRangeValid && startingDateRange) ? startingDateRange : null,
+        endDate: (isRangeValid && endingDateRange) ? endingDateRange : null,
         hoverDate: null,
+        // Store default dates for use as fallback in display
+        startingDateRange: startingDateRange,
+        endingDateRange: endingDateRange,
         isVisible: false,
-        locale: "en",
+        locale: defaultLocale === "BS" ? "ne" : "en",
         leftPanel: {
             selectedDate: today,
             activeMonth: initialPositions.leftMonth,
