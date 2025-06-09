@@ -121,7 +121,10 @@ export const TimeColumn = ({
                 </button>
 
                 {/* Previous Value */}
-                <div className="text-lg text-gray-300 h-8 flex items-center font-mono">
+                <div 
+                    className="text-lg text-gray-300 h-8 flex items-center font-mono cursor-pointer hover:text-gray-500 transition-colors"
+                    onClick={onDecrement}
+                >
                     {getPreviousValue()}
                 </div>
 
@@ -131,7 +134,10 @@ export const TimeColumn = ({
                 </div>
 
                 {/* Next Value */}
-                <div className="text-lg text-gray-300 h-8 flex items-center font-mono">
+                <div 
+                    className="text-lg text-gray-300 h-8 flex items-center font-mono cursor-pointer hover:text-gray-500 transition-colors"
+                    onClick={onIncrement}
+                >
                     {getNextValue()}
                 </div>
 

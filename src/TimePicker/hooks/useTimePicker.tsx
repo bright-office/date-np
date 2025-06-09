@@ -9,11 +9,15 @@ export type TimeValue = {
     period?: "AM" | "PM"; // Only used in am/pm format
 };
 
+export type InputPosition = "hours" | "minutes" | "seconds";
+
 type TimePickerContextType = {
     timePickerState: {
         isVisible: boolean;
         selectedTime: TimeValue;
         format: TimeFormat;
+        currentInputPosition: InputPosition;
+        inputBuffer: string; // Temporary buffer for typing
     };
     setTimePickerState: Dispatch<SetStateAction<TimePickerContextType["timePickerState"]>>;
 };
@@ -141,6 +145,240 @@ export const useTimePicker = () => {
         return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     };
 
+    const setCurrentInputPosition = (position: InputPosition) => {
+        setTimePickerState((prevState) => ({
+            ...prevState,
+            currentInputPosition: position,
+            inputBuffer: "", // Clear buffer when changing position
+        }));
+    };
+
+    const handleKeyInput = (key: string): boolean => {
+        // Only handle numeric input
+        if (!/^\d$/.test(key)) return false;
+
+        const digit = parseInt(key);
+        const { currentInputPosition, inputBuffer, format } = timePickerState;
+
+        switch (currentInputPosition) {
+            case "hours": {
+                const newBuffer = inputBuffer + digit;
+                
+                if (newBuffer.length === 1) {
+                    // First digit of hours - implement smart placement
+                    if (format === "24hr") {
+                        // 24hr format: behave like minutes/seconds but bounded by 23
+                        if (digit >= 0 && digit <= 2) {
+                            // Smart placement: 0-2 as tens digit (X0)
+                            const smartValue = digit * 10;
+                            updateHours(smartValue);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                inputBuffer: newBuffer,
+                            }));
+                            return true;
+                        } else {
+                            // 3-9: place as ones digit (0X), complete and advance
+                            updateHours(digit);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                currentInputPosition: "minutes",
+                                inputBuffer: "",
+                            }));
+                            return true;
+                        }
+                    } else {
+                        // 12hr format
+                        if (digit === 0) {
+                            // Show 0 immediately and wait for second digit
+                            updateHours(digit);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                inputBuffer: newBuffer,
+                            }));
+                            return true;
+                        } else if (digit === 1) {
+                            // Smart placement: 1 -> 10, wait for next digit (could be 10, 11, 12)
+                            updateHours(10);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                inputBuffer: newBuffer,
+                            }));
+                            return true;
+                        } else {
+                            // 2-9: use as direct hour, complete and advance
+                            updateHours(digit);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                currentInputPosition: "minutes",
+                                inputBuffer: "",
+                            }));
+                            return true;
+                        }
+                    }
+                } else if (newBuffer.length === 2) {
+                    // Second digit of hours
+                    const hours = parseInt(newBuffer);
+                    
+                    if (format === "24hr") {
+                        if (hours <= 23) {
+                            updateHours(hours);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                currentInputPosition: "minutes",
+                                inputBuffer: "",
+                            }));
+                            return true;
+                        }
+                    } else {
+                        if (hours >= 1 && hours <= 12) {
+                            updateHours(hours);
+                            setTimePickerState(prevState => ({
+                                ...prevState,
+                                currentInputPosition: "minutes",
+                                inputBuffer: "",
+                            }));
+                            return true;
+                        }
+                    }
+                    // Invalid hour, reset buffer
+                    setTimePickerState(prevState => ({
+                        ...prevState,
+                        inputBuffer: "",
+                    }));
+                    return false;
+                }
+                break;
+            }
+
+            case "minutes": {
+                const newBuffer = inputBuffer + digit;
+                
+                if (newBuffer.length === 1) {
+                    // First digit of minutes - implement smart placement
+                    if (digit >= 0 && digit <= 5) {
+                        // Smart placement: 0-5 as tens digit (X0)
+                        const smartValue = digit * 10;
+                        updateMinutes(smartValue);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            inputBuffer: newBuffer,
+                        }));
+                        return true;
+                    } else {
+                        // 6-9: place as ones digit (0X), complete and advance
+                        updateMinutes(digit);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            currentInputPosition: "seconds",
+                            inputBuffer: "",
+                        }));
+                        return true;
+                    }
+                } else if (newBuffer.length === 2) {
+                    // Second digit of minutes
+                    const minutes = parseInt(newBuffer);
+                    
+                    if (minutes <= 59) {
+                        updateMinutes(minutes);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            currentInputPosition: "seconds",
+                            inputBuffer: "",
+                        }));
+                        return true;
+                    }
+                    // Invalid minute, reset buffer
+                    setTimePickerState(prevState => ({
+                        ...prevState,
+                        inputBuffer: "",
+                    }));
+                    return false;
+                }
+                break;
+            }
+
+            case "seconds": {
+                const newBuffer = inputBuffer + digit;
+                
+                if (newBuffer.length === 1) {
+                    // First digit of seconds - implement smart placement
+                    if (digit >= 0 && digit <= 5) {
+                        // Smart placement: 0-5 as tens digit (X0)
+                        const smartValue = digit * 10;
+                        updateSeconds(smartValue);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            inputBuffer: newBuffer,
+                        }));
+                        return true;
+                    } else {
+                        // 6-9: place as ones digit (0X), complete (stay on seconds)
+                        updateSeconds(digit);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            inputBuffer: "",
+                        }));
+                        return true;
+                    }
+                } else if (newBuffer.length === 2) {
+                    // Second digit of seconds
+                    const seconds = parseInt(newBuffer);
+                    
+                    if (seconds <= 59) {
+                        updateSeconds(seconds);
+                        setTimePickerState(prevState => ({
+                            ...prevState,
+                            inputBuffer: "",
+                        }));
+                        return true;
+                    }
+                    // Invalid second, reset buffer
+                    setTimePickerState(prevState => ({
+                        ...prevState,
+                        inputBuffer: "",
+                    }));
+                    return false;
+                }
+                break;
+            }
+        }
+
+        return false;
+    };
+
+    const getFormattedTimeWithHighlight = (): { display: string; highlightedPart: string } => {
+        const { hours, minutes, seconds, period } = timePickerState.selectedTime;
+        const { currentInputPosition } = timePickerState;
+        
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = seconds.toString().padStart(2, '0');
+        
+        let highlightedPart = "";
+        
+        switch (currentInputPosition) {
+            case "hours":
+                highlightedPart = formattedHours;
+                break;
+            case "minutes":
+                highlightedPart = formattedMinutes;
+                break;
+            case "seconds":
+                highlightedPart = formattedSeconds;
+                break;
+        }
+        
+        let display = "";
+        if (timePickerState.format === "am/pm") {
+            display = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${period}`;
+        } else {
+            display = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+        }
+        
+        return { display, highlightedPart };
+    };
+
     return {
         timePickerState,
         updateHours,
@@ -156,6 +394,9 @@ export const useTimePicker = () => {
         togglePeriod,
         setVisibility,
         getFormattedTime,
+        setCurrentInputPosition,
+        handleKeyInput,
+        getFormattedTimeWithHighlight,
     };
 };
 
@@ -186,6 +427,8 @@ export const TimePickerProvider = ({
             period: format === "am/pm" ? (defaultTime.period ?? "PM") : undefined,
         },
         format,
+        currentInputPosition: "hours",
+        inputBuffer: "",
     });
 
     return (

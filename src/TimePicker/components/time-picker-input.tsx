@@ -13,7 +13,14 @@ export const TimePickerInput = ({
     className,
     inputClassName 
 }: TimePickerInputProps) => {
-    const { timePickerState, setVisibility, getFormattedTime } = useTimePicker();
+    const { 
+        timePickerState, 
+        setVisibility, 
+        getFormattedTime, 
+        handleKeyInput, 
+        setCurrentInputPosition,
+        getFormattedTimeWithHighlight
+    } = useTimePicker();
     const [inputValue, setInputValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,31 +31,138 @@ export const TimePickerInput = ({
     }, [timePickerState.selectedTime, timePickerState.format, getFormattedTime]);
 
     const handleInputClick = () => {
-        setVisibility(!timePickerState.isVisible);
+        // Only open the picker if it's currently closed
+        // Let the outside click handler handle closing
+        if (!timePickerState.isVisible) {
+            setVisibility(true);
+            setCurrentInputPosition("hours");
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // This is primarily for manual editing - we'll keep it for compatibility
         setInputValue(e.target.value);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            // Move to next position on Tab
+            const { currentInputPosition } = timePickerState;
+            if (currentInputPosition === "hours") {
+                setCurrentInputPosition("minutes");
+            } else if (currentInputPosition === "minutes") {
+                setCurrentInputPosition("seconds");
+            } else {
+                setCurrentInputPosition("hours");
+            }
+            return;
+        }
+
+        if (e.key === 'Backspace') {
+            e.preventDefault();
+            // Handle backspace to move to previous position
+            const { currentInputPosition } = timePickerState;
+            if (currentInputPosition === "seconds") {
+                setCurrentInputPosition("minutes");
+            } else if (currentInputPosition === "minutes") {
+                setCurrentInputPosition("hours");
+            }
+            return;
+        }
+
+        if (e.key >= '0' && e.key <= '9') {
+            e.preventDefault();
+            const wasAccepted = handleKeyInput(e.key);
+            if (wasAccepted) {
+                // Update the input value immediately
+                setInputValue(getFormattedTime());
+            }
+        }
+    };
+
+    const handleFocus = () => {
+        // Only set input position if picker is already visible
+        // Don't force visibility on focus to avoid conflicts with click handler
+        if (timePickerState.isVisible) {
+            setCurrentInputPosition("hours");
+        }
+    };
+
+    // Create highlighted input display
+    const createHighlightedDisplay = () => {
+        const { display } = getFormattedTimeWithHighlight();
+        const { currentInputPosition } = timePickerState;
+        
+        if (!timePickerState.isVisible) {
+            return display;
+        }
+
+        // Create highlighted version based on current position
+        let highlightStart = 0;
+        let highlightEnd = 0;
+
+        switch (currentInputPosition) {
+            case "hours":
+                highlightStart = 0;
+                highlightEnd = 2;
+                break;
+            case "minutes":
+                highlightStart = 3;
+                highlightEnd = 5;
+                break;
+            case "seconds":
+                highlightStart = 6;
+                highlightEnd = 8;
+                break;
+        }
+
+        return {
+            before: display.slice(0, highlightStart),
+            highlighted: display.slice(highlightStart, highlightEnd),
+            after: display.slice(highlightEnd),
+        };
+    };
+
+    const displayValue = createHighlightedDisplay();
+
     return (
         <div className={cn("relative", className)}>
-            <input
-                ref={inputRef}
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                onClick={handleInputClick}
-                placeholder={placeholder}
-                readOnly
-                className={cn(
-                    "w-full px-3 py-2 border border-gray-300 rounded-md",
-                    "bg-white text-gray-900 placeholder-gray-500",
-                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                    "cursor-pointer",
-                    inputClassName
+            <div className="relative">
+                <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onClick={handleInputClick}
+                    onKeyDown={handleKeyDown}
+                    onFocus={handleFocus}
+                    placeholder={placeholder}
+                    className={cn(
+                        "w-full px-3 py-2 border border-gray-300 rounded-md",
+                        "bg-white text-gray-900 placeholder-gray-500",
+                        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        "cursor-text font-mono",
+                        inputClassName
+                    )}
+                />
+                
+                {/* Overlay for highlighting current position */}
+                {timePickerState.isVisible && typeof displayValue === 'object' && (
+                    <div className="absolute inset-0 px-3 py-2 pointer-events-none flex items-center font-mono">
+                        <span className="text-transparent">
+                            {displayValue.before}
+                        </span>
+                        <span className="bg-blue-100 text-blue-800 px-1 rounded">
+                            {displayValue.highlighted}
+                        </span>
+                        <span className="text-transparent">
+                            {displayValue.after}
+                        </span>
+                    </div>
                 )}
-            />
+            </div>
+            
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg 
                     className="w-4 h-4 text-gray-400" 
