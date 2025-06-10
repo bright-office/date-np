@@ -201,6 +201,10 @@ return (
               inputProps={{
                 placeholder: "Select date range...",
                 dateFormat: "dd-MMMM-yyyy",
+                className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
+                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
+                "cursor-pointer bg-white text-sm " +
+                "hover:border-gray-400 transition-colors"
               }}
             />
           </div>
