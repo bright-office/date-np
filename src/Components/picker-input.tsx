@@ -73,29 +73,18 @@ const PickerInput = React.forwardRef<tpickerInputImperativeProps, tpickerInputPr
         <div className="inputContainer">
             <Label />
 
-            <div
-                className={cn(
-                    "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm",
-                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                    "cursor-pointer bg-white text-sm",
-                    "hover:border-gray-400 transition-colors",
-                )
-                }>
                 <div
                     onClick={
                             handleInputClick
                         }  
                     ref={ref}
-                    className={cn("appearance-none")}
+                    className={cn("appearance-none",className)}
                     {...inputProps}
                 >
-                    <span className="text-sm text-gray-500 text-start">
                         {displayDate ? props.dateFormat ? format(displayDate, props.dateFormat) : formatISO(displayDate) : "Select a date"}
-                        </span>
                     </div>
                 
             </div>
-        </div >
     )
 })
 

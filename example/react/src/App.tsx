@@ -100,7 +100,7 @@ function App() {
       english: format(englishDate, "do MMMM, yyyy"),
     },
   ];
-  return (
+return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
@@ -158,25 +158,29 @@ function App() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Single Date Picker */}
-          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
+            <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Single Date Picker
+              Single Date Picker
               </h3>
               <p className="text-gray-600 text-sm">Select a single date</p>
             </div>
             <Picker
               inputProps={{
-                dateFormat: "dd-MMMM-yyyy",
-                defaultLocale: "BS",
-                defaultDate: new NepaliDate(2080, 5, 15), // BS date
+              dateFormat: "dd-MMMM-yyyy",
+              defaultLocale: "BS",
+              defaultDate: new NepaliDate(2080, 5, 15), // BS date
+              className: 
+                "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
+                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
+                "cursor-pointer bg-white text-sm " +
+                "hover:border-gray-400 transition-colors"
               }}
-  
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"
             />
-          </div>
+            </div>
 
           {/* Range Date Picker */}
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">

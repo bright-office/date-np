@@ -61,7 +61,7 @@ export type tpickerProps = {
     onSelect?: (selectedDate: Date | import("./NepaliDate").NepaliDate | null) => void;
 
     /**
-     * Control how and where you show the Picker container
+     * Control how and where you show the Picker containerp
      */
     dAwareConProps?: tdirectionAwareContainerProps,
 
