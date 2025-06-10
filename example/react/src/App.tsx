@@ -171,8 +171,7 @@ function App() {
                 defaultLocale: "BS",
                 defaultDate: new NepaliDate(2080, 5, 15), // BS date
               }}
-              minDate={new Date(2015, 5, 15)} // BS date
-              maxDate={new Date(2020, 11, 30)} // BS date
+  
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"
@@ -189,8 +188,7 @@ function App() {
             </div>
             <RangePicker
               defaultLocale="BS"
-              minDate={new NepaliDate(2080, 5, 15)} // BS date
-              maxDate={new NepaliDate(2083, 11, 30)} // BS date
+             
               startingDateRange={new NepaliDate(2080, 5, 14)} // BS date
               endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}

@@ -1,4 +1,4 @@
-import { MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
+import { MAX_AD_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 import { cn } from "../../../utils/clsx";
 import { useRangePicker } from "../hooks/useRangePicker"
 
@@ -15,7 +15,7 @@ const LocaleSwitcher = () => {
         const leftPanelYear = rangePickerState.leftPanel.activeYear;
         const rightPanelYear = rangePickerState.rightPanel.activeYear;
         
-        if (locale === "en" && (leftPanelYear === MIN_AD_YEAR || rightPanelYear === MIN_AD_YEAR)) {
+        if (locale === "en" && (leftPanelYear === MIN_AD_YEAR || rightPanelYear === MIN_AD_YEAR || leftPanelYear === MAX_AD_YEAR || rightPanelYear === MAX_AD_YEAR)) {
             return true; // 1944 AD is not fully supported
         }
         if (locale === "ne" && (leftPanelYear === MIN_BS_YEAR || rightPanelYear === MIN_BS_YEAR)) {

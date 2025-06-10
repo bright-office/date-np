@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
+import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../../data/constants";
 import { CALENDAR } from "../../../data/locale";
 import { cn } from "../../../utils/clsx";
 import { useRangePicker } from "../hooks/useRangePicker";
@@ -26,10 +26,10 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
 
     // Check for unsupported years that would cause validation errors
     const isUnsupportedYear = () => {
-        if (locale === "en" && activeYear === MIN_AD_YEAR) {
+        if (locale === "en" && activeYear === MIN_AD_YEAR || activeYear === MAX_AD_YEAR) {
             return true; 
         }
-        if (locale === "ne" && activeYear === MIN_BS_YEAR) {
+        if (locale === "ne" && activeYear === MIN_BS_YEAR || activeYear === MAX_BS_YEAR) {
             return true; 
         }
         return false;

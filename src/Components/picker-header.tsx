@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from "react";
-import { MIN_AD_YEAR, MIN_BS_YEAR } from "../../data/constants";
+import { MAX_AD_YEAR, MAX_BS_YEAR, MIN_AD_YEAR, MIN_BS_YEAR } from "../../data/constants";
 import { CALENDAR } from "../../data/locale";
 import { cn } from "../../utils/clsx";
 import { convertFromADToBS } from "../../utils/conversion";
@@ -12,7 +12,9 @@ const PickerHeader = () => {
 
     // Check for unsupported years that would cause validation errors
     const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
+                              (locale === "ne" && activeYear === MAX_BS_YEAR)
 
     // Create the appropriate date object based on locale
     const currentMonthDate = useMemo(() => {
@@ -80,7 +82,11 @@ const monthSwitcher = (): {
 
     // Check for unsupported years that would cause validation errors
     const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
+                              (locale === "ne" && activeYear === MAX_BS_YEAR)
+                              
+                              ;
 
     // Determine navigation type based on mode
     const isYearMode = mode === "year";
@@ -155,7 +161,9 @@ const AD_BS_Switcher = () => {
 
     // Check for unsupported years that would cause validation errors
     const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
+                              (locale === "ne" && activeYear === MAX_BS_YEAR);
 
     const handleLocaleChange = (newLocale: "en" | "ne") => {
         if (isUnsupportedYear) return; // Disable locale switching for unsupported years

@@ -24,7 +24,10 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
 
     // Check for unsupported years that would cause validation errors
     const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR);
+                              (locale === "ne" && activeYear === MIN_BS_YEAR) || 
+                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
+                              (locale === "ne" && activeYear === MAX_BS_YEAR)
+                              ;
 
     // Handle manual reset when user clicks "Pick another"
     const handleResetToValidDate = () => {
