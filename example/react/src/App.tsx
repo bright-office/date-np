@@ -169,7 +169,6 @@ return (
               inputProps={{
               dateFormat: "dd-MMMM-yyyy",
               defaultLocale: "BS",
-              defaultDate: new NepaliDate(2080, 5, 15), // BS date
               className: 
                 "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
                 "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
@@ -192,7 +191,8 @@ return (
             </div>
             <RangePicker
               defaultLocale="BS"
-             
+              minDate={new Date(2025, 1, 1)} // BS date
+              maxDate={new NepaliDate(2085, 11, 30)} // BS date
               startingDateRange={new NepaliDate(2080, 5, 14)} // BS date
               endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}

@@ -35,10 +35,35 @@ const RangeYear = ({ year, panel, className }: RangeYearProps) => {
         let lastDayOfYear: Date;
         
         if (locale === "ne") {
-            const nepaliFirst = new NepaliDate(year, 0, 1);
-            const nepaliLast = new NepaliDate(year, 11, 30); // Approximate last day of BS year
-            firstDayOfYear = nepaliFirst.toADDate();
-            lastDayOfYear = nepaliLast.toADDate();
+            try {
+                // Try to create first day of year
+                const nepaliFirst = new NepaliDate(year, 0, 1);
+                firstDayOfYear = nepaliFirst.toADDate();
+            } catch {
+                // If first day is invalid, try with month 8 (when 2000 starts to be valid)
+                try {
+                    const nepaliFirst = new NepaliDate(year, 8, 17); // First valid date for MIN_BS_YEAR
+                    firstDayOfYear = nepaliFirst.toADDate();
+                } catch {
+                    // If still invalid, year is completely disabled
+                    return true;
+                }
+            }
+            
+            try {
+                // Try to create last day of year  
+                const nepaliLast = new NepaliDate(year, 11, 30); // Approximate last day of BS year
+                lastDayOfYear = nepaliLast.toADDate();
+            } catch {
+                // If last day is invalid, try with month 8 again
+                try {
+                    const nepaliLast = new NepaliDate(year, 8, 17);
+                    lastDayOfYear = nepaliLast.toADDate();
+                } catch {
+                    // If still invalid, year is completely disabled
+                    return true;
+                }
+            }
         } else {
             firstDayOfYear = new Date(year, 0, 1);
             lastDayOfYear = new Date(year, 11, 31); // Last day of AD year

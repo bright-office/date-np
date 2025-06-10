@@ -40,11 +40,16 @@ const RangeMonth = ({ month, panel, className }: RangeMonthProps) => {
         let lastDayOfMonth: Date;
         
         if (locale === "ne") {
-            const nepaliFirst = new NepaliDate(activeYear, month, 1);
-            const daysInMonth = nepaliFirst.getDaysInMonth();
-            const nepaliLast = new NepaliDate(activeYear, month, daysInMonth);
-            firstDayOfMonth = nepaliFirst.toADDate();
-            lastDayOfMonth = nepaliLast.toADDate();
+            try {
+                const nepaliFirst = new NepaliDate(activeYear, month, 1);
+                const daysInMonth = nepaliFirst.getDaysInMonth();
+                const nepaliLast = new NepaliDate(activeYear, month, daysInMonth);
+                firstDayOfMonth = nepaliFirst.toADDate();
+                lastDayOfMonth = nepaliLast.toADDate();
+            } catch {
+                // If month is invalid (e.g., early months in 2000), disable it
+                return true;
+            }
         } else {
             firstDayOfMonth = new Date(activeYear, month, 1);
             lastDayOfMonth = new Date(activeYear, month + 1, 0); // Last day of month
