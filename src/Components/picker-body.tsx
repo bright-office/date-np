@@ -16,18 +16,40 @@ import { NepaliDate } from "../NepaliDate";
 
 type pickerBodyProps = {
     onSelect?: (selectedDate: Date | NepaliDate) => void;
+    /**
+     * datehover class
+     */
+    dateHover?: string;
+
+    /**
+     * selected class
+     */
+    selected?: string;
+
+    /**
+     * today class
+     */
+    todayStyle?: string;
+
+
 }
 
-const PickerBody = ({ onSelect }: pickerBodyProps) => {
+const PickerBody = (
+    {
+        onSelect,
+        todayStyle,
+        selected,
+        dateHover
+    }: pickerBodyProps) => {
     const { pickerState, updatePickerMonth, updatePickerMode, updatePickerYear, isDateInRange, updatePickerDay, changePickerLocale, setPickerState, resetToOriginalState } = usePicker();
     const { today, selectedDate, activeYear, activeMonth, locale, minDate, maxDate } = pickerState;
 
     // Check for unsupported years that would cause validation errors
-    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR) || 
-                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
-                              (locale === "ne" && activeYear === MAX_BS_YEAR)
-                              ;
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) ||
+        (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+        (locale === "en" && activeYear === MAX_AD_YEAR) ||
+        (locale === "ne" && activeYear === MAX_BS_YEAR)
+        ;
 
     // Handle manual reset when user clicks "Pick another"
     const handleResetToValidDate = () => {
@@ -41,8 +63,8 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
                 <div className="text-gray-600">
                     <div className="text-lg font-medium mb-2">Date not supported</div>
                     <div className="text-sm text-gray-500 mb-4">
-                        {locale === "en" 
-                            ? "Dates before 1945 are not supported" 
+                        {locale === "en"
+                            ? "Dates before 1945 are not supported"
                             : "Dates before 2001 are not supported"
                         }
                     </div>
@@ -96,8 +118,11 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         return [...Array(thisMonthtotalDays)].map((_, index) => {
             const dayDate = createDate(activeYear, activeMonth, index + 1);
             const isDisabled = !isDateInRange(dayDate);
-            
+
             return <Day
+                dateHover={dateHover}
+                selected={selected}
+                todayStyle={todayStyle}
                 onRangeSelect={onSelect}
                 date={dayDate}
                 key={index}
@@ -154,14 +179,14 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             return null
 
         const { getEffectiveMinDate, getEffectiveMaxDate } = usePicker();
-        
+
         const effectiveMinDate = getEffectiveMinDate();
         const effectiveMaxDate = getEffectiveMaxDate();
-        
+
         // Convert effective min/max dates to the current locale for comparison
         let minDateInCurrentLocale: Date | NepaliDate;
         let maxDateInCurrentLocale: Date | NepaliDate;
-        
+
         if (pickerState.locale === "ne") {
             minDateInCurrentLocale = new NepaliDate(effectiveMinDate);
             maxDateInCurrentLocale = new NepaliDate(effectiveMaxDate);
@@ -169,7 +194,7 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             minDateInCurrentLocale = effectiveMinDate;
             maxDateInCurrentLocale = effectiveMaxDate;
         }
-        
+
         const minYear = minDateInCurrentLocale.getFullYear();
         const maxYear = maxDateInCurrentLocale.getFullYear();
         const minMonth = minDateInCurrentLocale.getMonth();
@@ -215,7 +240,7 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             <div className="grid grid-cols-2 grid-rows-6 gap-1 items-center w-full h-72 text-sm font-light">
                 {monthsNames.map((month, index) => {
                     const isDisabled = index < startMonth || index > endMonth;
-                    
+
                     return <button
                         key={index}
                         tabIndex={0}
@@ -244,16 +269,16 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             return null
 
         const { getEffectiveMinDate, getEffectiveMaxDate } = usePicker();
-        
+
         const minDate = getEffectiveMinDate();
         const maxDate = getEffectiveMaxDate();
-        
+
         // Get year range from effective min/max dates instead of constants
-        const minYear = pickerState.locale === "ne" 
+        const minYear = pickerState.locale === "ne"
             ? new NepaliDate(minDate).getFullYear()
             : minDate.getFullYear();
         const maxYear = pickerState.locale === "ne"
-            ? new NepaliDate(maxDate).getFullYear() 
+            ? new NepaliDate(maxDate).getFullYear()
             : maxDate.getFullYear();
 
         const handleYearChange = (year: number) => {
@@ -269,11 +294,11 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
             const element = (
                 <button
                     key={i}
-                    tabIndex={0}                        className={cn(
-                            "flex items-center justify-center text-sm rounded-sm px-2 bg-gray-50 h-10 cursor-pointer",
-                            "hover:bg-gray-100",
-                            i === activeYear && "bg-gray-900 text-white hover:bg-gray-800",
-                        )}
+                    tabIndex={0} className={cn(
+                        "flex items-center justify-center text-sm rounded-sm px-2 bg-gray-50 h-10 cursor-pointer",
+                        "hover:bg-gray-100",
+                        i === activeYear && "bg-gray-900 text-white hover:bg-gray-800",
+                    )}
                     onClick={(e) => {
                         e.stopPropagation()
                         handleYearChange(i)
@@ -293,13 +318,13 @@ const PickerBody = ({ onSelect }: pickerBodyProps) => {
         )
     }
 
-        return (
-            <div className="flex items-center justify-between w-full min-h-72 overflow-auto">
-                <DatePickerBody />
-                <MonthPickerBody />
-                <YearPickerBody />
-            </div>
-        )
-    }
+    return (
+        <div className="flex items-center justify-between w-full min-h-72 overflow-auto">
+            <DatePickerBody />
+            <MonthPickerBody />
+            <YearPickerBody />
+        </div>
+    )
+}
 
-    export default PickerBody;
+export default PickerBody;

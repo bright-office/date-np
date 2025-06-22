@@ -6,6 +6,9 @@ import { NepaliDate } from "../NepaliDate";
 import { useMemo } from "react";
 
 type tdayProps = {
+    dateHover?: string,
+    todayStyle?: string,
+    selected?: string,
     date: Date | NepaliDate,
     disabled?: boolean,
     isToday?: boolean,
@@ -19,6 +22,8 @@ const Day = (props: tdayProps) => {
         disabled = false,
         className,
         onRangeSelect,
+        selected,
+        todayStyle,
         ...rest
     } = props;
 
@@ -59,11 +64,12 @@ const Day = (props: tdayProps) => {
         <button
             className={cn(
                 "text-center aspect-square rounded-sm items-center justify-center flex text-sm cursor-pointer",
-                "hover:bg-gray-200",
+                props.dateHover ? props.dateHover :
+                    "hover:bg-gray-200",
                 // Today styling - blue indicator when not selected and not disabled
-                isTodayDate && !isActive && !isDisabled && "bg-blue-50 text-blue-600 font-semibold",
+                (isTodayDate && !isActive && !isDisabled) && todayStyle ? todayStyle : (isTodayDate && !isActive && !isDisabled) ? "bg-blue-50 text-blue-600 font-semibold" : "",
                 // Active/selected styling
-                isActive && !isDisabled && "bg-gray-900 text-white hover:bg-gray-900",
+                isActive && !isDisabled && selected ? selected : isActive && !isDisabled ? "bg-gray-900 text-white hover:bg-gray-900" : "",
                 // Disabled styling
                 isDisabled && !isActive && "opacity-50 bg-gray-50 cursor-not-allowed hover:bg-gray-50",
                 isDisabled && isActive && "bg-gray-700 text-white opacity-70 cursor-not-allowed",

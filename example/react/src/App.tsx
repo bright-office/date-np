@@ -100,7 +100,7 @@ function App() {
       english: format(englishDate, "do MMMM, yyyy"),
     },
   ];
-return (
+  return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
@@ -158,28 +158,42 @@ return (
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Single Date Picker */}
-            <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Single Date Picker
+                Single Date Picker
               </h3>
               <p className="text-gray-600 text-sm">Select a single date</p>
             </div>
+
             <Picker
               inputProps={{
-              dateFormat: "dd-MMMM-yyyy",
-              defaultLocale: "BS",
-              className: 
-                "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
-                "cursor-pointer bg-white text-sm " +
-                "hover:border-gray-400 transition-colors"
+                dateFormat: "dd-MMMM-yyyy",
+                defaultLocale: "BS",
+                className:
+                  "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
+                  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
+                  "cursor-pointer bg-white text-sm " +
+                  "hover:border-gray-400 transition-colors"
               }}
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"
+              bodyClassNames={{
+                dateHover: "hover:bg-blue-400",
+                selected: "bg-green-500 text-white",
+                todayStyle: "bg-cyan-400 text-white",
+              }}
+              headerClassNames={{
+                yearLabel: "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
+                monthLabel: "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
+                arrowIcon: {
+                  arrowIconLeft: <div>left</div>,
+                  arrowIconRight: <div>right</div>
+                }
+              }}
             />
-            </div>
+          </div>
 
           {/* Range Date Picker */}
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto w-full">
@@ -189,6 +203,7 @@ return (
               </h3>
               <p className="text-gray-600 text-sm">Select a date range</p>
             </div>
+
             <RangePicker
               defaultLocale="BS"
               minDate={new Date(2025, 1, 1)} // BS date
@@ -202,9 +217,9 @@ return (
                 placeholder: "Select date range...",
                 dateFormat: "dd-MMMM-yyyy",
                 className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
-                "cursor-pointer bg-white text-sm " +
-                "hover:border-gray-400 transition-colors"
+                  "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
+                  "cursor-pointer bg-white text-sm " +
+                  "hover:border-gray-400 transition-colors"
               }}
             />
           </div>
@@ -310,7 +325,7 @@ return (
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

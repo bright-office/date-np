@@ -53,8 +53,13 @@ export type tpickerProps = {
     /**
      * Provide individual styling to different components.
      */
-    classNames?: {
-    }
+    bodyClassNames?: ComponentProps<typeof PickerBody>
+
+    /**
+     * Header class names
+     */
+    headerClassNames?: ComponentProps<typeof PickerHeader>
+
     /**
      * onSelect callback function called when date selection is complete 
      */
@@ -88,7 +93,8 @@ const Picker = (props: tpickerProps) => {
         onSelect,
         label,
         description,
-        
+        bodyClassNames,
+        headerClassNames
     } = props
 
     const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -123,8 +129,11 @@ const Picker = (props: tpickerProps) => {
                         </div>
                     ) : (
                         <>
-                            <PickerHeader />
+                            <PickerHeader
+                                {...headerClassNames}
+                            />
                             <PickerBody
+                                {...bodyClassNames}
                                 onSelect={onSelect}
                             />
                         </>
@@ -137,16 +146,16 @@ const Picker = (props: tpickerProps) => {
         <PickerProvider minDate={minPropDate} maxDate={maxPropDate} defaultDate={inputProps?.defaultDate} defaultLocale={inputProps?.defaultLocale}>
             <div className="flex flex-col gap-1 w-full">
                 {label && <span className="text-m font-medium text-gray-700 text-start">{label}</span>}
-            {shouldShowInput
-                && <PickerInput
-                    // @ts-ignore
-                    ref={pickerInputRef}
-                    {...inputProps}
-                />
+                {shouldShowInput
+                    && <PickerInput
+                        // @ts-ignore
+                        ref={pickerInputRef}
+                        {...inputProps}
+                    />
                 }
 
-             <PickerContent />
-            {description && <span className="text-sm text-gray-500 text-start">{description}</span>}
+                <PickerContent />
+                {description && <span className="text-sm text-gray-500 text-start">{description}</span>}
             </div>
         </PickerProvider>
     )

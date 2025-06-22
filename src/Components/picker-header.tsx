@@ -6,15 +6,40 @@ import { convertFromADToBS } from "../../utils/conversion";
 import { usePicker } from "../hooks/usePicker";
 import { NepaliDate } from "../NepaliDate";
 
-const PickerHeader = () => {
+type tpickerHeaderProps = {
+     /**
+         * arrowicon
+         */
+        arrowIcon?: {
+            arrowIconLeft: React.ReactNode,
+            arrowIconRight: React.ReactNode
+        };
+    
+        /**
+         * year label class
+         */
+        yearLabel?: string;
+    
+        /**
+         * month label class
+         */
+        monthLabel?: string;
+
+}
+
+const PickerHeader = ({
+    monthLabel,
+    yearLabel,
+    arrowIcon
+}: tpickerHeaderProps) => {
     const { pickerState, togglePickerMode } = usePicker();
     const { activeMonth, selectedDate, activeYear, locale } = pickerState;
 
     // Check for unsupported years that would cause validation errors
-    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
-                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
-                              (locale === "ne" && activeYear === MAX_BS_YEAR)
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) ||
+        (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+        (locale === "en" && activeYear === MAX_AD_YEAR) ||
+        (locale === "ne" && activeYear === MAX_BS_YEAR)
 
     // Create the appropriate date object based on locale
     const currentMonthDate = useMemo(() => {
@@ -43,60 +68,62 @@ const PickerHeader = () => {
 
     return (
         <div className="flex items-center justify-between w-full">
-            {monthSwitcher().previous}
+            {monthSwitcher({ arrowIconLeft: arrowIcon?.arrowIconLeft, arrowIconRight: arrowIcon?.arrowIconRight }).previous}
             <div className={cn(
                 "wrapper space-x-2",
                 isUnsupportedYear ? "cursor-not-allowed opacity-50" : "cursor-pointer"
             )}>
                 <span onClick={handleMonthClick} className={cn(
-                    !isUnsupportedYear && "hover:underline"
+                    !isUnsupportedYear ? monthLabel ? monthLabel : "hover:underline" : ""
                 )}>
                     {monthName}
                 </span>
                 <span onClick={handleYearClick} className={cn(
-                    !isUnsupportedYear && "hover:underline"
-                )}>
+                    !isUnsupportedYear ? yearLabel ? yearLabel : "hover:underline" : "")}>
                     {year}
                 </span>
             </div>
-            {monthSwitcher().next}
+            {monthSwitcher({ arrowIconLeft: arrowIcon?.arrowIconLeft, arrowIconRight: arrowIcon?.arrowIconRight }).next}
             <AD_BS_Switcher />
         </div>
     )
 }
+type monthSwitcherProps = {
+    arrowIconLeft?: ReactNode,
+    arrowIconRight?: ReactNode
+}
 
-const monthSwitcher = (): {
+const monthSwitcher = ({ arrowIconLeft, arrowIconRight }: monthSwitcherProps): {
     previous: ReactNode,
-    next: ReactNode
+    next: ReactNode,
 } => {
-    const { 
-        pickerState, 
-        updatePickerMonth, 
+    const {
+        pickerState,
+        updatePickerMonth,
         updatePickerYear,
-        canNavigateToPreviousMonth, 
+        canNavigateToPreviousMonth,
         canNavigateToNextMonth,
         canNavigateToPreviousYear,
-        canNavigateToNextYear 
+        canNavigateToNextYear
     } = usePicker();
     const { activeMonth, activeYear, mode, locale } = pickerState;
-
     // Check for unsupported years that would cause validation errors
-    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
-                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
-                              (locale === "ne" && activeYear === MAX_BS_YEAR)
-                              
-                              ;
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) ||
+        (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+        (locale === "en" && activeYear === MAX_AD_YEAR) ||
+        (locale === "ne" && activeYear === MAX_BS_YEAR)
+
+        ;
 
     // Determine navigation type based on mode
     const isYearMode = mode === "year";
     const isMonthMode = mode === "month";
-    
+
     // For year mode, we navigate years
     // For date and month modes, we navigate months but use specialized validation for month mode
     let canGoPrevious: boolean;
     let canGoNext: boolean;
-    
+
     if (isUnsupportedYear) {
         // Disable all navigation for unsupported years
         canGoPrevious = false;
@@ -112,8 +139,8 @@ const monthSwitcher = (): {
 
     const handleNavigation = (changeDirection: "next" | "previous") => {
         if (isUnsupportedYear) return; // Disable navigation for unsupported years
-        
-        if ((changeDirection === "previous" && !canGoPrevious) || 
+
+        if ((changeDirection === "previous" && !canGoPrevious) ||
             (changeDirection === "next" && !canGoNext)) {
             return;
         }
@@ -141,7 +168,9 @@ const monthSwitcher = (): {
                     !canGoPrevious && "opacity-50 cursor-not-allowed hover:bg-transparent"
                 )}
                 onClick={() => handleNavigation("previous")} >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                {arrowIconLeft ? arrowIconLeft :
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                }
             </div>),
         next: (
             <div
@@ -150,7 +179,9 @@ const monthSwitcher = (): {
                     !canGoNext && "opacity-50 cursor-not-allowed hover:bg-transparent"
                 )}
                 onClick={() => handleNavigation("next")} >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                {arrowIconRight ? arrowIconRight :
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                }
             </div>)
     }
 }
@@ -160,10 +191,10 @@ const AD_BS_Switcher = () => {
     const { locale, activeYear } = pickerState;
 
     // Check for unsupported years that would cause validation errors
-    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) || 
-                              (locale === "ne" && activeYear === MIN_BS_YEAR) ||
-                              (locale === "en" && activeYear === MAX_AD_YEAR) ||
-                              (locale === "ne" && activeYear === MAX_BS_YEAR);
+    const isUnsupportedYear = (locale === "en" && activeYear === MIN_AD_YEAR) ||
+        (locale === "ne" && activeYear === MIN_BS_YEAR) ||
+        (locale === "en" && activeYear === MAX_AD_YEAR) ||
+        (locale === "ne" && activeYear === MAX_BS_YEAR);
 
     const handleLocaleChange = (newLocale: "en" | "ne") => {
         if (isUnsupportedYear) return; // Disable locale switching for unsupported years
