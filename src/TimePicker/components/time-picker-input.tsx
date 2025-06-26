@@ -139,7 +139,10 @@ export const TimePickerInput = ({
                     onFocus={handleFocus}
                     placeholder={placeholder}
                     className={cn(
-                        "w-full px-3 py-2 border border-gray-300 rounded-md",
+                        "w-full px-3 py-2 border border-gray-300",
+                        timePickerState.isVisible 
+                            ? "rounded-t-md border-b-0" 
+                            : "rounded-md",
                         "bg-white text-gray-900 placeholder-gray-500",
                         "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
                         "cursor-text font-mono",

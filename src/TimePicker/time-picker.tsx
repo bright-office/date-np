@@ -3,6 +3,7 @@ import { cn } from "../../utils/clsx";
 import { TimePickerProvider, useTimePicker, type TimeFormat, type TimeValue } from "./hooks/useTimePicker";
 import { TimePickerInput } from "./components/time-picker-input";
 import { TimePickerBody } from "./components/time-picker-body";
+import DirectionAwareContainer, { type tdirectionAwareContainerProps } from "../Components/helpers/direction-aware-container";
 
 type TimePickerWithoutInput = {
     inputProps?: never;
@@ -19,6 +20,11 @@ export type TimePickerProps = {
     defaultTime?: Partial<TimeValue>;
     className?: string;
     onTimeChange?: (time: TimeValue) => void;
+    
+    /**
+     * Control how and where you show the TimePicker container
+     */
+    dAwareConProps?: tdirectionAwareContainerProps;
 } & (TimePickerWithoutInput | TimePickerWithInput);
 
 const TimePickerContent = ({
@@ -26,26 +32,11 @@ const TimePickerContent = ({
     shouldShowInput = true,
     inputProps,
     onTimeChange,
+    dAwareConProps,
 }: Omit<TimePickerProps, 'format' | 'defaultTime'>) => {
     const { timePickerState, setVisibility } = useTimePicker();
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    // Handle outside click
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-                setVisibility(false);
-            }
-        };
-
-        if (timePickerState.isVisible) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [timePickerState.isVisible, setVisibility]);
+    const timePickerInputRef = useRef<HTMLDivElement>(null);
+    const {format} = timePickerState;
 
     // Handle time change callback
     useEffect(() => {
@@ -54,21 +45,50 @@ const TimePickerContent = ({
         }
     }, [timePickerState.selectedTime, onTimeChange]);
 
+    // Merge default props with user props, giving priority to user props
+    const baseProps = {
+        onOutsideClick: () => setVisibility(false),
+        centerAlignContainer: true,
+        active: timePickerState.isVisible,
+        className: shouldShowInput ? "" : "mt-2",
+        direction: "bottom" as const,
+        offset: shouldShowInput ? 0 : 10,
+        ...dAwareConProps,
+    };
+
+    const directionAwareProps: tdirectionAwareContainerProps = shouldShowInput 
+        ? {
+            ...baseProps,
+            activateWith: "ref" as const,
+            activatorRef: timePickerInputRef as React.RefObject<HTMLElement | null>,
+          }
+        : {
+            ...baseProps,
+            activateWith: "position" as const,
+            activationPosition: { x: 0, y: 0 },
+          };
+
     return (
-        <div className={cn("relative", className)} ref={containerRef}>
+        <>
             {shouldShowInput && (
-                <TimePickerInput {...inputProps} />
+                <div className="relative" ref={timePickerInputRef}>
+                    <TimePickerInput {...inputProps} />
+                </div>
             )}
             
-            {timePickerState.isVisible && (
+            <DirectionAwareContainer {...directionAwareProps}>
                 <div className={cn(
-                    "absolute z-50 mt-2",
-                    shouldShowInput ? "top-full left-0" : "top-0 left-0"
+                    format === "24hr" ? "w-72" : "w-82",
+                    "bg-white",
+                    shouldShowInput 
+                        ? "border-l border-r border-b border-t border-gray-300 rounded-b-md shadow-lg p-6" 
+                        : "border border-gray-300 rounded-md drop-shadow-sm p-6",
+                    !shouldShowInput && className
                 )}>
                     <TimePickerBody />
                 </div>
-            )}
-        </div>
+            </DirectionAwareContainer>
+        </>
     );
 };
 
@@ -79,7 +99,9 @@ export const TimePicker = ({
 }: TimePickerProps) => {
     return (
         <TimePickerProvider format={format} defaultTime={defaultTime}>
-            <TimePickerContent {...props} />
+            <div className="flex flex-col gap-1 w-full">
+                <TimePickerContent {...props} />
+            </div>
         </TimePickerProvider>
     );
 };

@@ -54,7 +54,6 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
         <div 
             ref={containerRef}
             className={cn(
-                "bg-white rounded-lg shadow-lg border border-gray-200 p-6",
                 "flex flex-col items-center space-y-4",
                 className
             )}
