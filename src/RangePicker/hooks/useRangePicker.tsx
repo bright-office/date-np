@@ -228,7 +228,6 @@ const useRangePicker = () => {
             
             return prevState;
         });
-      
     };
 
     const updateHoverDate = (date: Date | NepaliDate | null) => {

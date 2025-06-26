@@ -3,6 +3,7 @@ import { cn } from "../../../utils/clsx";
 import { areDatesEqual, compareDates, isDateBetween } from "../../../utils/validators";
 import { useRangePicker } from "../hooks/useRangePicker";
 import { NepaliDate } from "../../NepaliDate";
+import { flushSync } from "react-dom";
 
 interface RangeDayProps {
     date: Date | NepaliDate;
@@ -12,14 +13,13 @@ interface RangeDayProps {
 
 const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     const { 
-        onRangeSelect,
         rangePickerState, 
         updateRangePickerDay, 
         updateHoverDate,
         isDateInRange
     } = useRangePicker();
-    
-    const { startDate, endDate, hoverDate, today } = rangePickerState;
+
+    const { startDate, endDate, hoverDate, today, onRangeSelect } = rangePickerState;
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const isToday = useMemo(() => {
@@ -60,7 +60,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
 
     const handleClick = () => {
         if (!isDisabled) {
-            updateRangePickerDay(date, panel);
+            return updateRangePickerDay(date, panel);
         }
     };
 
@@ -75,10 +75,13 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             ref={buttonRef}
             disabled={isDisabled}
             onClick={(e)=>{
-                if (onRangeSelect && startDate && endDate)
-                    onRangeSelect(startDate, endDate);
                 e.stopPropagation()
-                handleClick()
+                flushSync(()=>{
+                    handleClick();
+                })
+                if (onRangeSelect && startDate){
+                    onRangeSelect(startDate, date);
+                }
             }}
             onMouseEnter={handleMouseEnter}
             className={cn(

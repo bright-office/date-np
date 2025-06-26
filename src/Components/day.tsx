@@ -49,7 +49,7 @@ const Day = (props: tdayProps) => {
             return;
 
         e.stopPropagation();
-
+    
         onRangeSelect?.(date);
         updatePickerDay(date);
 
