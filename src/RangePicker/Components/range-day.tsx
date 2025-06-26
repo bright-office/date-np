@@ -12,6 +12,7 @@ interface RangeDayProps {
 
 const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     const { 
+        onRangeSelect,
         rangePickerState, 
         updateRangePickerDay, 
         updateHoverDate,
@@ -53,16 +54,6 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
         return compareDates(date, startDate) > 0 && compareDates(date, endDate) < 0;
     }, [date, startDate, endDate, hoverDate]);
 
-    const isRangeStart = useMemo(() => {
-        if (!startDate) return false;
-        return areDatesEqual(date, startDate);
-    }, [date, startDate]);
-
-    const isRangeEnd = useMemo(() => {
-        if (!endDate) return false;
-        return areDatesEqual(date, endDate);
-    }, [date, endDate]);
-
     const isDisabled = useMemo(() => {
         return !isDateInRange(date);
     }, [date, isDateInRange]);
@@ -84,6 +75,8 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             ref={buttonRef}
             disabled={isDisabled}
             onClick={(e)=>{
+                if (onRangeSelect && startDate && endDate)
+                    onRangeSelect(startDate, endDate);
                 e.stopPropagation()
                 handleClick()
             }}

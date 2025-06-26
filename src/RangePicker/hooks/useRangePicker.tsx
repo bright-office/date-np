@@ -12,6 +12,7 @@ type tRangePickerPanelState = {
 
 type tRangePickerContextType = {
     rangePickerState: {
+        onRangeSelect?: (start: Date | NepaliDate, end: Date | NepaliDate) => void;
         minDate?: Date | NepaliDate;
         maxDate?: Date | NepaliDate;
         today: Date;
@@ -695,10 +696,12 @@ const useRangePicker = () => {
         shouldShowSinglePanel,
         resetToOriginalState,
         getDisplayDateRange,
+        onRangeSelect: rangePickerContextValue.rangePickerState.onRangeSelect,
     };
 };
 
 const RangePickerProvider = ({ 
+    onRangeSelect,
     children,
     minDate,
     maxDate,
@@ -706,6 +709,7 @@ const RangePickerProvider = ({
     endingDateRange,
     defaultLocale = "AD",
 }: { 
+    onRangeSelect?: (start:Date | NepaliDate, end: Date | NepaliDate) => void;
     children: React.ReactNode;
     minDate?: Date | NepaliDate;
     maxDate?: Date | NepaliDate;
@@ -799,6 +803,7 @@ const RangePickerProvider = ({
     const isRangeValid = isDateRangeValid();
     
     const [rangePickerState, setRangePickerState] = useState<tRangePickerContextType["rangePickerState"]>({
+        onRangeSelect: onRangeSelect ? onRangeSelect : undefined,
         minDate: minDate,
         maxDate: maxDate,
         today: today,

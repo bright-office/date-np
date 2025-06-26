@@ -57,7 +57,7 @@ export type tRangePickerProps = {
     /**
      * Callback function called when date range selection is complete
      */
-    onRangeSelect?: (startDate: Date | import("../NepaliDate").NepaliDate | null, endDate: Date | import("../NepaliDate").NepaliDate | null) => void;
+    onRangeSelect?: (startDate: Date | import("../NepaliDate").NepaliDate, endDate: Date | import("../NepaliDate").NepaliDate) => void;
 
     /**
      * Callback function called when the picker visibility changes
@@ -123,13 +123,6 @@ const RangePicker = (props: tRangePickerProps) => {
     let RangePickerContent = () => {
         const { rangePickerState, updateRangePickerVisibility, clearSelection, shouldShowSinglePanel } = useRangePicker();
         const { isVisible, startDate, endDate } = rangePickerState;
-
-        // Call callbacks when state changes
-        useEffect(() => {
-            if (onRangeSelect && startDate && endDate) {
-                onRangeSelect(startDate, endDate);
-            }
-        }, [startDate, endDate, onRangeSelect]);
 
         useEffect(() => {
             if (onVisibilityChange) {
@@ -247,6 +240,7 @@ const RangePicker = (props: tRangePickerProps) => {
             startingDateRange={startingDateRange}
             endingDateRange={endingDateRange}
             defaultLocale={defaultLocale}
+            onRangeSelect={onRangeSelect}
         >
             <div className="flex flex-col gap-1 w-full">
 
