@@ -9,10 +9,12 @@ import { NepaliDate } from "@brightsoftware/date-np/core";
 import { Picker } from "@brightsoftware/date-np/ui";
 import { RangePicker } from "@brightsoftware/date-np/ui";
 import { TimePicker } from "@brightsoftware/date-np/ui";
+import { useState } from "react";
 
 function App() {
   const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
   const englishDate = new Date(2025, 5, 3); // June 3, 2025
+  const [date, setDate] = useState<Date | NepaliDate>();
 
   const formatExamples = [
     {
@@ -167,6 +169,9 @@ function App() {
             </div>
 
             <Picker
+              onSelect={(date: NepaliDate | Date)=>{
+                setDate(date);
+              }}
               inputProps={{
                 dateFormat: "dd-MMMM-yyyy",
                 defaultLocale: "BS",
