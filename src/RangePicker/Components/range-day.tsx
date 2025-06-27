@@ -59,9 +59,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
     }, [date, isDateInRange]);
 
     const handleClick = () => {
-        if (!isDisabled) {
-            return updateRangePickerDay(date, panel);
-        }
+        return updateRangePickerDay(date);       
     };
 
     const handleMouseEnter = useCallback(() => {
@@ -76,11 +74,11 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             disabled={isDisabled}
             onClick={(e)=>{
                 e.stopPropagation()
-                flushSync(()=>{
-                    handleClick();
-                })
-                if (onRangeSelect && startDate){
-                    onRangeSelect(startDate, date);
+                const {latestStartDate, latestEndDate }= handleClick();
+                console.log("Latest Start Date:", latestStartDate);
+                console.log("Latest End Date:", latestEndDate);
+                if (onRangeSelect && latestStartDate && latestEndDate){
+                    onRangeSelect(latestStartDate, latestEndDate);
                 }
             }}
             onMouseEnter={handleMouseEnter}

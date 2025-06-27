@@ -46,7 +46,156 @@ const useRangePicker = () => {
 
     const { setRangePickerState } = rangePickerContextValue;
 
-    const updateRangePickerDay = (day: Date | NepaliDate, panel?: "left" | "right") => {
+    const updateRangePickerDay = (day: Date | NepaliDate) => {
+        // Get current state to calculate the result synchronously
+        const { startDate, endDate, locale } = rangePickerContextValue.rangePickerState;
+        
+        let finalStartDate: Date | NepaliDate | null = null;
+        let finalEndDate: Date | NepaliDate | null = null;
+        
+        // Ensure the incoming date is the correct type for current locale
+        const normalizedDay = locale === "ne" 
+            ? (day instanceof NepaliDate ? day : NepaliDate.fromADDate(day as Date))
+            : (day instanceof Date ? day : (day as NepaliDate).toADDate());
+        
+        // Calculate the result synchronously first
+        // If no start date, start new selection
+        if (!startDate) {
+            finalStartDate = normalizedDay;
+            finalEndDate = null;
+        }
+        // If both start and end dates exist, extend the range based on clicked date
+        else if (startDate && endDate) {
+            // Ensure start and end dates are the correct type for current locale
+            const normalizedStartDate = locale === "ne"
+                ? (startDate instanceof NepaliDate ? startDate : NepaliDate.fromADDate(startDate as Date))
+                : (startDate instanceof Date ? startDate : (startDate as NepaliDate).toADDate());
+                
+            const normalizedEndDate = locale === "ne"
+                ? (endDate instanceof NepaliDate ? endDate : NepaliDate.fromADDate(endDate as Date))
+                : (endDate instanceof Date ? endDate : (endDate as NepaliDate).toADDate());
+            
+            let isBeforeStart = false;
+            let isAfterEnd = false;
+            
+            if (locale === "ne") {
+                // For Nepali dates, use compare method
+                const nepaliDay = normalizedDay as NepaliDate;
+                const nepaliStart = normalizedStartDate as NepaliDate;
+                const nepaliEnd = normalizedEndDate as NepaliDate;
+                
+                isBeforeStart = nepaliDay.compare(nepaliStart) < 0;
+                isAfterEnd = nepaliDay.compare(nepaliEnd) > 0;
+            } else {
+                // For AD dates, use direct comparison
+                const adDay = normalizedDay as Date;
+                const adStart = normalizedStartDate as Date;
+                const adEnd = normalizedEndDate as Date;
+                
+                isBeforeStart = adDay < adStart;
+                isAfterEnd = adDay > adEnd;
+            }
+            
+            if (isBeforeStart) {
+                // Move start date to the clicked date
+                finalStartDate = normalizedDay;
+                finalEndDate = normalizedEndDate;
+            } else if (isAfterEnd) {
+                finalStartDate = normalizedStartDate;
+                finalEndDate = normalizedDay;
+            } else {
+                // Clicked date is within or on the range, move the closer boundary
+                // First check if clicked exactly on start or end date
+                let isOnStart = false;
+                let isOnEnd = false;
+                
+                if (locale === "ne") {
+                    const nepaliDay = normalizedDay as NepaliDate;
+                    const nepaliStart = normalizedStartDate as NepaliDate;
+                    const nepaliEnd = normalizedEndDate as NepaliDate;
+                    
+                    isOnStart = nepaliDay.compare(nepaliStart) === 0;
+                    isOnEnd = nepaliDay.compare(nepaliEnd) === 0;
+                } else {
+                    const adDay = normalizedDay as Date;
+                    const adStart = normalizedStartDate as Date;
+                    const adEnd = normalizedEndDate as Date;
+                    
+                    isOnStart = adDay.getTime() === adStart.getTime();
+                    isOnEnd = adDay.getTime() === adEnd.getTime();
+                }
+                
+                // If clicked exactly on start or end date, reset selection
+                if (isOnStart || isOnEnd) {
+                    finalStartDate = null;
+                    finalEndDate = null;
+                } else {
+                    // Otherwise, calculate distance and move closer boundary
+                    let distanceToStart = 0;
+                    let distanceToEnd = 0;
+                    
+                    if (locale === "ne") {
+                        // For Nepali dates, calculate distance in days
+                        const nepaliDay = normalizedDay as NepaliDate;
+                        const nepaliStart = normalizedStartDate as NepaliDate;
+                        const nepaliEnd = normalizedEndDate as NepaliDate;
+                        
+                        distanceToStart = Math.abs(nepaliDay.toADDate().getTime() - nepaliStart.toADDate().getTime());
+                        distanceToEnd = Math.abs(nepaliDay.toADDate().getTime() - nepaliEnd.toADDate().getTime());
+                    } else {
+                        // For AD dates, calculate distance in milliseconds
+                        const adDay = normalizedDay as Date;
+                        const adStart = normalizedStartDate as Date;
+                        const adEnd = normalizedEndDate as Date;
+                        
+                        distanceToStart = Math.abs(adDay.getTime() - adStart.getTime());
+                        distanceToEnd = Math.abs(adDay.getTime() - adEnd.getTime());
+                    }
+                    
+                    // If closer to start or equal distance, move start date
+                    if (distanceToStart <= distanceToEnd) {
+                        finalStartDate = normalizedDay;
+                        finalEndDate = normalizedEndDate;
+                    } else {
+                        finalStartDate = normalizedStartDate;
+                        finalEndDate = normalizedDay;
+                    }
+                }
+            }
+        }
+        // If start date exists but no end date, set end date
+        else if (startDate && !endDate) {
+            // Ensure start date is also the correct type for current locale
+            const normalizedStartDate = locale === "ne"
+                ? (startDate instanceof NepaliDate ? startDate : NepaliDate.fromADDate(startDate as Date))
+                : (startDate instanceof Date ? startDate : (startDate as NepaliDate).toADDate());
+            
+            // Compare dates and swap if needed
+            finalStartDate = normalizedStartDate;
+            finalEndDate = normalizedDay;
+            
+            if (locale === "ne") {
+                // For Nepali dates, use compare method
+                const nepaliStart = finalStartDate as NepaliDate;
+                const nepaliEnd = finalEndDate as NepaliDate;
+                
+                if (nepaliStart.compare(nepaliEnd) > 0) {
+                    finalStartDate = nepaliEnd;
+                    finalEndDate = nepaliStart;
+                }
+            } else if (locale === "en") {
+                // For AD dates, use compare method from validators.ts file
+                const adStart = finalStartDate as Date;
+                const adEnd = finalEndDate as Date;
+                
+                if (adStart > adEnd) {
+                    finalStartDate = adEnd;
+                    finalEndDate = adStart;
+                }
+            }
+        }
+        
+        // Now update the state with the calculated values
         setRangePickerState((prevState) => {
             const { startDate, endDate, locale } = prevState;
             
@@ -98,7 +247,6 @@ const useRangePicker = () => {
                 }
                 
                 if (isBeforeStart) {
-                    // Move start date to the clicked date
                     return {
                         ...prevState,
                         startDate: normalizedDay,
@@ -106,7 +254,6 @@ const useRangePicker = () => {
                         hoverDate: null,
                     };
                 } else if (isAfterEnd) {
-                    // Move end date to the clicked date
                     return {
                         ...prevState,
                         startDate: normalizedStartDate,
@@ -176,7 +323,6 @@ const useRangePicker = () => {
                             hoverDate: null,
                         };
                     } else {
-                        // Closer to end, move end date
                         return {
                             ...prevState,
                             startDate: normalizedStartDate,
@@ -189,35 +335,6 @@ const useRangePicker = () => {
             
             // If start date exists but no end date, set end date
             if (startDate && !endDate) {
-                // Ensure start date is also the correct type for current locale
-                const normalizedStartDate = locale === "ne"
-                    ? (startDate instanceof NepaliDate ? startDate : NepaliDate.fromADDate(startDate as Date))
-                    : (startDate instanceof Date ? startDate : (startDate as NepaliDate).toADDate());
-                
-                // Compare dates and swap if needed
-                let finalStartDate = normalizedStartDate;
-                let finalEndDate = normalizedDay;
-                
-                if (locale === "ne") {
-                    // For Nepali dates, use compare method
-                    const nepaliStart = finalStartDate as NepaliDate;
-                    const nepaliEnd = finalEndDate as NepaliDate;
-                    
-                    if (nepaliStart.compare(nepaliEnd) > 0) {
-                        finalStartDate = nepaliEnd;
-                        finalEndDate = nepaliStart;
-                    }
-                } else if (locale === "en") {
-                    // For AD dates, use compare method from validators.ts file
-                    const adStart = finalStartDate as Date;
-                    const adEnd = finalEndDate as Date;
-                    
-                    if (adStart > adEnd) {
-                        finalStartDate = adEnd;
-                        finalEndDate = adStart;
-                    }
-                }
-                
                 return {
                     ...prevState,
                     startDate: finalStartDate,
@@ -228,6 +345,11 @@ const useRangePicker = () => {
             
             return prevState;
         });
+        
+        return {
+            latestStartDate: finalStartDate,
+            latestEndDate: finalEndDate
+        }
     };
 
     const updateHoverDate = (date: Date | NepaliDate | null) => {
