@@ -75,8 +75,7 @@ const RangeDay = ({ date, className, panel }: RangeDayProps) => {
             onClick={(e)=>{
                 e.stopPropagation()
                 const {latestStartDate, latestEndDate }= handleClick();
-                console.log("Latest Start Date:", latestStartDate);
-                console.log("Latest End Date:", latestEndDate);
+                
                 if (onRangeSelect && latestStartDate && latestEndDate){
                     onRangeSelect(latestStartDate, latestEndDate);
                 }
