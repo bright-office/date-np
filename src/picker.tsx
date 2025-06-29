@@ -1,4 +1,4 @@
-import { useRef, type ComponentProps } from "react";
+import { useEffect, useRef, type ComponentProps } from "react";
 import { cn } from "../utils/clsx";
 import DirectionAwareContainer from "./Components/helpers/direction-aware-container";
 import PickerBody from "./Components/picker-body";
@@ -8,6 +8,7 @@ import { PickerProvider, usePicker } from "./hooks/usePicker";
 import { type tdirectionAwareContainerProps } from "./Components/helpers/direction-aware-container";
 import { isInvalidDateRange } from "../utils/validators";
 import "./index.css";
+import { NepaliDate } from "./NepaliDate";
 
 type tpickerWithoutInput = {
     /**
@@ -97,7 +98,14 @@ const Picker = (props: tpickerProps) => {
         headerClassNames
     } = props
 
+    const {updateDefaultDate} = usePicker();
+
     const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
+    
+    useEffect(()=>{
+        if (inputProps?.defaultDate)
+        updateDefaultDate(inputProps?.defaultDate)
+    },[inputProps?.defaultDate])
 
 
     let PickerContent = () => {

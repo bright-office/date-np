@@ -54,6 +54,15 @@ const usePicker = () => {
         })
     }
 
+    const updateDefaultDate = (newDefaultDate: Date | NepaliDate) => {
+        // todo : validate newDefaultDate against minDate and maxDate
+        if (newDefaultDate instanceof NepaliDate || newDefaultDate instanceof Date) 
+        setPickerState((prevState) => ({
+            ...prevState,
+            defaultDate: newDefaultDate,
+        }))
+    }
+
     const updatePickerMonth = (month: number) => {
         let yearOffset = 0;
         let monthOffset = 0;
@@ -345,6 +354,7 @@ const usePicker = () => {
         canNavigateToNextYear,
         resetToOriginalState,
         getDisplayDate,
+        updateDefaultDate
     };
 }
 
@@ -362,23 +372,6 @@ const PickerProvider = ({
     defaultLocale?: "AD" | "BS";
 }) => {
     const today = new Date();
-    
-    // Determine initial month and year based on minDate if provided
-    const getInitialMonthYear = () => {
-        if (minDate) {
-            const dateToUse = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
-            return {
-                month: dateToUse.getMonth(),
-                year: dateToUse.getFullYear()
-            };
-        }
-        return {
-            month: today.getMonth(),
-            year: today.getFullYear()
-        };
-    };
-
-    const initialMonthYear = getInitialMonthYear();
 
     // Helper function to validate if defaultDate is within bounds
     const isDefaultDateValid = () => {

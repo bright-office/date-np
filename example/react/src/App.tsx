@@ -169,10 +169,12 @@ function App() {
             </div>
 
             <Picker
+              
               onSelect={(date: NepaliDate | Date)=>{
                 setDate(date);
               }}
               inputProps={{
+                defaultValue: new NepaliDate(2080, 5, 14), // BS date
                 dateFormat: "dd-MMMM-yyyy",
                 defaultLocale: "BS",
                 className:
