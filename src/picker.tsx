@@ -101,15 +101,14 @@ const Picker = (props: tpickerProps) => {
     
     const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
     
-    
-    
     let PickerContent = () => {
-        
-        const { updatePickerVisiblity, pickerState, updateDefaultDate } = usePicker();
+        console.log('inputprops', inputProps?.defaultDate)
+        const { updatePickerVisiblity, pickerState, updatePickerDay } = usePicker();
         const shouldShowPicker = pickerState.isVisible;
         useEffect(()=>{
             if (inputProps?.defaultDate)
-            updateDefaultDate(inputProps?.defaultDate)
+            updatePickerDay(inputProps?.defaultDate);
+            console.log('default date updated', pickerState.defaultDate)
         },[inputProps?.defaultDate])
 
         // Check for invalid date range

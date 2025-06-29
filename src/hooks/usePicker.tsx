@@ -54,15 +54,6 @@ const usePicker = () => {
         })
     }
 
-    const updateDefaultDate = (newDefaultDate: Date | NepaliDate) => {
-        // todo : validate newDefaultDate against minDate and maxDate
-        if (newDefaultDate instanceof NepaliDate || newDefaultDate instanceof Date) 
-        setPickerState((prevState) => ({
-            ...prevState,
-            defaultDate: newDefaultDate,
-        }))
-    }
-
     const updatePickerMonth = (month: number) => {
         let yearOffset = 0;
         let monthOffset = 0;
@@ -354,7 +345,6 @@ const usePicker = () => {
         canNavigateToNextYear,
         resetToOriginalState,
         getDisplayDate,
-        updateDefaultDate
     };
 }
 
