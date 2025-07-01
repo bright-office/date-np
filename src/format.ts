@@ -197,3 +197,28 @@ export function formatShort(date: Date | NepaliDate): string {
 export function formatMedium(date: Date | NepaliDate): string {
     return format(date, 'MMM dd, yyyy');
 }
+
+
+/** Time Picker Section */
+import {type TimeValue } from './TimePicker';
+
+export function convertToTimeValue(time: string) : TimeValue | undefined{
+    if (!time || typeof time !== 'string') {
+        return undefined
+    }
+    const [hours, minutes] = time.split(':').map(Number);
+    return {
+        hours: hours || 0,
+        minutes: minutes || 0,
+        seconds: 0 // Default seconds to 0
+    };
+}
+
+export const getCurrentTime = (hourOffset: number = 0): TimeValue => {
+    const now = new Date();
+    return {
+        hours: now.getHours() + hourOffset,
+        minutes: now.getMinutes(),
+        seconds: now.getSeconds()
+    };
+}

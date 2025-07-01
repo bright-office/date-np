@@ -133,6 +133,16 @@ export const useTimePicker = () => {
         }));
     };
 
+    const setTime = (newTime: TimeValue) => {
+        setTimePickerState((prevState) => ({
+            ...prevState,
+            selectedTime: {
+                ...prevState.selectedTime,
+                ...newTime,
+            },
+        }));
+    };
+
     const getFormattedTime = (): string => {
         const { hours, minutes, seconds, period } = timePickerState.selectedTime;
         const formattedHours = hours.toString().padStart(2, '0');
@@ -379,6 +389,8 @@ export const useTimePicker = () => {
         return { display, highlightedPart };
     };
 
+    
+
     return {
         timePickerState,
         updateHours,
@@ -397,6 +409,7 @@ export const useTimePicker = () => {
         setCurrentInputPosition,
         handleKeyInput,
         getFormattedTimeWithHighlight,
+        setTime
     };
 };
 

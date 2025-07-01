@@ -28,7 +28,7 @@ const Day = (props: tdayProps) => {
     } = props;
 
 
-    const { updatePickerDay, pickerState, updatePickerMonth, isDateInRange } = usePicker();
+    const { updatePickerDay, updatePickerVisiblity, pickerState, updatePickerMonth, isDateInRange } = usePicker();
     const { selectedDate: activeDate, activeMonth, activeYear, today } = pickerState;
     const isActive = activeDate ? areDatesEqual(date, activeDate) : false;
 
@@ -52,7 +52,7 @@ const Day = (props: tdayProps) => {
     
         onRangeSelect?.(date);
         updatePickerDay(date);
-
+        updatePickerVisiblity(false);
 
         if (activeMonth !== date.getMonth()) {
             const yearOffset = date.getFullYear() - activeYear;

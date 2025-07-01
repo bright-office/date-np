@@ -1,5 +1,5 @@
 import { NepaliDate } from "./NepaliDate";
-import { format, formatISO, formatLong, formatShort, formatMedium } from "./format";
+import { format, formatISO, formatLong, formatShort, formatMedium, convertToTimeValue, getCurrentTime } from "./format";
 
 export {
     NepaliDate,
@@ -7,5 +7,7 @@ export {
     formatISO,
     formatLong,
     formatShort,
-    formatMedium    
+    formatMedium,
+    convertToTimeValue,
+    getCurrentTime    
 }
