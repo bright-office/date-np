@@ -142,7 +142,6 @@ const RangePicker = (props: tRangePickerProps) => {
     const { isVisible, startDate, endDate } = rangePickerState;
 
     useEffect(()=>{
-
         if(shouldShowSinglePanelProp)
             setShouldShowSinglePanel(true);
     },[])
