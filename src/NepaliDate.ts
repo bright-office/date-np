@@ -16,7 +16,8 @@ export class NepaliDate {
     constructor(year: number, month: number, date?: number);
     constructor(adDate: Date);
     constructor(nepaliDate: NepaliDate);
-    constructor(yearOrDate?: number | Date | NepaliDate, month?: number, date?: number) {
+    constructor(dateString: string);
+    constructor(yearOrDate?: number | Date | NepaliDate | string, month?: number, date?: number) {
         if (yearOrDate === undefined) {
             // Default constructor - convert current AD date to BS
             const today = new Date();
@@ -35,6 +36,31 @@ export class NepaliDate {
             this._year = yearOrDate._year;
             this._month = yearOrDate._month;
             this._date = yearOrDate._date;
+        } else if (typeof yearOrDate === 'string') {
+            // Constructor with date string (YYYY-MM-DD format)
+            const parts = yearOrDate.split('-');
+            if (parts.length !== 3) {
+                throw new Error("Invalid date string format. Expected format: YYYY-MM-DD");
+            }
+            
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const date = parseInt(parts[2], 10);
+            
+            if (isNaN(year) || isNaN(month) || isNaN(date)) {
+                throw new Error("Invalid date string format. All parts must be numbers");
+            }
+            
+            if (month < 1 || month > 12) {
+                throw new Error("Month must be between 1 and 12");
+            }
+            
+            this._year = year;
+            this._month = month - 1; // Convert to 0-based month
+            this._date = date;
+            
+            // Normalize the date if it's out of bounds
+            this.normalize();
         } else if (typeof yearOrDate === 'number') {
             // Constructor with year, month, date
             this._year = yearOrDate;

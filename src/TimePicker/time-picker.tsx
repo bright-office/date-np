@@ -17,7 +17,7 @@ type TimePickerWithInput = {
 
 export type TimePickerProps = {
     format?: TimeFormat;
-    defaultTime?: Partial<TimeValue>;
+    defaultTime?: TimeValue;
     className?: string;
     onTimeChange?: (time: TimeValue) => void;
     
@@ -27,14 +27,16 @@ export type TimePickerProps = {
     dAwareConProps?: tdirectionAwareContainerProps;
 } & (TimePickerWithoutInput | TimePickerWithInput);
 
+
 const TimePickerContent = ({
     className,
     shouldShowInput = true,
     inputProps,
     onTimeChange,
     dAwareConProps,
-}: Omit<TimePickerProps, 'format' | 'defaultTime'>) => {
-    const { timePickerState, setVisibility } = useTimePicker();
+    defaultTime
+}: Omit<TimePickerProps, 'format'>) => {
+    const { timePickerState, setVisibility, setTime } = useTimePicker();
     const timePickerInputRef = useRef<HTMLDivElement>(null);
     const {format} = timePickerState;
 
@@ -43,7 +45,12 @@ const TimePickerContent = ({
         if (onTimeChange) {
             onTimeChange(timePickerState.selectedTime);
         }
-    }, [timePickerState.selectedTime, onTimeChange]);
+    }, [timePickerState.selectedTime]);
+
+    useEffect(() =>{
+        if (defaultTime)
+        setTime(defaultTime);
+    },[defaultTime])
 
     // Merge default props with user props, giving priority to user props
     const baseProps = {
@@ -91,7 +98,6 @@ const TimePickerContent = ({
         </>
     );
 };
-
 export const TimePicker = ({
     format = "am/pm",
     defaultTime,

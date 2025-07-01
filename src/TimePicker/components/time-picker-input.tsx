@@ -37,8 +37,12 @@ export const TimePickerInput = ({
             setVisibility(true);
             setCurrentInputPosition("hours");
         }
+        if (timePickerState.isVisible)
+            setVisibility(false);
     };
 
+    
+    
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // This is primarily for manual editing - we'll keep it for compatibility
         setInputValue(e.target.value);

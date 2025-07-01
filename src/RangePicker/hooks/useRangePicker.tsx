@@ -884,6 +884,16 @@ const RangePickerProvider = ({
         if (isRangeValid && startingDateRange && endingDateRange) {
             // Use valid default range
             leftDate = startingDateRange instanceof NepaliDate ? startingDateRange.toADDate() : startingDateRange;
+            // WIP(inworking state): need to increase one month for right date to show next month if starting and ending dates are in the same month
+            if (startingDateRange instanceof NepaliDate && endingDateRange instanceof NepaliDate &&
+                startingDateRange.getMonth() === endingDateRange.getMonth() &&
+                startingDateRange.getFullYear() === endingDateRange.getFullYear()) {
+                rightDate = new NepaliDate(endingDateRange.getFullYear(), endingDateRange.getMonth() + 1, 1).toADDate();
+            } else if (startingDateRange instanceof Date && endingDateRange instanceof Date &&
+                startingDateRange.getMonth() === endingDateRange.getMonth() &&
+                startingDateRange.getFullYear() === endingDateRange.getFullYear()) {
+                rightDate = new Date(endingDateRange.getFullYear(), endingDateRange.getMonth() + 1, 1);
+            } else
             rightDate = endingDateRange instanceof NepaliDate ? endingDateRange.toADDate() : endingDateRange;
         } else if (minDate && maxDate) {
             // Use min/max dates as fallback
