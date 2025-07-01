@@ -12,6 +12,7 @@ type tRangePickerPanelState = {
 
 type tRangePickerContextType = {
     rangePickerState: {
+        shouldShowSinglePanel?: boolean;
         onRangeSelect?: (start: Date | NepaliDate, end: Date | NepaliDate) => void;
         minDate?: Date | NepaliDate;
         maxDate?: Date | NepaliDate;
@@ -937,6 +938,13 @@ const useRangePicker = () => {
     
     }
 
+    const setShouldShowSinglePanel = (shouldShow: boolean) => {
+        setRangePickerState((prevState) => ({
+            ...prevState,
+            shouldShowSinglePanel: shouldShow,
+        }));
+    }
+
     // WIP: End
 
     return {
@@ -958,6 +966,7 @@ const useRangePicker = () => {
         canNavigateToNextMonth,
         canNavigateToPreviousYear,
         canNavigateToNextYear,
+        setShouldShowSinglePanel,
         shouldShowSinglePanel,
         resetToOriginalState,
         getDisplayDateRange,
