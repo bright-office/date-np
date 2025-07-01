@@ -65,17 +65,22 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
   const year = currentMonthDate.getFullYear();
 
   // Check if navigation should be disabled
+  let propSinglePanelCheck = false;
   let isSinglePanel = false;
   if (rangePickerState.shouldShowSinglePanel === undefined) {
     isSinglePanel = shouldShowSinglePanel();
   } else {
+    propSinglePanelCheck = rangePickerState.shouldShowSinglePanel;
     isSinglePanel = !rangePickerState.shouldShowSinglePanel;
   }
 
   const isRightArrowDisabled = useMemo(() => {
+    
     // If in unsupported year, disable all navigation
     if (isUnsupportedYear()) return true;
 
+    if (propSinglePanelCheck) return false; // Enable arrows if single panel mode is not enforced by prop
+    
     // If in single panel mode, disable all arrows
     if (isSinglePanel) return true;
 
@@ -112,8 +117,11 @@ const RangePickerHeader = ({ panel }: RangePickerHeaderProps) => {
   ]);
 
   const isLeftArrowDisabled = useMemo(() => {
+    
     // If in unsupported year, disable all navigation
     if (isUnsupportedYear()) return true;
+    
+    if (propSinglePanelCheck) return false; // Enable arrows if single panel mode is forced by prop
 
     // If in single panel mode, disable all arrows
     if (isSinglePanel) return true;
