@@ -118,11 +118,19 @@ const RangePicker = (props: tRangePickerProps) => {
         defaultLocale = "AD",
     } = props;
 
+    
     const rangePickerInputRef = rangePickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
-
+    
     let RangePickerContent = () => {
-        const { rangePickerState, updateRangePickerVisibility, clearSelection, shouldShowSinglePanel } = useRangePicker();
+        const { rangePickerState, updateRangePickerVisibility, clearSelection, shouldShowSinglePanel, setDatePickerRange } = useRangePicker();
         const { isVisible, startDate, endDate } = rangePickerState;
+        
+        useEffect(() => {
+          if (startingDateRange && endingDateRange) {
+            setDatePickerRange(startingDateRange, endingDateRange);
+          }
+            
+        }, [startingDateRange, endingDateRange]);
 
         useEffect(() => {
             if (onVisibilityChange) {

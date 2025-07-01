@@ -97,7 +97,7 @@ const PickerBody = (
     const prevMonthTotalDays = getTotalDaysInMonth({ date: prevMonthDate, locale });
 
     const plotablePrevMonthDays = thisMonthStartDay;
-
+ 
     const TrailingPrevMonthDays = () => {
         return [...Array(plotablePrevMonthDays)].map((_, index) => {
             const date = prevMonthTotalDays - (plotablePrevMonthDays - (index + 1));

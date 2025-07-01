@@ -795,6 +795,150 @@ const useRangePicker = () => {
         };
     };
 
+    // WIP: setDatePickerRange. We will do this by checking the changed default dates against bounds just like we did for initial panel positions
+    // first we check initial panel positions and then we check if the default dates are within bounds
+    const setDatePickerRange = (start: Date | NepaliDate, end: Date | NepaliDate) => {
+        let startingDateRange: Date | NepaliDate | null = start;
+        let endingDateRange: Date | NepaliDate | null = end;
+        const {minDate, maxDate, today, locale} = rangePickerContextValue.rangePickerState;
+        
+        const isDateRangeValid = (minDate?: Date | NepaliDate, maxDate?: Date | NepaliDate) =>{
+            if (!startingDateRange && !endingDateRange) return true;
+        
+        let isValid = true;
+        
+        // Check startingDateRange against bounds
+        if (startingDateRange) {
+            if (minDate) {
+                isValid = isValid && compareDates(startingDateRange, minDate) >= 0;
+            }
+            if (maxDate) {
+                isValid = isValid && compareDates(startingDateRange, maxDate) <= 0;
+            }
+        }
+        
+        // Check endingDateRange against bounds  
+        if (endingDateRange) {
+            if (minDate) {
+                isValid = isValid && compareDates(endingDateRange, minDate) >= 0;
+            }
+            if (maxDate) {
+                isValid = isValid && compareDates(endingDateRange, maxDate) <= 0;
+            }
+        }
+        
+        // Check if start date is before or equal to end date
+        if (startingDateRange && endingDateRange) {
+            isValid = isValid && compareDates(startingDateRange, endingDateRange) <= 0;
+        }
+        
+        return isValid;
+        }
+
+  
+        const isRangeValid = isDateRangeValid(minDate, maxDate);
+        
+        let leftDate: Date;
+        let rightDate: Date;
+        
+        if (isRangeValid && startingDateRange && endingDateRange) {
+            // Use valid default range
+            leftDate = startingDateRange instanceof NepaliDate ? startingDateRange.toADDate() : startingDateRange;
+            // WIP(inworking state): need to increase one month for right date to show next month if starting and ending dates are in the same month
+            if (startingDateRange instanceof NepaliDate && endingDateRange instanceof NepaliDate &&
+                startingDateRange.getMonth() === endingDateRange.getMonth() &&
+                startingDateRange.getFullYear() === endingDateRange.getFullYear()) {
+                rightDate = new NepaliDate(endingDateRange.getFullYear(), endingDateRange.getMonth() + 1, 1).toADDate();
+            } else if (startingDateRange instanceof Date && endingDateRange instanceof Date &&
+                startingDateRange.getMonth() === endingDateRange.getMonth() &&
+                startingDateRange.getFullYear() === endingDateRange.getFullYear()) {
+                rightDate = new Date(endingDateRange.getFullYear(), endingDateRange.getMonth() + 1, 1);
+            } else
+            rightDate = endingDateRange instanceof NepaliDate ? endingDateRange.toADDate() : endingDateRange;
+        } else if (minDate && maxDate) {
+            // Use min/max dates as fallback
+            leftDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            rightDate = maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
+        } else if (minDate) {
+            // Use minDate and next month
+            leftDate = minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
+            rightDate = new Date(leftDate.getFullYear(), leftDate.getMonth() + 1, leftDate.getDate());
+        } else {
+            // Default to current month and next month
+            leftDate = today;
+            rightDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+        }
+        
+        // Convert to appropriate locale
+        if (locale === "ne") {
+            const leftBSDate = NepaliDate.fromADDate(leftDate);
+            const rightBSDate = NepaliDate.fromADDate(rightDate);
+            const bsStartDate = startingDateRange instanceof NepaliDate ? startingDateRange : NepaliDate.fromADDate(startingDateRange);
+            const bsEndDate = endingDateRange instanceof NepaliDate ? endingDateRange : NepaliDate.fromADDate(endingDateRange)
+            
+            setRangePickerState(prevState => ({
+                ...prevState,
+                startDate: bsStartDate,
+                endDate: bsEndDate,
+                leftPanel: {
+                    ...prevState.leftPanel,
+                    activeMonth: leftBSDate.getMonth(),
+                    activeYear: leftBSDate.getFullYear(),
+                    mode: 'date',
+                    
+                },
+                rightPanel: {
+                    ...prevState.rightPanel,
+                    activeMonth: rightBSDate.getMonth(),
+                    activeYear: rightBSDate.getFullYear(),
+                    mode: 'date',
+                    
+                }})
+            )
+            
+
+            return {
+                leftMonth: leftBSDate.getMonth(),
+                leftYear: leftBSDate.getFullYear(),
+                rightMonth: rightBSDate.getMonth(),
+                rightYear: rightBSDate.getFullYear(),
+            };
+        }
+        const adLeftDate = leftDate instanceof NepaliDate ? leftDate.toADDate() : leftDate;
+        const adRightDate = rightDate instanceof NepaliDate ? rightDate.toADDate() : rightDate;
+        
+        setRangePickerState(prevState => ({
+            ...prevState,
+            startDate: adLeftDate,
+            endDate: adRightDate,
+            leftPanel: {
+                ...prevState.leftPanel,
+                selectedDate: leftDate,
+                activeMonth: leftDate.getMonth(),
+                activeYear: leftDate.getFullYear(),
+                startDate: leftDate,
+                endDate: rightDate,
+            },
+            rightPanel: {
+                ...prevState.rightPanel,
+                selectedDate: rightDate,
+                activeMonth: rightDate.getMonth(),
+                activeYear: rightDate.getFullYear(),
+                startDate: leftDate,
+                endDate: rightDate,
+            }}))
+        
+        return {
+            leftMonth: leftDate.getMonth(),
+            leftYear: leftDate.getFullYear(),
+            rightMonth: rightDate.getMonth(),
+            rightYear: rightDate.getFullYear(),
+        };
+    
+    }
+
+    // WIP: End
+
     return {
         ...rangePickerContextValue,
         updateRangePickerDay,
@@ -817,6 +961,7 @@ const useRangePicker = () => {
         shouldShowSinglePanel,
         resetToOriginalState,
         getDisplayDateRange,
+        setDatePickerRange,
         onRangeSelect: rangePickerContextValue.rangePickerState.onRangeSelect,
     };
 };

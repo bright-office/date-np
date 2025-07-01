@@ -219,7 +219,6 @@ function App() {
               endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}
               onRangeSelect={(start, end) => {
-                console.log("Selected Range:", start, end);
               }}
               label="Select Date Range"
               description="Choose your date range"
