@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { cn } from "../../../utils/clsx";
 import { areDatesEqual, compareDates, isDateBetween } from "../../../utils/validators";
 import { useRangePicker } from "../hooks/useRangePicker";
 import { NepaliDate } from "../../NepaliDate";
-import { flushSync } from "react-dom";
 
 interface RangeDayProps {
     date: Date | NepaliDate;

@@ -51,7 +51,7 @@ const useRangePicker = () => {
     const updateRangePickerDay = (day: Date | NepaliDate, programatic? : 'start' | 'end') => {
 
         // Get current state to calculate the result synchronously
-        const { startDate, endDate, locale } = rangePickerContextValue.rangePickerState;
+        const { startDate, endDate, locale, onRangeSelect } = rangePickerContextValue.rangePickerState;
         
         let finalStartDate: Date | NepaliDate | null = null;
         let finalEndDate: Date | NepaliDate | null = null;
@@ -158,16 +158,14 @@ const useRangePicker = () => {
                     // If closer to start or equal distance, move start date
                     if (distanceToStart <= distanceToEnd) {
                         if (programatic === 'end'){
-                            console.log('should flip start and end dates (end)', normalizedDay);
                             finalStartDate = normalizedStartDate;
-                            finalEndDate = normalizedDay;
+                            finalEndDate = normalizedDay;      
                         } else {
                         finalStartDate = normalizedDay;
                         finalEndDate = normalizedEndDate;
                         }
                     } else {
                         if (programatic === 'start'){
-                            console.log('should flip start and end dates (start)', normalizedDay);
                             finalStartDate = normalizedDay;
                             finalEndDate = normalizedEndDate;
                         } else {
@@ -212,6 +210,9 @@ const useRangePicker = () => {
         
         // Now update the state with the calculated values
         setRangePickerState((prevState) => {
+            if (programatic && finalStartDate && finalEndDate)
+                onRangeSelect?.(finalStartDate,finalEndDate)  
+
             return {...prevState,
                 startDate: finalStartDate,
                 endDate: finalEndDate,

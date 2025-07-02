@@ -181,7 +181,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                         <div
                             ref={startInputRef}
                             className={cn(
-                                "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50",
+                                "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
                                 !startDate && "text-gray-500",
                                 errors.start && "bg-red-50 text-red-600"
                             )}
@@ -207,7 +207,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                                 <div
                                     ref={endInputRef}
                                     className={cn(
-                                        "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50",
+                                        "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
                                         !endDate && "text-gray-500",
                                         errors.end && "bg-red-50 text-red-600"
                                     )}
@@ -221,6 +221,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                                     aria-label="End date"
                                     data-placeholder={endDate ? undefined : "YYYY-MM-DD"}
                                 >
+                                    
                                     {endDate ? formatDate(endDate) : "YYYY-MM-DD"}
                                 </div>
                             </>
