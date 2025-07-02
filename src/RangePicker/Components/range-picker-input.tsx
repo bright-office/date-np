@@ -18,7 +18,7 @@ export interface RangePickerInputProps {
 }
 
 const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
-    ({ className, placeholder = "Select date range...", dateFormat, editable = false }, ref) => {
+    ({ className, placeholder = 'Select Date..',dateFormat, editable = false }, ref) => {
         const { 
             rangePickerState, 
             updateRangePickerVisibility, 
@@ -39,12 +39,12 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
         const editableHook = useEditableDateInput({
             onStartDateChange: (date) => {
                 if (date) {
-                    updateRangePickerDay(date);
+                    updateRangePickerDay(date, 'start');
                 }
             },
             onEndDateChange: (date) => {
                 if (date) {
-                    updateRangePickerDay(date);
+                    updateRangePickerDay(date, 'end');
                 }
             },
             minDate,
@@ -148,7 +148,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
         // Non-editable display function
         const getDisplayText = () => {
             if (!startDate && !endDate) {
-                return placeholder;
+                return '';
             }
             
             if (startDate && !endDate) {
@@ -159,7 +159,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                 return `From: ${formatDate(startDate)} To: ${formatDate(endDate)}`;
             }
             
-            return placeholder;
+            return '';
         };
 
         // Render editable version
@@ -199,7 +199,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                         </div>
 
                         {/* To label and end date input - only show if we have a start date or are editing */}
-                        {(startDate || editingField === 'end') && (
+                        { (
                             <>
                                 <span className="text-gray-700 ml-2">To:</span>
                                 
@@ -228,7 +228,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
 
                         {/* Placeholder text when no dates are selected */}
                         {!startDate && !endDate && editingField !== 'start' && editingField !== 'end' && (
-                            <span className="text-gray-500">{placeholder}</span>
+                            <span className="text-gray-500">{editable ? '' : placeholder}</span>
                         )}
                     </div>
 
@@ -255,7 +255,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                 <span className={cn(
                     (!startDate && !endDate) && "text-gray-500"
                 )}>
-                    {getDisplayText()}
+                    {getDisplayText().length < 1 ? placeholder : getDisplayText()}
                 </span>
             </div>
         );

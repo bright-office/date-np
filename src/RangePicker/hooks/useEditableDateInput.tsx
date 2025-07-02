@@ -10,6 +10,7 @@ export interface UseEditableDateInputReturn {
         end: string | null;
     };
     clearErrors: () => void;
+    
 }
 
 export interface UseEditableDateInputProps {
@@ -112,7 +113,7 @@ export const useEditableDateInput = ({
             if (parsedDate.compare(startNepaliDate) < 0) {
                 return 'End date must be after start date';
             }
-        }
+        } 
 
         return null;
     }, [isValidInput, parseInputToDate, minDate, maxDate, currentStartDate, currentEndDate]);
@@ -130,8 +131,16 @@ export const useEditableDateInput = ({
             const parsedDate = input.trim() ? parseInputToDate(input) : null;
             
             if (type === 'start') {
+                
+                if (currentStartDate && parsedDate?.equals(currentStartDate as NepaliDate) || currentEndDate &&parsedDate?.equals(currentEndDate as NepaliDate)) {
+                 return   
+                }
                 onStartDateChange(parsedDate);
-            } else {
+            
+            } else if (type === 'end') {
+                if (currentEndDate && parsedDate?.equals(currentEndDate as NepaliDate) || currentStartDate && parsedDate?.equals(currentStartDate as NepaliDate)){
+                    return
+                }
                 onEndDateChange(parsedDate);
             }
         }

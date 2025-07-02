@@ -9,6 +9,7 @@ import { type tdirectionAwareContainerProps } from "../Components/helpers/direct
 import { LocaleSwitcher } from "./Components/locale-switcher";
 import { isInvalidDateRange } from "../../utils/validators";
 import "../index.css";
+import { useEditableDateInput } from "./hooks/useEditableDateInput";
 
 type tRangePickerWithoutInput = {
   /**
