@@ -906,28 +906,6 @@ const useRangePicker = () => {
             
             return 
         }
-       
-        // TODO: why is this setstate damaging the state?
-        // setRangePickerState(prevState => ({
-        //     ...prevState,
-        //     startDate: startDate,
-        //     endDate: endDate,
-        //     leftPanel: {
-        //         ...prevState.leftPanel,
-        //         selectedDate: leftDate,
-        //         activeMonth: leftDate.getMonth(),
-        //         activeYear: leftDate.getFullYear(),
-        //         startDate: leftDate,
-        //         endDate: rightDate,
-        //     },
-        //     rightPanel: {
-        //         ...prevState.rightPanel,
-        //         selectedDate: rightDate,
-        //         activeMonth: rightDate.getMonth(),
-        //         activeYear: rightDate.getFullYear(),
-        //         startDate: leftDate,
-        //         endDate: rightDate,
-        //     }}))
         
         return 
     

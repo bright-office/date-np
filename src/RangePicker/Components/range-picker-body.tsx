@@ -20,7 +20,7 @@ interface RangePickerBodyProps {
 
 const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
     const { rangePickerState, updatePanelMonth, updatePanelYear, resetToOriginalState } = useRangePicker();
-    const { locale } = rangePickerState;
+    const { locale, shouldShowSinglePanel } = rangePickerState;
     const panelState = panel === "left" ? rangePickerState.leftPanel : rangePickerState.rightPanel;
     const otherPanelState = panel === "left" ? rangePickerState.rightPanel : rangePickerState.leftPanel;
     const { activeYear, activeMonth, mode } = panelState;
@@ -158,6 +158,10 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
                         if (activeYear > otherPanelState.activeYear) {
                             shouldShow = false;
                         }
+                        if (shouldShowSinglePanel) {
+                            // If single panel mode is enforced, show all months
+                            shouldShow = true;
+                        }
                     } else {
                         // Right panel: don't show months less than left panel's active month
                         // if they are in the same year
@@ -193,9 +197,17 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         let startYear = minYear;
         let endYear = maxYear;
         
+
         if (panel === "left") {
             // Left panel: don't show years greater than right panel's active year
             endYear = Math.min(maxYear, otherPanelState.activeYear);
+            if (shouldShowSinglePanel)
+            {
+                startYear = minYear;
+                endYear = maxYear;
+            }
+            
+
         } else {
             // Right panel: don't show years less than left panel's active year
             startYear = Math.max(minYear, otherPanelState.activeYear);

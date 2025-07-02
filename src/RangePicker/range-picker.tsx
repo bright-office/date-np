@@ -106,7 +106,20 @@ export type tRangePickerProps = {
   /**
    * shouldShowSinglePanel
    */
-shouldShowSinglePanelProp?: boolean;
+  shouldShowSinglePanelProp?: boolean;
+
+  /**
+   * Enable editable date input functionality
+   * Allows users to type dates directly in ISO format (YYYY-MM-DD)
+   * @default false
+   */
+  editable?: boolean;
+
+  /**
+   * Lock. locks the locale and removes it.
+   * @default false
+   */
+  lockLocale?: boolean;
 
 } & (tRangePickerWithInput | tRangePickerWithoutInput);
 
@@ -125,6 +138,7 @@ const RangePicker = (props: tRangePickerProps) => {
     endingDateRange,
     defaultLocale = "AD",
     shouldShowSinglePanelProp = false,
+    editable = false,
   } = props;
 
   const rangePickerInputRef =
@@ -264,7 +278,9 @@ const RangePicker = (props: tRangePickerProps) => {
                       Clear
                     </button>
                   )}
+                  {props.lockLocale ? null : 
                   <LocaleSwitcher />
+                  }
                 </div>
               }
             </>
@@ -295,6 +311,7 @@ const RangePicker = (props: tRangePickerProps) => {
             // @ts-ignore
             ref={rangePickerInputRef}
             {...rangePickerInputProps}
+            editable={editable}
           />
         )}
         <RangePickerContent />
