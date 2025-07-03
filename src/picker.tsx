@@ -59,12 +59,12 @@ export type tpickerProps = {
   /**
    * Provide individual styling to different components.
    */
-  bodyClassNames?: ComponentProps<typeof PickerBody>;
+  bodyProps?: ComponentProps<typeof PickerBody>;
 
   /**
    * Header class names
    */
-  headerClassNames?: ComponentProps<typeof PickerHeader>;
+  headerProps?: ComponentProps<typeof PickerHeader>;
 
   /**
    * onSelect callback function called when date selection is complete
@@ -87,6 +87,7 @@ export type tpickerProps = {
    * description for the picker
    */
   description?: string;
+
 } & (tpickerWithInput | tpickerWithoutInput);
 
 const Picker = (props: tpickerProps) => {
@@ -100,8 +101,8 @@ const Picker = (props: tpickerProps) => {
     onSelect,
     label,
     description,
-    bodyClassNames,
-    headerClassNames,
+    bodyProps,
+    headerProps = {},
     isVisible = false,
   } = props;
 
@@ -150,8 +151,8 @@ const Picker = (props: tpickerProps) => {
             </div>
           ) : (
             <>
-              <PickerHeader {...headerClassNames} />
-              <PickerBody {...bodyClassNames} onSelect={onSelect} />
+              <PickerHeader {...headerProps} />
+              <PickerBody {...bodyProps} onSelect={onSelect} />
             </>
           )}
         </div>

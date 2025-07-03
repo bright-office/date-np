@@ -333,6 +333,67 @@ function App() {
             </table>
           </div>
         </div>
+
+        {/* Editable Picker Test */}
+        <div className="text-start">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Editable Picker
+          </h1>
+          <p className="text-lg text-gray-600 mb-6">
+            Test the new editable functionality that allows typing dates directly in ISO format (YYYY-MM-DD)
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Editable English Date Picker
+              </label>
+              <Picker
+                label="English Date (Editable)"
+                description="Click and type in YYYY-MM-DD format (e.g., 2025-07-02)"
+                inputProps={{
+                  editable: true,
+                  defaultLocale: "AD",
+                  placeholder: "Type or select date...",
+                }}
+                onSelect={(selectedDate) => {
+                  console.log("English date selected:", selectedDate);
+                }}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Editable Nepali Date Picker
+              </label>
+              <Picker
+                label="Nepali Date (Editable)"
+                description="Click and type in YYYY-MM-DD format (e.g., 2082-03-20)"
+                inputProps={{
+                  editable: true,
+                  defaultLocale: "BS",
+                  placeholder: "Type or select date...",
+                }}
+                onSelect={(selectedDate) => {
+                  console.log("Nepali date selected:", selectedDate);
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Instructions:</h3>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Click on the input field to start editing</li>
+              <li>• Type dates in YYYY-MM-DD format</li>
+              <li>• Press Enter to confirm or Escape to cancel</li>
+              <li>• Invalid dates will show error messages</li>
+              <li>• English picker accepts AD dates, Nepali picker accepts BS dates</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div >
   );
