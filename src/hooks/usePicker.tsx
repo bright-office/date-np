@@ -5,6 +5,7 @@ import { compareDates } from "../../utils/validators";
 
 type tpickerContextType = {
     pickerState: {
+        onSelect?: (selectedDate: Date | NepaliDate) => void;
         minDate?: Date | NepaliDate;
         maxDate?: Date | NepaliDate;
         today: Date;
@@ -45,6 +46,11 @@ const usePicker = () => {
     const { setPickerState } = pickerContextValue;
 
     const updatePickerDay = (day: Date | NepaliDate) => {
+        const {onSelect} = pickerContextValue.pickerState
+        if (onSelect) {
+            // Call the onSelect callback with the selected date
+            onSelect(day);
+        }
         setPickerState((prevState) => {
             return {
                 ...prevState,
@@ -354,12 +360,14 @@ const PickerProvider = ({
     maxDate,
     defaultDate,
     defaultLocale = "AD",
+    onSelect,
 }: {
     children: React.ReactNode;
     minDate?: Date | NepaliDate;
     maxDate?: Date | NepaliDate;
     defaultDate?: Date | NepaliDate;
     defaultLocale?: "AD" | "BS";
+    onSelect? : (selectedDate: Date | NepaliDate) => void;
 }) => {
     const today = new Date();
 
@@ -475,6 +483,7 @@ const PickerProvider = ({
         isVisible: false,
         locale: defaultLocale === "BS" ? "ne" : "en",
         mode: "date",
+        onSelect: onSelect
     });
 
     return (

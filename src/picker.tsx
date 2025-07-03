@@ -70,7 +70,7 @@ export type tpickerProps = {
    * onSelect callback function called when date selection is complete
    */
   onSelect?: (
-    selectedDate: Date | import("./NepaliDate").NepaliDate | null
+    selectedDate: Date | import("./NepaliDate").NepaliDate
   ) => void;
 
   /**
@@ -167,6 +167,7 @@ const Picker = (props: tpickerProps) => {
       maxDate={maxPropDate}
       defaultDate={inputProps?.defaultDate}
       defaultLocale={inputProps?.defaultLocale}
+      onSelect={onSelect}
     >
       <div className="flex flex-col gap-1 w-full">
         {label && (
