@@ -149,7 +149,6 @@ const Picker = (props: tpickerProps) => {
         <div
           className={cn(
             "flex flex-col gap-0.5 w-72 h-max bg-white drop-shadow-sm p-2.5 rounded-md",
-            className
           )}
         >
           {hasInvalidDateRange ? (

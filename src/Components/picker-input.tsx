@@ -226,7 +226,13 @@ const PickerInput = React.forwardRef<
       <div
         onClick={handleInputClick}
         ref={ref}
-        className={cn("appearance-none", className)}
+        className={cn("appearance-none", 
+          cn(
+              "w-full rounded-md border border-gray-300 px-3 py-2",
+              "cursor-pointer font-[450] text-gray-400 focus:outline-none",
+              "bg-gray-100/40 text-sm transition-color"
+            ),
+            className)}
         {...inputProps}
       >
         {getDisplayContent()}
