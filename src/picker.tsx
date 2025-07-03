@@ -9,6 +9,7 @@ import { type tdirectionAwareContainerProps } from "./Components/helpers/directi
 import { isInvalidDateRange } from "../utils/validators";
 import "./index.css";
 import { NepaliDate } from "./NepaliDate";
+import Label from "./Components/label";
 
 type tpickerWithoutInput = {
   /**
@@ -88,6 +89,11 @@ export type tpickerProps = {
    */
   description?: string;
 
+  /**
+   * required prop for the picker
+   */
+  required?: boolean;
+
 } & (tpickerWithInput | tpickerWithoutInput);
 
 const Picker = (props: tpickerProps) => {
@@ -104,6 +110,7 @@ const Picker = (props: tpickerProps) => {
     bodyProps,
     headerProps = {},
     isVisible = false,
+    required = false,
   } = props;
 
   const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -162,6 +169,7 @@ const Picker = (props: tpickerProps) => {
 
   
   return (
+   
     <PickerProvider
       minDate={minPropDate}
       maxDate={maxPropDate}
@@ -169,11 +177,15 @@ const Picker = (props: tpickerProps) => {
       defaultLocale={inputProps?.defaultLocale}
       onSelect={onSelect}
     >
-      <div className="flex flex-col gap-1 w-full">
+      <div className={cn(
+          "flex flex-col gap-0.5 w-full mt-0.5",
+          className
+        )
+        }>
         {label && (
-          <span className="text-m font-medium text-gray-700 text-start">
+          <Label required={required}>
             {label}
-          </span>
+          </Label>
         )}
         {shouldShowInput && (
           <PickerInput

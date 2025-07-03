@@ -10,6 +10,7 @@ import { LocaleSwitcher } from "./Components/locale-switcher";
 import { isInvalidDateRange } from "../../utils/validators";
 import "../index.css";
 import { useEditableDateInput } from "./hooks/useEditableDateInput";
+import Label from "../Components/label";
 
 type tRangePickerWithoutInput = {
   /**
@@ -122,6 +123,12 @@ export type tRangePickerProps = {
    */
   lockLocale?: boolean;
 
+  /**
+   * Required. boolean property to indicate if the range picker is required
+   * @default false
+   */
+  required?: boolean;
+
 } & (tRangePickerWithInput | tRangePickerWithoutInput);
 
 const RangePicker = (props: tRangePickerProps) => {
@@ -140,6 +147,7 @@ const RangePicker = (props: tRangePickerProps) => {
     defaultLocale = "AD",
     shouldShowSinglePanelProp = false,
     editable = false,
+    required = false
   } = props;
 
   const rangePickerInputRef =
@@ -300,12 +308,15 @@ const RangePicker = (props: tRangePickerProps) => {
       defaultLocale={defaultLocale}
       onRangeSelect={onRangeSelect}
     >
-      <div className="flex flex-col gap-1 w-full">
+      <div className={cn(
+        "flex flex-col gap-0.5 w-full",
+        className
+        )}>
         {/* label */}
         {props.label && (
-          <span className="text-m font-medium text-gray-700 text-start">
+          <Label required={required}>
             {props.label}
-          </span>
+          </Label>
         )}
         {shouldShowInput && (
           <RangePickerInput
