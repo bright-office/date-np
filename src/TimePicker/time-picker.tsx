@@ -4,6 +4,8 @@ import { TimePickerProvider, useTimePicker, type TimeFormat, type TimeValue } fr
 import { TimePickerInput } from "./components/time-picker-input";
 import { TimePickerBody } from "./components/time-picker-body";
 import DirectionAwareContainer, { type tdirectionAwareContainerProps } from "../Components/helpers/direction-aware-container";
+import Label from "../Components/label";
+import label from "../Components/label";
 
 type TimePickerWithoutInput = {
     inputProps?: never;
@@ -25,6 +27,16 @@ export type TimePickerProps = {
      * Control how and where you show the TimePicker container
      */
     dAwareConProps?: tdirectionAwareContainerProps;
+
+    /**
+     * body props
+     */
+    bodyProps?: ComponentProps<typeof TimePickerBody>;
+
+    /**
+     * label for the time picker 
+     */
+    label?: string;
 } & (TimePickerWithoutInput | TimePickerWithInput);
 
 
@@ -34,11 +46,14 @@ const TimePickerContent = ({
     inputProps,
     onTimeChange,
     dAwareConProps,
-    defaultTime
+    defaultTime,
+    bodyProps = {},
+    label
 }: Omit<TimePickerProps, 'format'>) => {
     const { timePickerState, setVisibility, setTime } = useTimePicker();
     const timePickerInputRef = useRef<HTMLDivElement>(null);
     const {format} = timePickerState;
+    const shouldInlcude = timePickerState.shouldInclude
 
     // Handle time change callback
     useEffect(() => {
@@ -75,24 +90,29 @@ const TimePickerContent = ({
             activationPosition: { x: 0, y: 0 },
           };
 
+    // calculate total width based on how many true values are in shouldInclude and time format
+    // if all three are true, the width will be 24 * 3 = 72px for 24hr format or 82px for am/pm format
+    // if only two are true, the width will be 24 * 2 = 48px for 24hr format or 58px for am/pm format
+    // if only one is true, the width will be 24px for 24hr format or 38px for am/pm format
+    // if none are true, the width will be 0px
+    
+    const totalWidth = Object.values(shouldInlcude).filter(Boolean).length * (format === "24hr" ? 24 : 30);
     return (
         <>
             {shouldShowInput && (
                 <div className="relative" ref={timePickerInputRef}>
-                    <TimePickerInput {...inputProps} />
+                    <TimePickerInput {...inputProps}  />
                 </div>
             )}
             
             <DirectionAwareContainer {...directionAwareProps}>
                 <div className={cn(
-                    format === "24hr" ? "w-72" : "w-82",
+                    `w-[${totalWidth}px]`,
                     "bg-white",
-                    shouldShowInput 
-                        ? "border-l border-r border-b border-t border-gray-300 rounded-b-md shadow-lg p-6" 
-                        : "border border-gray-300 rounded-md drop-shadow-sm p-6",
+                    "border border-gray-300 rounded-md drop-shadow-sm p-6",
                     !shouldShowInput && className
                 )}>
-                    <TimePickerBody />
+                    <TimePickerBody {...bodyProps} />
                 </div>
             </DirectionAwareContainer>
         </>
@@ -104,8 +124,13 @@ export const TimePicker = ({
     ...props
 }: TimePickerProps) => {
     return (
-        <TimePickerProvider format={format} defaultTime={defaultTime}>
+        <TimePickerProvider format={format} defaultTime={defaultTime} shouldInclude={{
+            hours: props.bodyProps?.shouldInclude?.hours ?? true,
+            minutes: props.bodyProps?.shouldInclude?.minutes ?? true,
+            seconds: props.bodyProps?.shouldInclude?.seconds ?? true,
+        }}>
             <div className="flex flex-col gap-1 w-full">
+                {props.label && <Label>{props.label}</Label>}
                 <TimePickerContent {...props} />
             </div>
         </TimePickerProvider>

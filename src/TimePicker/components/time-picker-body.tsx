@@ -5,6 +5,16 @@ import { useEffect, useRef } from "react";
 
 export type TimePickerBodyProps = {
     className?: string;
+    /**
+     * shouldInclude: object that contains the colums to include in the TimePickerBody
+     * e.g. { hours: true, minutes: true, seconds: true, period: true }
+     * If not provided, all columns will be included
+     */
+    shouldInclude?: {
+        hours?: boolean;
+        minutes?: boolean;
+        seconds?: boolean;
+    };
 };
 
 export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
@@ -20,9 +30,9 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
         togglePeriod,
     } = useTimePicker();
 
-    const { selectedTime, format } = timePickerState;
+    const { selectedTime, format, shouldInclude } = timePickerState;
 
-    // Add native wheel event listener to prevent document scrolling
+
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -68,6 +78,7 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
             {/* Time Columns */}
             <div className="flex items-center space-x-8">
                 {/* Hours */}
+                { shouldInclude.hours &&
                 <TimeColumn
                     label="Hours"
                     value={selectedTime.hours}
@@ -76,8 +87,9 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
                     format={format}
                     isHours={true}
                 />
-
+                }
                 {/* Minutes */}
+                { shouldInclude.minutes &&
                 <TimeColumn
                     label="Minutes"
                     value={selectedTime.minutes}
@@ -86,8 +98,9 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
                     format={format}
                     isHours={false}
                 />
-
+                }
                 {/* Seconds */}
+                { shouldInclude.seconds &&
                 <TimeColumn
                     label="Seconds"
                     value={selectedTime.seconds}
@@ -96,7 +109,7 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
                     format={format}
                     isHours={false}
                 />
-
+                }
                 {/* AM/PM */}
                 {format === "am/pm" && selectedTime.period && (
                     <TimeColumn

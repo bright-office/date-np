@@ -91,8 +91,6 @@ const PickerBody = (
     const currentMonthDate = createDate(activeYear, activeMonth, 1);
     const thisMonthtotalDays = getTotalDaysInMonth({ date: currentMonthDate, locale });
     const thisMonthStartDay = getStartingDayOfMonth({ date: currentMonthDate, locale });
-    const thisMonthEndDate = createDate(activeYear, activeMonth, thisMonthtotalDays);
-    const thisMonthEndDay = getEndingDayOfMonth({ date: thisMonthEndDate, locale });
     const prevMonthDate = createDate(activeYear, activeMonth - 1, 1);
     const prevMonthTotalDays = getTotalDaysInMonth({ date: prevMonthDate, locale });
 

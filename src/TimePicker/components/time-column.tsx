@@ -129,7 +129,7 @@ export const TimeColumn = ({
                 </div>
 
                 {/* Current Value */}
-                <div className="text-2xl font-bold text-black h-12 flex items-center font-mono bg-gray-50 px-3 rounded">
+                <div className="text-2xl font-bold text-black h-12 flex items-center font-mono bg-gray-50 px-3 rounded cursor-pointer">
                     {formatValue(value)}
                 </div>
 

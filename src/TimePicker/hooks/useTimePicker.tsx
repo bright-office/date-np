@@ -18,6 +18,11 @@ type TimePickerContextType = {
         format: TimeFormat;
         currentInputPosition: InputPosition;
         inputBuffer: string; // Temporary buffer for typing
+        shouldInclude: {
+            hours: boolean;
+            minutes: boolean;
+            seconds: boolean;
+        };
     };
     setTimePickerState: Dispatch<SetStateAction<TimePickerContextType["timePickerState"]>>;
 };
@@ -148,11 +153,23 @@ export const useTimePicker = () => {
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const formattedSeconds = seconds.toString().padStart(2, '0');
+        const {shouldInclude} = timePickerState;
         
         if (timePickerState.format === "am/pm") {
             return `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${period}`;
         }
-        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+
+        let formatteTimeString : string = "";
+        if (shouldInclude.hours )
+            formatteTimeString += `${formattedHours}:`;
+        if (shouldInclude.minutes)
+            formatteTimeString += `${formattedMinutes}:`;
+        if (shouldInclude.seconds) {
+            formatteTimeString += `${formattedSeconds}`;
+        } else {
+            formatteTimeString = formatteTimeString.slice(0, -1);
+        }
+        return formatteTimeString.trimEnd();
     };
 
     const setCurrentInputPosition = (position: InputPosition) => {
@@ -164,6 +181,7 @@ export const useTimePicker = () => {
     };
 
     const handleKeyInput = (key: string): boolean => {
+        const {shouldInclude} = timePickerState;
         // Only handle numeric input
         if (!/^\d$/.test(key)) return false;
 
@@ -192,7 +210,7 @@ export const useTimePicker = () => {
                             updateHours(digit);
                             setTimePickerState(prevState => ({
                                 ...prevState,
-                                currentInputPosition: "minutes",
+                                currentInputPosition: shouldInclude.minutes ? "minutes" : shouldInclude.seconds ? "seconds" : "hours",
                                 inputBuffer: "",
                             }));
                             return true;
@@ -220,7 +238,7 @@ export const useTimePicker = () => {
                             updateHours(digit);
                             setTimePickerState(prevState => ({
                                 ...prevState,
-                                currentInputPosition: "minutes",
+                                currentInputPosition: shouldInclude.minutes ? "minutes" : shouldInclude.seconds ? "seconds" : "hours",
                                 inputBuffer: "",
                             }));
                             return true;
@@ -235,7 +253,7 @@ export const useTimePicker = () => {
                             updateHours(hours);
                             setTimePickerState(prevState => ({
                                 ...prevState,
-                                currentInputPosition: "minutes",
+                                currentInputPosition: shouldInclude.minutes ? "minutes" : shouldInclude.seconds ? "seconds" : "hours",
                                 inputBuffer: "",
                             }));
                             return true;
@@ -245,7 +263,7 @@ export const useTimePicker = () => {
                             updateHours(hours);
                             setTimePickerState(prevState => ({
                                 ...prevState,
-                                currentInputPosition: "minutes",
+                                currentInputPosition: shouldInclude.minutes ? "minutes" : shouldInclude.seconds ? "seconds" : "hours",
                                 inputBuffer: "",
                             }));
                             return true;
@@ -280,7 +298,7 @@ export const useTimePicker = () => {
                         updateMinutes(digit);
                         setTimePickerState(prevState => ({
                             ...prevState,
-                            currentInputPosition: "seconds",
+                            currentInputPosition: shouldInclude.seconds ? "seconds" : shouldInclude.hours ? "hours" : "minutes",
                             inputBuffer: "",
                         }));
                         return true;
@@ -293,7 +311,7 @@ export const useTimePicker = () => {
                         updateMinutes(minutes);
                         setTimePickerState(prevState => ({
                             ...prevState,
-                            currentInputPosition: "seconds",
+                            currentInputPosition: shouldInclude.seconds ? "seconds" : shouldInclude.hours ? "hours" : "minutes",
                             inputBuffer: "",
                         }));
                         return true;
@@ -346,6 +364,7 @@ export const useTimePicker = () => {
                     // Invalid second, reset buffer
                     setTimePickerState(prevState => ({
                         ...prevState,
+                        currentInputPosition: shouldInclude.hours ? "hours" : shouldInclude.minutes ? "minutes" : "seconds",
                         inputBuffer: "",
                     }));
                     return false;
@@ -359,11 +378,13 @@ export const useTimePicker = () => {
 
     const getFormattedTimeWithHighlight = (): { display: string; highlightedPart: string } => {
         const { hours, minutes, seconds, period } = timePickerState.selectedTime;
-        const { currentInputPosition } = timePickerState;
+        const { currentInputPosition, shouldInclude } = timePickerState;
+        const {hours: includeHours, minutes: includeMinutes, seconds: includeSeconds} = shouldInclude;
         
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         const formattedSeconds = seconds.toString().padStart(2, '0');
+        
         
         let highlightedPart = "";
         
@@ -380,10 +401,17 @@ export const useTimePicker = () => {
         }
         
         let display = "";
+        if (includeHours) {
+            display += `${formattedHours}:`;
+        }
+        if (includeMinutes) {
+            display += `${formattedMinutes}:`;
+        }
+        if (includeSeconds) {
+            display += `${formattedSeconds}`;
+        }
         if (timePickerState.format === "am/pm") {
-            display = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${period}`;
-        } else {
-            display = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            display += `${period}`;
         }
         
         return { display, highlightedPart };
@@ -417,12 +445,18 @@ type TimePickerProviderProps = {
     children: ReactNode;
     format?: TimeFormat;
     defaultTime?: Partial<TimeValue>;
+    shouldInclude: {
+        hours: boolean;
+        minutes: boolean;
+        seconds: boolean;
+    };
 };
 
 export const TimePickerProvider = ({ 
     children, 
     format = "am/pm", 
-    defaultTime = {} 
+    defaultTime = {},
+    shouldInclude
 }: TimePickerProviderProps) => {
     const getDefaultHours = () => {
         if (format === "24hr") {
@@ -442,6 +476,7 @@ export const TimePickerProvider = ({
         format,
         currentInputPosition: "hours",
         inputBuffer: "",
+        shouldInclude: shouldInclude,
     });
 
     return (

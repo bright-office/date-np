@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { cn } from "../../../utils/clsx";
 import { useTimePicker } from "../hooks/useTimePicker";
+import type { TimePickerBody } from "./time-picker-body";
 
 export type TimePickerInputProps = {
     placeholder?: string;
@@ -11,7 +12,7 @@ export type TimePickerInputProps = {
 export const TimePickerInput = ({ 
     placeholder = "Select Time", 
     className,
-    inputClassName 
+    inputClassName,
 }: TimePickerInputProps) => {
     const { 
         timePickerState, 
@@ -21,6 +22,8 @@ export const TimePickerInput = ({
         setCurrentInputPosition,
         getFormattedTimeWithHighlight
     } = useTimePicker();
+
+    const shouldInclude = timePickerState.shouldInclude
     const [inputValue, setInputValue] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -35,14 +38,18 @@ export const TimePickerInput = ({
         // Let the outside click handler handle closing
         if (!timePickerState.isVisible) {
             setVisibility(true);
-            setCurrentInputPosition("hours");
+            if (shouldInclude.hours) {
+                setCurrentInputPosition("hours");
+            } else if (shouldInclude.minutes) {
+                setCurrentInputPosition("minutes");
+            } else if (shouldInclude.seconds) {
+                setCurrentInputPosition("seconds");
+            }
         }
         if (timePickerState.isVisible)
             setVisibility(false);
     };
 
-    
-    
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // This is primarily for manual editing - we'll keep it for compatibility
         setInputValue(e.target.value);
@@ -54,23 +61,23 @@ export const TimePickerInput = ({
             // Move to next position on Tab
             const { currentInputPosition } = timePickerState;
             if (currentInputPosition === "hours") {
+                if (shouldInclude.minutes) {
                 setCurrentInputPosition("minutes");
+                } else if (shouldInclude.seconds) {
+                    setCurrentInputPosition("seconds");
+                }
             } else if (currentInputPosition === "minutes") {
-                setCurrentInputPosition("seconds");
-            } else {
-                setCurrentInputPosition("hours");
-            }
-            return;
-        }
-
-        if (e.key === 'Backspace') {
-            e.preventDefault();
-            // Handle backspace to move to previous position
-            const { currentInputPosition } = timePickerState;
-            if (currentInputPosition === "seconds") {
-                setCurrentInputPosition("minutes");
-            } else if (currentInputPosition === "minutes") {
-                setCurrentInputPosition("hours");
+                if (shouldInclude.seconds) {
+                    setCurrentInputPosition("seconds");
+                } else if (shouldInclude.hours) {
+                    setCurrentInputPosition("hours");
+                }
+            } else if (currentInputPosition === "seconds") {
+                if (shouldInclude.hours) {
+                    setCurrentInputPosition("hours");
+                } else if (shouldInclude.minutes) {
+                    setCurrentInputPosition("minutes");
+                }
             }
             return;
         }
@@ -89,7 +96,14 @@ export const TimePickerInput = ({
         // Only set input position if picker is already visible
         // Don't force visibility on focus to avoid conflicts with click handler
         if (timePickerState.isVisible) {
+            if (shouldInclude.hours) {
             setCurrentInputPosition("hours");
+            } else if (shouldInclude.minutes) {
+            setCurrentInputPosition("minutes");
+            }
+            else if (shouldInclude.seconds) {
+            setCurrentInputPosition("seconds");
+            }
         }
     };
 
@@ -143,12 +157,9 @@ export const TimePickerInput = ({
                     onFocus={handleFocus}
                     placeholder={placeholder}
                     className={cn(
-                        "w-full px-3 py-2 border border-gray-300",
-                        timePickerState.isVisible 
-                            ? "rounded-t-md border-b-0" 
-                            : "rounded-md",
+                        "w-full px-3 py-2 border border-gray-300 rounded-md",
                         "bg-white text-gray-900 placeholder-gray-500",
-                        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        "focus:outline-none focus:border-b-1",
                         "cursor-text font-mono",
                         inputClassName
                     )}
