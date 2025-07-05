@@ -115,6 +115,9 @@ const Picker = (props: tpickerProps) => {
 
   const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
 
+  // Create a ref to hold the clearError function
+  const clearErrorRef = useRef<(() => void) | null>(null);
+
   let PickerContent = () => {
     const { updatePickerVisiblity, pickerState, updatePickerDay } = usePicker();
     const shouldShowPicker = pickerState.isVisible;
@@ -140,7 +143,13 @@ const Picker = (props: tpickerProps) => {
         activateWith="ref"
         //@ts-ignore
         activatorRef={pickerInputRef}
-        onOutsideClick={() => updatePickerVisiblity(false)}
+        onOutsideClick={() => {
+          updatePickerVisiblity(false);
+          // Clear errors when clicking outside if editable is enabled
+          if (inputProps?.editable && clearErrorRef.current) {
+            clearErrorRef.current();
+          }
+        }}
         centerAlignContainer
         active={shouldShowPicker}
         className="mt-2"
@@ -191,6 +200,9 @@ const Picker = (props: tpickerProps) => {
             // @ts-ignore
             ref={pickerInputRef}
             {...inputProps}
+            onRegisterClearError={inputProps?.editable ? (clearErrorFn) => {
+              clearErrorRef.current = clearErrorFn;
+            } : undefined}
           />
         )}
 

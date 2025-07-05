@@ -153,6 +153,9 @@ const RangePicker = (props: tRangePickerProps) => {
   const rangePickerInputRef =
     rangePickerInputProps?.ref ?? useRef<HTMLDivElement>(null);
 
+  // Create a ref to hold the clearErrors function
+  const clearErrorsRef = useRef<(() => void) | null>(null);
+
   let RangePickerContent = () => {
     const {
       rangePickerState,
@@ -183,6 +186,10 @@ const RangePicker = (props: tRangePickerProps) => {
 
     const handleOutsideClick = () => {
       updateRangePickerVisibility(false);
+      // Clear errors when clicking outside if editable is enabled
+      if (editable && clearErrorsRef.current) {
+        clearErrorsRef.current();
+      }
     };
 
     const handleClearSelection = () => {
@@ -324,6 +331,9 @@ const RangePicker = (props: tRangePickerProps) => {
             ref={rangePickerInputRef}
             {...rangePickerInputProps}
             editable={editable}
+            onRegisterClearErrors={editable ? (clearErrorsFn) => {
+              clearErrorsRef.current = clearErrorsFn;
+            } : undefined}
           />
         )}
         <RangePickerContent />

@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState, useCallback } from "react";
+import { forwardRef, useRef, useState, useCallback, useEffect } from "react";
 import { cn } from "../../../utils/clsx";
 import { useRangePicker } from "../hooks/useRangePicker";
 import { useEditableDateInput } from "../hooks/useEditableDateInput";
@@ -15,11 +15,16 @@ export interface RangePickerInputProps {
    * @default false
    */
   editable?: boolean;
+  /**
+   * Callback function to register the clearErrors function
+   * Used to clear validation errors when clicking outside the picker
+   */
+  onRegisterClearErrors?: (clearErrorsFn: () => void) => void;
 }
 
 const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
   (
-    { className, placeholder = "Select Date..", dateFormat, editable = false },
+    { className, placeholder = "Select Date..", dateFormat, editable = false, onRegisterClearErrors },
     ref
   ) => {
     const {
@@ -59,12 +64,27 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
     });
 
     // Only use the hook results if editable is true
-    const { handleInputChange, errors } = editable
+    const { handleInputChange, errors, clearErrors } = editable
       ? editableHook
       : {
           handleInputChange: () => {},
           errors: { start: null, end: null },
+          clearErrors: () => {},
         };
+
+    // Expose clearErrors function through onRegisterClearErrors callback
+    const handleClearErrors = useCallback(() => {
+      if (editable) {
+        clearErrors();
+      }
+    }, [editable, clearErrors]);
+
+    // Register the clearErrors function with the parent component
+    useEffect(() => {
+      if (onRegisterClearErrors && editable) {
+        onRegisterClearErrors(handleClearErrors);
+      }
+    }, [onRegisterClearErrors, editable, handleClearErrors]);
 
     const formatDate = (date: Date | NepaliDate) => {
       if (dateFormat) {
@@ -128,7 +148,9 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
       if (startInputRef.current && startDate) {
         startInputRef.current.textContent = formatDate(startDate);
       }
-    }, [startDate, formatDate, editable]);
+      // Clear errors when blurring
+      handleClearErrors();
+    }, [startDate, formatDate, editable, handleClearErrors]);
 
     const handleEndBlur = useCallback(() => {
       if (!editable) return;
@@ -137,7 +159,9 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
       if (endInputRef.current && endDate) {
         endInputRef.current.textContent = formatDate(endDate);
       }
-    }, [endDate, formatDate, editable]);
+      // Clear errors when blurring
+      handleClearErrors();
+    }, [endDate, formatDate, editable, handleClearErrors]);
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent, type: "start" | "end") => {
@@ -206,7 +230,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                 !startDate && "text-gray-500",
                 errors.start && "bg-red-50 text-red-600"
               )}
-              contentEditable={true}
+              contentEditable
               suppressContentEditableWarning={true}
               onInput={handleStartDateInput}
               onFocus={handleStartFocus}

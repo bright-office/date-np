@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { cn } from "../../utils/clsx";
 import { usePicker } from "../hooks/usePicker";
 import { useEditableDateInput } from "../hooks/useEditableDateInput";
@@ -34,6 +34,12 @@ type tpickerInputProps = {
    * @default false
    */
   editable?: boolean;
+
+  /**
+   * Callback function to register the clearError function
+   * Used to clear validation errors when clicking outside the picker
+   */
+  onRegisterClearError?: (clearErrorFn: () => void) => void;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 type tpickerInputImperativeProps = {} & HTMLInputElement;
@@ -48,6 +54,7 @@ const PickerInput = React.forwardRef<
     label,
     name,
     editable = false,
+    onRegisterClearError,
     ...inputProps
   } = props;
 
@@ -79,12 +86,27 @@ const PickerInput = React.forwardRef<
   });
 
   // Only use the hook results if editable is true
-  const { handleInputChange, error } = editable
+  const { handleInputChange, error, clearError } = editable
     ? editableHook
     : {
         handleInputChange: () => {},
         error: null,
+        clearError: () => {},
       };
+
+  // Create a function to handle clearing errors
+  const handleClearError = useCallback(() => {
+    if (editable) {
+      clearError();
+    }
+  }, [editable, clearError]);
+
+  // Register the clearError function with the parent component
+  useEffect(() => {
+    if (onRegisterClearError && editable) {
+      onRegisterClearError(handleClearError);
+    }
+  }, [onRegisterClearError, editable, handleClearError]);
 
   const formatDate = (date: Date | NepaliDate) => {
     if (props.dateFormat) {
@@ -131,7 +153,9 @@ const PickerInput = React.forwardRef<
     if (inputRef.current && displayDate) {
       inputRef.current.textContent = formatDate(displayDate);
     }
-  }, [displayDate, formatDate, editable]);
+    // Clear error when blurring
+    handleClearError();
+  }, [displayDate, formatDate, editable, handleClearError]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

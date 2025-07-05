@@ -169,11 +169,11 @@ function App() {
             </div>
 
             <Picker
-              
               onSelect={(date: NepaliDate | Date)=>{
                 setDate(date);
               }}
               inputProps={{
+                editable:true,
                 defaultValue: new NepaliDate(2080, 5, 14), // BS date
                 dateFormat: "dd-MMMM-yyyy",
                 defaultLocale: "BS",
@@ -212,19 +212,18 @@ function App() {
             </div>
 
             <RangePicker
-              defaultLocale="BS"
-              minDate={new Date(2025, 1, 1)} // BS date
-              maxDate={new NepaliDate(2085, 11, 30)} // BS date
+              defaultLocale="AD"
+ 
               startingDateRange={new NepaliDate(2080, 5, 14)} // BS date
               endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}
-              onRangeSelect={(start, end) => {
-              }}
+              editable={true}
+              
               label="Select Date Range"
               description="Choose your date range"
               inputProps={{
                 placeholder: "Select date range...",
-                dateFormat: "dd-MMMM-yyyy",
+    
                 className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
                   "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
                   "cursor-pointer bg-white text-sm " +
