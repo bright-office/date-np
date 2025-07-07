@@ -19,9 +19,9 @@ type tRangePickerContextType = {
         today: Date;
         isVisible: boolean;
         locale: "en" | "ne";
-        startDate: Date | NepaliDate | null;
-        endDate: Date | NepaliDate | null;
-        hoverDate: Date | NepaliDate | null;
+        startDate: Date | NepaliDate | null; // tracks the state of selected start date
+        endDate: Date | NepaliDate | null;   // tracks the state of selected end date
+        hoverDate: Date | NepaliDate | null; // tracks the state of hovered date
         /**
          * The default start date used as a fallback when no valid selection exists
          */

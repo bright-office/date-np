@@ -8,7 +8,6 @@ import { PickerProvider, usePicker } from "./hooks/usePicker";
 import { type tdirectionAwareContainerProps } from "./Components/helpers/direction-aware-container";
 import { isInvalidDateRange } from "../utils/validators";
 import "./index.css";
-import { NepaliDate } from "./NepaliDate";
 import Label from "./Components/label";
 
 type tpickerWithoutInput = {
@@ -128,7 +127,8 @@ const Picker = (props: tpickerProps) => {
     }, []);
 
     useEffect(() => {
-      if (inputProps?.defaultDate) updatePickerDay(inputProps?.defaultDate);
+      if (inputProps?.defaultDate) 
+        updatePickerDay(inputProps?.defaultDate);
     }, [inputProps?.defaultDate]);
 
     // Check for invalid date range

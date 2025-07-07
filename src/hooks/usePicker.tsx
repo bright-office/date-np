@@ -45,10 +45,10 @@ const usePicker = () => {
 
     const { setPickerState } = pickerContextValue;
 
-    const updatePickerDay = (day: Date | NepaliDate) => {
+    const updatePickerDay = (day: Date | NepaliDate, programatic?: boolean) => {
         const {onSelect} = pickerContextValue.pickerState
-        if (onSelect) {
-            // Call the onSelect callback with the selected date
+        if (onSelect && programatic) {
+            // Call the onSelect callback with the selected date in programmatic mode/editing mode
             onSelect(day);
         }
         setPickerState((prevState) => {

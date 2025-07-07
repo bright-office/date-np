@@ -77,7 +77,7 @@ const PickerInput = React.forwardRef<
   const editableHook = useEditableDateInput({
     onDateChange: (date) => {
       if (date) {
-        updatePickerDay(date);
+        updatePickerDay(date, true);
       }
     },
     minDate,
