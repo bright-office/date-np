@@ -4,6 +4,7 @@ import { useRangePicker } from "../hooks/useRangePicker";
 import { useEditableDateInput } from "../hooks/useEditableDateInput";
 import { format, formatISO } from "../../format";
 import { NepaliDate } from "../../NepaliDate";
+import { MAX_AD_YEAR, MIN_AD_YEAR } from "../../../data/constants";
 
 export interface RangePickerInputProps {
   className?: string;
@@ -57,8 +58,8 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
           updateRangePickerDay(date, "end");
         }
       },
-      minDate,
-      maxDate,
+      minDate: minDate ? minDate : new Date(MIN_AD_YEAR + 1, 0, 1), 
+      maxDate: maxDate ? maxDate : new Date(MAX_AD_YEAR - 1, 11, 31),
       currentStartDate: startDate,
       currentEndDate: endDate,
     });

@@ -9,6 +9,7 @@ import { type tdirectionAwareContainerProps } from "./Components/helpers/directi
 import { isInvalidDateRange } from "../utils/validators";
 import "./index.css";
 import Label from "./Components/label";
+import { formatISO } from "./format";
 
 type tpickerWithoutInput = {
   /**
@@ -129,7 +130,7 @@ const Picker = (props: tpickerProps) => {
     useEffect(() => {
       if (inputProps?.defaultDate) 
         updatePickerDay(inputProps?.defaultDate);
-    }, [inputProps?.defaultDate]);
+    }, [inputProps?.defaultDate ? formatISO(inputProps?.defaultDate): undefined]);
 
     // Check for invalid date range
     const hasInvalidDateRange =

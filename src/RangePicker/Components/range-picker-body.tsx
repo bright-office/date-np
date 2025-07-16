@@ -51,7 +51,7 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
                     </div>
                     <button
                         onClick={handleResetToValidDate}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
                     >
                         Pick another
                     </button>
@@ -194,8 +194,8 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
         const maxYear = locale === "en" ? MAX_AD_YEAR : MAX_BS_YEAR;
         
         // Adjust year range based on panel constraints
-        let startYear = minYear;
-        let endYear = maxYear;
+        let startYear = minYear + 1;
+        let endYear = maxYear - 1;
         
 
         if (panel === "left") {
@@ -203,8 +203,8 @@ const RangePickerBody = ({ panel }: RangePickerBodyProps) => {
             endYear = Math.min(maxYear, otherPanelState.activeYear);
             if (shouldShowSinglePanel)
             {
-                startYear = minYear;
-                endYear = maxYear;
+                startYear = minYear + 1;
+                endYear = maxYear - 1;
             }
             
 

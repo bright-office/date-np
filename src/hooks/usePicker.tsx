@@ -187,9 +187,7 @@ const usePicker = () => {
             return minDate instanceof NepaliDate ? minDate.toADDate() : minDate;
         }
         // Return minimum date based on locale
-        return locale === "ne"
-            ? new NepaliDate(MIN_BS_YEAR, 0, 1).toADDate()
-            : new Date(MIN_AD_YEAR, 0, 1);
+        return new Date(MIN_AD_YEAR, 0, 1);
     };
 
     const getEffectiveMaxDate = (): Date => {
@@ -198,9 +196,7 @@ const usePicker = () => {
             return maxDate instanceof NepaliDate ? maxDate.toADDate() : maxDate;
         }
         // Return maximum date based on locale  
-        return locale === "ne"
-            ? new NepaliDate(MAX_BS_YEAR, 11, 30).toADDate() // Approximate last day
-            : new Date(MAX_AD_YEAR, 11, 31);
+        return new Date(MAX_AD_YEAR, 11, 31);
     };
 
     const isDateInRange = (date: Date | NepaliDate): boolean => {

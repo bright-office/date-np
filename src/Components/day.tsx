@@ -49,9 +49,8 @@ const Day = (props: tdayProps) => {
             return;
 
         e.stopPropagation();
-    
-        onRangeSelect?.(date);
         updatePickerDay(date);
+        onRangeSelect?.(date)
         updatePickerVisiblity(false);
 
         if (activeMonth !== date.getMonth()) {

@@ -90,7 +90,7 @@ const RangeYear = ({ year, panel, className }: RangeYearProps) => {
             className={cn(
                 "w-full h-10 flex items-center justify-center text-sm rounded-md",
                 "focus:outline-none focus:ring-2 focus:ring-blue-500",
-                !isDisabled && "hover:bg-gray-100 transition-colors",
+                !isDisabled && !isActive && "hover:bg-gray-300 transition-colors cursor-pointer",
                 isDisabled && "text-gray-300 cursor-not-allowed",
                 isActive && !isDisabled && "bg-black text-white font-semibold",
                 isToday && !isActive && !isDisabled && "bg-blue-50 text-blue-600 font-semibold",

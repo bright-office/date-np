@@ -473,7 +473,7 @@ const useRangePicker = () => {
         }
         // Return minimum date based on locale
         return locale === "ne" 
-            ? new NepaliDate(MIN_BS_YEAR, 8, 17).toADDate() // First valid BS date
+            ? new NepaliDate(MIN_BS_YEAR, 0, 1).toADDate() 
             : new Date(MIN_AD_YEAR, 0, 1);
     };
 
