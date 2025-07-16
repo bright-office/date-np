@@ -104,6 +104,7 @@ const PickerBody = (
             const isDisabled = !isDateInRange(dayDate);
 
             return <Day
+                onRangeSelect={onSelect}
                 date={dayDate}
                 key={index}
                 disabled={isDisabled}
@@ -147,6 +148,7 @@ const PickerBody = (
             const isDisabled = !isDateInRange(dayDate);
 
             return <Day
+                onRangeSelect={onSelect}
                 date={dayDate}
                 key={index}
                 isToday={isTodayDate}
