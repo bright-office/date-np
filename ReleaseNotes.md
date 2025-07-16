@@ -2,6 +2,7 @@
 # Release Notes
 
 ## Small tasks
-(03d7aaf) chore: releasing 0.6.82 with fixes to default date prop causing rerenders --SakunPanthi123
-(10737a4) chore: fixed default date firing onSelect --SakunPanthi123
+(eefe214) chore: release 0.6.83 --SakunPanthi123
+(b99556f) chore: added onselect callback to all days --SakunPanthi123
+(34a2a15) chore: styling and validation changes --SakunPanthi123
 
