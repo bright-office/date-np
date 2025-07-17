@@ -12,7 +12,6 @@ import DirectionAwareContainer, {
   type tdirectionAwareContainerProps,
 } from "../Components/helpers/direction-aware-container";
 import Label from "../Components/label";
-import label from "../Components/label";
 
 type TimePickerWithoutInput = {
   inputProps?: never;
@@ -46,6 +45,10 @@ export type TimePickerProps = {
   label?: string;
 } & (TimePickerWithoutInput | TimePickerWithInput);
 
+/**
+ * The TimePicker component that is wrapped by the TimePickerProvider
+ * and actually renders the component.
+ */
 const TimePickerContent = ({
   className,
   shouldShowInput = true,
@@ -54,19 +57,12 @@ const TimePickerContent = ({
   dAwareConProps,
   defaultTime,
   bodyProps = {},
-  label,
 }: Omit<TimePickerProps, "format">) => {
-  const { timePickerState, setVisibility, setTime } = useTimePicker();
+  const { timePickerState, setVisibility, setTime } =
+    useTimePicker(onTimeChange);
   const timePickerInputRef = useRef<HTMLDivElement>(null);
   const { format } = timePickerState;
   const shouldInlcude = timePickerState.shouldInclude;
-
-  // Handle time change callback
-  useEffect(() => {
-    if (onTimeChange) {
-      onTimeChange(timePickerState.selectedTime);
-    }
-  }, [timePickerState.selectedTime]);
 
   useEffect(() => {
     if (defaultTime) setTime(defaultTime);

@@ -37,12 +37,13 @@ type TimePickerContextType = {
 };
 
 const TimePickerContext = createContext<TimePickerContextType | null>(null);
+let pickerCallBack: (time: TimeValue) => void = () => {};
 
-export const useTimePicker = ({
-  onTimeChange,
-}: {
-  onTimeChange?: (time: TimeValue) => void;
-}) => {
+export const useTimePicker = (
+  onTimeChange: typeof pickerCallBack = pickerCallBack,
+) => {
+  pickerCallBack = onTimeChange;
+
   const timePickerContextValue = useContext(TimePickerContext);
   if (!timePickerContextValue) {
     throw new Error("useTimePicker must be used within a TimePickerProvider");
@@ -51,75 +52,68 @@ export const useTimePicker = ({
   const { timePickerState, setTimePickerState } = timePickerContextValue;
 
   const updateHours = (hours: number) => {
-    setTimePickerState((prevState) => {
-      let validHours = hours;
-      if (prevState.format === "24hr") {
-        validHours = Math.max(0, Math.min(23, hours));
-      } else {
-        validHours = Math.max(1, Math.min(12, hours));
-      }
-      const newTime = {
-        ...prevState,
-        selectedTime: {
-          ...prevState.selectedTime,
-          hours: validHours,
-        },
-      };
+    let validHours = hours;
 
-      onTimeChange?.(newTime.selectedTime);
+    if (timePickerState.format === "24hr") {
+      validHours = Math.max(0, Math.min(23, hours));
+    } else {
+      validHours = Math.max(1, Math.min(12, hours));
+    }
 
-      return newTime;
-    });
+    const newTime = {
+      ...timePickerState,
+      selectedTime: {
+        ...timePickerState.selectedTime,
+        hours: validHours,
+      },
+    };
+
+    setTimePickerState(newTime);
+    onTimeChange?.(newTime.selectedTime);
   };
 
   const updateMinutes = (
     minutes: number,
     additionalChanges: Partial<TimePickerContextType["timePickerState"]> = {},
   ) => {
-    setTimePickerState((prevState) => {
-      const updatedTime = {
-        ...prevState,
-        selectedTime: {
-          ...prevState.selectedTime,
-          minutes: Math.max(0, Math.min(59, minutes)),
-        },
-        ...additionalChanges,
-      };
+    const updatedTime = {
+      ...timePickerState,
+      selectedTime: {
+        ...timePickerState.selectedTime,
+        minutes: Math.max(0, Math.min(59, minutes)),
+      },
+      ...additionalChanges,
+    };
 
-      onTimeChange?.(updatedTime.selectedTime);
-      return updatedTime;
-    });
+    setTimePickerState(updatedTime);
+    onTimeChange?.(updatedTime.selectedTime);
   };
 
   const updateSeconds = (seconds: number) => {
-    setTimePickerState((prevState) => {
-      const updatedTime = {
-        ...prevState,
-        selectedTime: {
-          ...prevState.selectedTime,
-          seconds: Math.max(0, Math.min(59, seconds)),
-        },
-      };
+    const updatedTime = {
+      ...timePickerState,
+      selectedTime: {
+        ...timePickerState.selectedTime,
+        seconds: Math.max(0, Math.min(59, seconds)),
+      },
+    };
 
-      onTimeChange?.(updatedTime.selectedTime);
-      return updatedTime;
-    });
+    onTimeChange?.(updatedTime.selectedTime);
+    setTimePickerState(updatedTime);
   };
 
   const updatePeriod = (period: "AM" | "PM") => {
     if (timePickerState.format === "am/pm") {
-      setTimePickerState((prevState) => {
-        const updatedTime = {
-          ...prevState,
-          selectedTime: {
-            ...prevState.selectedTime,
-            period,
-          },
-        };
+      const updatedTime = {
+        ...timePickerState,
+        selectedTime: {
+          ...timePickerState.selectedTime,
+          period,
+        },
+      };
+      onTimeChange?.(updatedTime.selectedTime);
 
-        onTimeChange?.(updatedTime.selectedTime);
-        return updatedTime;
-      });
+      setTimePickerState(updatedTime);
     }
   };
 
