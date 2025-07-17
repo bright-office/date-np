@@ -20,7 +20,7 @@ import { CALENDAR } from '../data/locale';
 function getOrdinalSuffix(num: number): string {
     const j = num % 10;
     const k = num % 100;
-    
+
     if (j === 1 && k !== 11) {
         return num + 'st';
     }
@@ -52,28 +52,28 @@ function getShortMonthName(fullName: string): string {
         'November': 'Nov',
         'December': 'Dec'
     };
-    
+
     // Check if it's an English month
     if (englishAbbreviations[fullName]) {
         return englishAbbreviations[fullName];
     }
-    
+
     // For Nepali months, take first 3-4 characters
     const nepaliAbbreviations: { [key: string]: string } = {
-        'Baishak': 'Bais',
+        'Baisakh': 'Bais',
         'Jestha': 'Jest',
-        'Aashar': 'Aash',
-        'Sharawan': 'Shra',
-        'Bhadau': 'Bhad',
-        'Ashoj': 'Asho',
+        'Ashadh': 'Aash',
+        'Shrawan': 'Shra',
+        'Bhadra': 'Bhad',
+        'Ashwin': 'Ashw',
         'Kartik': 'Kart',
-        'Mangshir': 'Mang',
+        'Mangsir': 'Mang',
         'Poush': 'Pous',
         'Magh': 'Magh',
         'Falgun': 'Falg',
         'Chaitra': 'Chai'
     };
-    
+
     return nepaliAbbreviations[fullName] || fullName.substring(0, 3);
 }
 
@@ -101,13 +101,13 @@ function isNepaliDate(date: Date | NepaliDate): boolean {
  */
 export function format(date: Date | NepaliDate, formatString: string): string {
     const isNepali = isNepaliDate(date);
-    
+
     // Get date components
     let year: number;
     let month: number; // 0-based
     let day: number;
     let monthNames: string[];
-    
+
     if (isNepali) {
         const nepaliDate = date as NepaliDate;
         year = nepaliDate.getFullYear();
@@ -121,7 +121,7 @@ export function format(date: Date | NepaliDate, formatString: string): string {
         day = regularDate.getDate();
         monthNames = CALENDAR.AD.months;
     }
-    
+
     // Create replacement map
     const replacements: { [key: string]: string } = {
         'yyyy': year.toString(),
@@ -134,31 +134,31 @@ export function format(date: Date | NepaliDate, formatString: string): string {
         'd': day.toString(),
         'do': getOrdinalSuffix(day)
     };
-    
+
     // Replace tokens in format string using placeholders to avoid conflicts
     let result = formatString;
-    
+
     // Sort tokens by length (longest first) to handle overlapping tokens correctly
     const tokens = Object.keys(replacements).sort((a, b) => b.length - a.length);
     const placeholderMap: { [key: string]: string } = {};
-    
+
     // First pass: replace tokens with unique placeholders
     for (let i = 0; i < tokens.length; i++) {
         const token = tokens[i];
         const placeholder = `__PLACEHOLDER_${i}__`;
         placeholderMap[placeholder] = replacements[token];
-        
+
         // Escape special regex characters in the token
         const escapedToken = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(escapedToken, 'g');
         result = result.replace(regex, placeholder);
     }
-    
+
     // Second pass: replace placeholders with actual values
     for (const placeholder in placeholderMap) {
         result = result.replace(new RegExp(placeholder, 'g'), placeholderMap[placeholder]);
     }
-    
+
     return result;
 }
 
@@ -200,9 +200,9 @@ export function formatMedium(date: Date | NepaliDate): string {
 
 
 /** Time Picker Section */
-import {type TimeValue } from './TimePicker';
+import { type TimeValue } from './TimePicker';
 
-export function convertToTimeValue(time: string) : TimeValue | undefined{
+export function convertToTimeValue(time: string): TimeValue | undefined {
     if (!time || typeof time !== 'string') {
         return undefined
     }
