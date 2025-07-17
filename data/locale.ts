@@ -10,11 +10,11 @@ export type tcalendar = Record<calendarType, {
 
 export const CALENDAR: tcalendar = {
     BS: {
-        months: ["Baishak", "Jestha", "Aashar", "Sharawan", "Bhadau", "Ashoj", "Kartik", "Mangshir", "Poush", "Magh", "Falgun", "Chaitra",],
-        days: ["Aaitabar", "Sombar", "Manglabar", "Budhabar", "Behibar", "Sukrabar", "Sanibar"],
+        months: ["Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"],
+        days: ["Aaitabaar", "Sombaar", "Mangalbaar", "Budhabaar", "Bihibaar", "Shukrabaar", "Shanibaar"],
     },
     AD: {
-        months: ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "Octuber", "November", "December",],
-        days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday"],
+        months: ["January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     },
 }
