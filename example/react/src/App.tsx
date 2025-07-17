@@ -263,6 +263,9 @@ function App() {
                   inputProps={{
                     placeholder: "Select time...",
                   }}
+                  onTimeChange={(time) => {
+                    console.log("24hr time changed:", time);
+                  }}
                 />
               </div>
             </div>

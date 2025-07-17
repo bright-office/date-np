@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { cn } from "../../../utils/clsx";
 import { useTimePicker } from "../hooks/useTimePicker";
-import type { TimePickerBody } from "./time-picker-body";
 
 export type TimePickerInputProps = {
     placeholder?: string;
