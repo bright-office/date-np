@@ -98,6 +98,7 @@ const TimePickerContent = ({
   useEffect(() => {
     if (isVisible !== undefined && isVisible !== timePickerState.isVisible) {
       setVisibility(isVisible);
+      onVisibilityChange?.(isVisible);
     }
   }, [isVisible]);
 
