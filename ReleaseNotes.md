@@ -1,8 +1,9 @@
 
 # Release Notes
 
+## Bug Fixes
+(9db09bb) fixed: corrected the callback calling when time picker changes. --sarojregmi200
+
 ## Small tasks
-(eefe214) chore: release 0.6.83 --SakunPanthi123
-(b99556f) chore: added onselect callback to all days --SakunPanthi123
-(34a2a15) chore: styling and validation changes --SakunPanthi123
+(a0781fa) chore: corrected the callback issue. --sarojregmi200
 
