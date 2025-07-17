@@ -154,8 +154,8 @@ function App() {
             Calendar Date & Time Pickers
           </h1>
           <p className="text-lg text-gray-600">
-            Robust date and time pickers for picking single/range dates and time, converting BS/AD dates
-            seamlessly
+            Robust date and time pickers for picking single/range dates and
+            time, converting BS/AD dates seamlessly
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -169,11 +169,11 @@ function App() {
             </div>
 
             <Picker
-              onSelect={(date: NepaliDate | Date)=>{
+              onSelect={(date: NepaliDate | Date) => {
                 setDate(date);
               }}
               inputProps={{
-                editable:true,
+                editable: true,
                 defaultValue: new NepaliDate(2080, 5, 14), // BS date
                 dateFormat: "dd-MMMM-yyyy",
                 defaultLocale: "BS",
@@ -181,7 +181,7 @@ function App() {
                   "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
                   "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
                   "cursor-pointer bg-white text-sm " +
-                  "hover:border-gray-400 transition-colors"
+                  "hover:border-gray-400 transition-colors",
               }}
               shouldShowInput={true}
               label="Select Date"
@@ -192,12 +192,14 @@ function App() {
                 todayStyle: "bg-cyan-400 text-white",
               }}
               headerClassNames={{
-                yearLabel: "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
-                monthLabel: "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
+                yearLabel:
+                  "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
+                monthLabel:
+                  "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
                 arrowIcon: {
                   arrowIconLeft: <div>left</div>,
-                  arrowIconRight: <div>right</div>
-                }
+                  arrowIconRight: <div>right</div>,
+                },
               }}
             />
           </div>
@@ -213,21 +215,20 @@ function App() {
 
             <RangePicker
               defaultLocale="AD"
- 
               startingDateRange={new NepaliDate(2080, 5, 14)} // BS date
               endingDateRange={new NepaliDate(2080, 6, 15)} // BS date
               shouldShowInput={true}
               editable={true}
-              
               label="Select Date Range"
               description="Choose your date range"
               inputProps={{
                 placeholder: "Select date range...",
-    
-                className: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
+
+                className:
+                  "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm " +
                   "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " +
                   "cursor-pointer bg-white text-sm " +
-                  "hover:border-gray-400 transition-colors"
+                  "hover:border-gray-400 transition-colors",
               }}
             />
           </div>
@@ -238,7 +239,9 @@ function App() {
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 Time Picker
               </h3>
-              <p className="text-gray-600 text-sm">Select time with AM/PM or 24hr format</p>
+              <p className="text-gray-600 text-sm">
+                Select time with AM/PM or 24hr format
+              </p>
             </div>
             <div className="space-y-4">
               <div>
@@ -247,7 +250,12 @@ function App() {
                 </label>
                 <TimePicker
                   format="am/pm"
-                  defaultTime={{ hours: 8, minutes: 30, seconds: 45, period: "PM" }}
+                  defaultTime={{
+                    hours: 8,
+                    minutes: 30,
+                    seconds: 45,
+                    period: "PM",
+                  }}
                   inputProps={{
                     placeholder: "Select time...",
                   }}
@@ -265,6 +273,10 @@ function App() {
                   }}
                   onTimeChange={(time) => {
                     console.log("24hr time changed:", time);
+                  }}
+                  isVisible={true}
+                  onVisibilityChange={(isVisible) => {
+                    console.log("24hr picker visibility changed:", isVisible);
                   }}
                 />
               </div>
@@ -342,7 +354,8 @@ function App() {
             Editable Picker
           </h1>
           <p className="text-lg text-gray-600 mb-6">
-            Test the new editable functionality that allows typing dates directly in ISO format (YYYY-MM-DD)
+            Test the new editable functionality that allows typing dates
+            directly in ISO format (YYYY-MM-DD)
           </p>
         </div>
 
@@ -365,7 +378,7 @@ function App() {
                 }}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Editable Nepali Date Picker
@@ -386,18 +399,23 @@ function App() {
           </div>
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Instructions:</h3>
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              Instructions:
+            </h3>
             <ul className="text-sm text-gray-600 space-y-1">
               <li>• Click on the input field to start editing</li>
               <li>• Type dates in YYYY-MM-DD format</li>
               <li>• Press Enter to confirm or Escape to cancel</li>
               <li>• Invalid dates will show error messages</li>
-              <li>• English picker accepts AD dates, Nepali picker accepts BS dates</li>
+              <li>
+                • English picker accepts AD dates, Nepali picker accepts BS
+                dates
+              </li>
             </ul>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 

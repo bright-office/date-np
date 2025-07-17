@@ -27,7 +27,6 @@ export type TimePickerProps = {
   format?: TimeFormat;
   defaultTime?: TimeValue;
   className?: string;
-  onTimeChange?: (time: TimeValue) => void;
 
   /**
    * Control how and where you show the TimePicker container
@@ -43,6 +42,26 @@ export type TimePickerProps = {
    * label for the time picker
    */
   label?: string;
+
+  /**
+   * Control the visibility of the picker popup externally.
+   */
+  isVisible?: boolean;
+
+  /**
+   * Callback that gets fired when the user changes the time.
+   */
+  onTimeChange?: (time: TimeValue) => void;
+
+  /**
+   * Callback that gets fired when the visiblity of the picker popup changes.
+   */
+  onVisibilityChange?: (isVisible: boolean) => void;
+
+  /**
+   * Callback that gets fired when the default value of the picker gets set
+   */
+  onDefaultTimeChange?: (time: TimeValue) => void;
 } & (TimePickerWithoutInput | TimePickerWithInput);
 
 /**
@@ -54,19 +73,34 @@ const TimePickerContent = ({
   shouldShowInput = true,
   inputProps,
   onTimeChange,
+  onDefaultTimeChange,
+  onVisibilityChange,
   dAwareConProps,
   defaultTime,
+  isVisible = false,
   bodyProps = {},
 }: Omit<TimePickerProps, "format">) => {
-  const { timePickerState, setVisibility, setTime } =
-    useTimePicker(onTimeChange);
+  const { timePickerState, setVisibility, setTime } = useTimePicker(
+    onTimeChange,
+    onVisibilityChange,
+  );
   const timePickerInputRef = useRef<HTMLDivElement>(null);
   const { format } = timePickerState;
   const shouldInlcude = timePickerState.shouldInclude;
 
   useEffect(() => {
-    if (defaultTime) setTime(defaultTime);
+    if (defaultTime) {
+      setTime(defaultTime);
+      onDefaultTimeChange?.(defaultTime);
+    }
   }, [defaultTime]);
+
+  useEffect(() => {
+    if (isVisible !== undefined && isVisible !== timePickerState.isVisible) {
+      setVisibility(isVisible);
+      onVisibilityChange?.(isVisible);
+    }
+  }, [isVisible]);
 
   // Merge default props with user props, giving priority to user props
   const baseProps = {

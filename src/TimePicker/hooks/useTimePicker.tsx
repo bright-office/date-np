@@ -37,12 +37,17 @@ type TimePickerContextType = {
 };
 
 const TimePickerContext = createContext<TimePickerContextType | null>(null);
-let pickerCallBack: (time: TimeValue) => void = () => {};
+let CALLBACKS = {
+  onTimeChange: (_: TimeValue) => {},
+  onVisibilityChange: (_: boolean) => {},
+};
 
 export const useTimePicker = (
-  onTimeChange: typeof pickerCallBack = pickerCallBack,
+  onTimeChange = CALLBACKS["onTimeChange"],
+  onVisibilityChange = CALLBACKS["onVisibilityChange"],
 ) => {
-  pickerCallBack = onTimeChange;
+  CALLBACKS.onTimeChange = onTimeChange;
+  CALLBACKS.onVisibilityChange = onVisibilityChange;
 
   const timePickerContextValue = useContext(TimePickerContext);
   if (!timePickerContextValue) {
@@ -169,6 +174,7 @@ export const useTimePicker = (
       ...prevState,
       isVisible,
     }));
+    onVisibilityChange?.(isVisible);
   };
 
   const setTime = (newTime: TimeValue) => {
