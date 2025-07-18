@@ -279,7 +279,6 @@ function App() {
                   onTimeChange={(time) => {
                     console.log("24hr time changed:", time);
                   }}
-                  shouldShowInput={false}
                   inputRef={divRef}
                   isVisible={true}
                   onVisibilityChange={(isVisible) => {

@@ -160,6 +160,7 @@ export const TimePickerInput = ({
                         "bg-white text-gray-900 placeholder-gray-500",
                         "focus:outline-none focus:border-b-1",
                         "cursor-text font-mono",
+                        "caret-white",
                         inputClassName
                     )}
                 />
