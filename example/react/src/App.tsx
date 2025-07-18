@@ -9,13 +9,14 @@ import { NepaliDate } from "@brightsoftware/date-np/core";
 import { Picker } from "@brightsoftware/date-np/ui";
 import { RangePicker } from "@brightsoftware/date-np/ui";
 import { TimePicker } from "@brightsoftware/date-np/ui";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 function App() {
   const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
   const englishDate = new Date(2025, 5, 3); // June 3, 2025
   const [date, setDate] = useState<Date | NepaliDate>();
 
+  const divRef = useRef<HTMLDivElement>(null);
   const formatExamples = [
     {
       label: "Full Year",
@@ -256,15 +257,19 @@ function App() {
                     seconds: 45,
                     period: "PM",
                   }}
+                  bodyProps={{
+                    buttonClassname: "bg-black"
+                  }}
                   inputProps={{
                     placeholder: "Select time...",
                   }}
+                  onSave={(time)=>{alert(`Time saved: ${time.hours}:${time.minutes}:${time.seconds} ${time.period}`)}}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="block text-sm font-medium text-gray-700 mb-2" ref={divRef}>
                   24 Hour Format
-                </label>
+                </div>
                 <TimePicker
                   format="24hr"
                   defaultTime={{ hours: 20, minutes: 30, seconds: 45 }}
@@ -274,6 +279,8 @@ function App() {
                   onTimeChange={(time) => {
                     console.log("24hr time changed:", time);
                   }}
+                  shouldShowInput={false}
+                  inputRef={divRef}
                   isVisible={true}
                   onVisibilityChange={(isVisible) => {
                     console.log("24hr picker visibility changed:", isVisible);

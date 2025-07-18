@@ -16,9 +16,11 @@ export type TimePickerBodyProps = {
     seconds?: boolean;
   };
   onTimeChange?: (time: TimeValue) => void;
+  onSave?: (time: TimeValue) => void;
+  buttonClassname?: string;
 };
 
-export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
+export const TimePickerBody = ({ className, ...props }: TimePickerBodyProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const {
     timePickerState,
@@ -66,9 +68,20 @@ export const TimePickerBody = ({ className }: TimePickerBodyProps) => {
       className={cn("flex flex-col items-center space-y-4", className)}
       onWheel={handleWheel}
     >
-      {/* Title */}
-      <div className="text-lg font-semibold text-gray-900 mb-2">
-        Select Time
+      <div className="flex justify-between w-full items-center">
+        {/* Title */}
+        <div className="text-lg font-semibold text-gray-900">
+          Select Time
+        </div>
+        <button
+          onClick={(e)=>props.onSave &&props.onSave(selectedTime)}
+          className={
+            cn("px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400",
+              props.buttonClassname
+            )}
+        >
+          Save
+        </button>
       </div>
 
       {/* Time Columns */}
