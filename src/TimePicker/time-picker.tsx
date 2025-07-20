@@ -12,6 +12,7 @@ import DirectionAwareContainer, {
     type tdirectionAwareContainerProps,
 } from "../Components/helpers/direction-aware-container";
 import Label from "../Components/label";
+import { convertToTimeValue } from "../format";
 
 type TimePickerWithoutInput = {
     inputProps?: never;
@@ -101,11 +102,12 @@ const TimePickerContent = ({
     const shouldInlcude = timePickerState.shouldInclude;
 
     useEffect(() => {
+    
         if (defaultTime) {
             setTime(defaultTime);
             onDefaultTimeChange?.(defaultTime);
         }
-    }, [defaultTime]);
+    }, [defaultTime && `${defaultTime.hours}:${defaultTime.minutes}`]);
 
     useEffect(() => {
         if (isVisible !== undefined && isVisible !== timePickerState.isVisible) {
@@ -172,13 +174,11 @@ const TimePickerContent = ({
 
 export const TimePicker = ({
     format = "am/pm",
-    defaultTime,
     ...props
 }: TimePickerProps) => {
     return (
         <TimePickerProvider
             format={format}
-            defaultTime={defaultTime}
             shouldInclude={{
                 hours: props.bodyProps?.shouldInclude?.hours ?? true,
                 minutes: props.bodyProps?.shouldInclude?.minutes ?? true,
