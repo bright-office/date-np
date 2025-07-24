@@ -40,7 +40,7 @@ type tpickerInputProps = {
    * Used to clear validation errors when clicking outside the picker
    */
   onRegisterClearError?: (clearErrorFn: () => void) => void;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+} & React.HTMLAttributes<HTMLDivElement> 
 
 type tpickerInputImperativeProps = {} & HTMLInputElement;
 
@@ -246,7 +246,8 @@ const PickerInput = React.forwardRef<
 
   // Render non-editable version (original behavior)
   return (
-    <div className="inputContainer">
+    <div className="inputContainer"  {...inputProps}
+>
       <div
         onClick={handleInputClick}
         ref={ref}
@@ -257,7 +258,6 @@ const PickerInput = React.forwardRef<
               "bg-gray-100/40 text-sm transition-color"
             ),
             className)}
-        {...inputProps}
       >
         {getDisplayContent()}
       </div>

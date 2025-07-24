@@ -94,6 +94,11 @@ export type tpickerProps = {
    */
   required?: boolean;
 
+  /**
+   * onInputClick
+   */
+  onInputClick?: () => void;
+
 } & (tpickerWithInput | tpickerWithoutInput);
 
 const Picker = (props: tpickerProps) => {
@@ -109,8 +114,9 @@ const Picker = (props: tpickerProps) => {
     description,
     bodyProps,
     headerProps = {},
-    isVisible = false,
+    isVisible,
     required = false,
+    onInputClick
   } = props;
 
   const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -121,11 +127,6 @@ const Picker = (props: tpickerProps) => {
   let PickerContent = () => {
     const { updatePickerVisiblity, pickerState, updatePickerDay } = usePicker();
     const shouldShowPicker = pickerState.isVisible;
-
-    useEffect(() => {
-      if (isVisible) 
-        updatePickerVisiblity(true)
-    }, []);
 
     useEffect(() => {
       if (inputProps?.defaultDate) 
@@ -152,7 +153,7 @@ const Picker = (props: tpickerProps) => {
           }
         }}
         centerAlignContainer
-        active={shouldShowPicker}
+        active={isVisible ?? shouldShowPicker}
         className="mt-2"
         {...dAwareConProps}
       >
@@ -198,6 +199,7 @@ const Picker = (props: tpickerProps) => {
         )}
         {shouldShowInput && (
           <PickerInput
+            onClick={onInputClick}
             // @ts-ignore
             ref={pickerInputRef}
             {...inputProps}
