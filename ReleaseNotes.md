@@ -1,12 +1,12 @@
 
 # Release Notes
 
-## Bug Fixes
-(380cd99) fix: fixed typo in nepali month names --sanjay
+## Features
+(85489fa) feat: now can control visibility from outside and added onInputClick callback prop --SakunPanthi123
 
 ## Small tasks
-(e36557c) chore: bump version to 0.6.86 --SakunPanthi123
-(9b06e1d) chore: removed default time from provider because it was getting stale value outside of useEffect --SakunPanthi123
-(4d2d8e1) chore: added timecolumn customization options --SakunPanthi123
-(8973bb9) chore: user can pass onSave and inputRef props which are used to provide a save button, its callback and provide input ref if the should show input is false --SakunPanthi123
+(e03ee6f) chore: releasing 0.6.87 --SakunPanthi123
+(d96a48b) chore: rollbacked version to 0.6.86 before upgrading with fixes --SakunPanthi123
+(5621e76) chore: fixed changing of HTMLINPUT to HTML DIV --SakunPanthi123
+(dc3b4f3) chore: releasing 0.6.87 --SakunPanthi123
 
