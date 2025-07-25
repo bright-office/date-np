@@ -40,7 +40,7 @@ type tpickerInputProps = {
    * Used to clear validation errors when clicking outside the picker
    */
   onRegisterClearError?: (clearErrorFn: () => void) => void;
-} & React.HTMLAttributes<HTMLDivElement> 
+} & React.InputHTMLAttributes<HTMLInputElement> 
 
 type tpickerInputImperativeProps = {} & HTMLInputElement;
 
