@@ -319,7 +319,7 @@ const PickerBody = (
     }
 
     return (
-        <div className="flex items-center justify-between w-full min-h-72 overflow-auto">
+        <div className="flex items-center justify-between w-full min-h-72 overflow-auto" onClick={(e) => e.stopPropagation()}>
             <DatePickerBody />
             <MonthPickerBody />
             <YearPickerBody />

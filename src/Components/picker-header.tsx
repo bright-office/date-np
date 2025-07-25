@@ -79,7 +79,7 @@ const PickerHeader = ({
   };
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full" onClick={(e) => e.stopPropagation()}>
       {
         monthSwitcher({
           arrowIconLeft: arrowIcon?.arrowIconLeft,
