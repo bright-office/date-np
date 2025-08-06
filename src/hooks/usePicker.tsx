@@ -329,6 +329,24 @@ const usePicker = () => {
         return selectedDate || defaultDate || null;
     };
 
+    const setMinDate = (newMinDate: Date | NepaliDate) => {
+        setPickerState((prevState) => {
+            return {
+                ...prevState,
+                minDate: newMinDate,
+            }
+        });
+    };
+
+    const setMaxDate = (newMaxDate: Date | NepaliDate) => {
+        setPickerState((prevState) => {
+            return {
+                ...prevState,
+                maxDate: newMaxDate,
+            }
+        });
+    };
+
     return {
         ...pickerContextValue,
         updatePickerDay,
@@ -347,6 +365,8 @@ const usePicker = () => {
         canNavigateToNextYear,
         resetToOriginalState,
         getDisplayDate,
+        setMinDate,
+        setMaxDate,
     };
 }
 
@@ -385,6 +405,7 @@ const PickerProvider = ({
         
         return isValid;
     };
+
 
     // Helper function to determine initial active month and year based on defaultDate validation
     const getInitialActiveMonthYear = () => {
