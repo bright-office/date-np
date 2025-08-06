@@ -1,7 +1,9 @@
 
 # Release Notes
 
+## Features
+(03558fb) feat: picker now listens to changes in minDate and maxDate --SakunPanthi123
+
 ## Small tasks
-(aa8c60e) chore: releasing 0.6.88 with stopPropagation() additions to picker --SakunPanthi123
-(442b13d) chore: added e.stop propagtion to header and body as changes necessary to make visibility of picker controllable through prop --SakunPanthi123
+(c97e164) chore: releasing 0.6.89 with listening added to min/max date props in picker --SakunPanthi123
 
