@@ -20,7 +20,6 @@ type tpickerWithoutInput = {
   inputProps?: never;
   shouldShowInput?: false;
 };
-
 type tpickerWithInput = {
   /**
    * customize input with input specific props.
@@ -70,14 +69,12 @@ export type tpickerProps = {
   /**
    * onSelect callback function called when date selection is complete
    */
-  onSelect?: (
-    selectedDate: Date | import("./NepaliDate").NepaliDate
-  ) => void;
+  onSelect?: (selectedDate: Date | import("./NepaliDate").NepaliDate) => void;
 
   /**
    * Control how and where you show the Picker containerp
    */
-  dAwareConProps?: tdirectionAwareContainerProps;
+  dAwareConProps?: Partial<tdirectionAwareContainerProps>;
 
   /**
    * label for the picker
@@ -98,7 +95,6 @@ export type tpickerProps = {
    * onInputClick
    */
   onInputClick?: () => void;
-
 } & (tpickerWithInput | tpickerWithoutInput);
 
 const Picker = (props: tpickerProps) => {
@@ -107,7 +103,7 @@ const Picker = (props: tpickerProps) => {
     maxDate: maxPropDate,
     shouldShowInput = true,
     className,
-    inputProps = {},
+    inputProps,
     dAwareConProps = {},
     onSelect,
     label,
@@ -116,7 +112,7 @@ const Picker = (props: tpickerProps) => {
     headerProps = {},
     isVisible,
     required = false,
-    onInputClick
+    onInputClick,
   } = props;
 
   const pickerInputRef = inputProps?.ref ?? useRef<HTMLDivElement>(null);
@@ -125,25 +121,32 @@ const Picker = (props: tpickerProps) => {
   const clearErrorRef = useRef<(() => void) | null>(null);
 
   let PickerContent = () => {
-    const { updatePickerVisiblity, pickerState, updatePickerDay, setMinDate, setMaxDate } = usePicker();
+    const {
+      updatePickerVisiblity,
+      pickerState,
+      updatePickerDay,
+      setMinDate,
+      setMaxDate,
+    } = usePicker();
     const shouldShowPicker = pickerState.isVisible;
 
     useEffect(() => {
-      if (inputProps?.defaultDate) 
-        updatePickerDay(inputProps?.defaultDate);
-    }, [inputProps?.defaultDate ? formatISO(inputProps?.defaultDate): undefined]);
+      updatePickerDay(inputProps?.defaultDate ? inputProps.defaultDate : null);
+    }, [
+      inputProps?.defaultDate ? formatISO(inputProps?.defaultDate) : undefined,
+    ]);
 
-    useEffect(()=>{
-      if (minPropDate){
+    useEffect(() => {
+      if (minPropDate) {
         setMinDate(minPropDate);
       }
-    },[minPropDate]);
+    }, [minPropDate ? formatISO(minPropDate) : undefined]);
 
-    useEffect(()=>{
-      if (maxPropDate){
+    useEffect(() => {
+      if (maxPropDate) {
         setMaxDate(maxPropDate);
       }
-    },[maxPropDate]);
+    }, [maxPropDate ? formatISO(maxPropDate) : undefined]);
 
     // Check for invalid date range
     const hasInvalidDateRange =
@@ -160,7 +163,7 @@ const Picker = (props: tpickerProps) => {
         onOutsideClick={() => {
           updatePickerVisiblity(false);
           // Clear errors when clicking outside if editable is enabled
-          if (inputProps?.editable && clearErrorRef.current) {
+          if (clearErrorRef.current) {
             clearErrorRef.current();
           }
         }}
@@ -171,7 +174,7 @@ const Picker = (props: tpickerProps) => {
       >
         <div
           className={cn(
-            "flex flex-col gap-0.5 w-72 h-max bg-white drop-shadow-sm p-2.5 rounded-md",
+            "flex flex-col gap-0.5 w-72 h-max bg-white drop-shadow-sm p-2.5 rounded-md"
           )}
         >
           {hasInvalidDateRange ? (
@@ -189,9 +192,7 @@ const Picker = (props: tpickerProps) => {
     );
   };
 
-  
   return (
-   
     <PickerProvider
       minDate={minPropDate}
       maxDate={maxPropDate}
@@ -199,25 +200,21 @@ const Picker = (props: tpickerProps) => {
       defaultLocale={inputProps?.defaultLocale}
       onSelect={onSelect}
     >
-      <div className={cn(
-          "flex flex-col gap-0.5 w-full mt-0.5",
-          className
-        )
-        }>
-        {label && (
-          <Label required={required}>
-            {label}
-          </Label>
-        )}
+      <div className={cn("flex flex-col gap-0.5 w-full mt-0.5", className)}>
+        {label && <Label required={required}>{label}</Label>}
         {shouldShowInput && (
           <PickerInput
             onClick={onInputClick}
             // @ts-ignore
             ref={pickerInputRef}
             {...inputProps}
-            onRegisterClearError={inputProps?.editable ? (clearErrorFn) => {
-              clearErrorRef.current = clearErrorFn;
-            } : undefined}
+            onRegisterClearError={
+              inputProps?.editable
+                ? (clearErrorFn) => {
+                    clearErrorRef.current = clearErrorFn;
+                  }
+                : undefined
+            }
           />
         )}
 

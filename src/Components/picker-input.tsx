@@ -40,7 +40,7 @@ type tpickerInputProps = {
    * Used to clear validation errors when clicking outside the picker
    */
   onRegisterClearError?: (clearErrorFn: () => void) => void;
-} & React.InputHTMLAttributes<HTMLInputElement> 
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 type tpickerInputImperativeProps = {} & HTMLInputElement;
 
@@ -53,7 +53,7 @@ const PickerInput = React.forwardRef<
     className,
     label,
     name,
-    editable = false,
+    editable = true,
     onRegisterClearError,
     ...inputProps
   } = props;
@@ -192,8 +192,9 @@ const PickerInput = React.forwardRef<
 
   // Render editable version
   if (editable) {
+    const { defaultLocale, defaultDate, ...rest } = inputProps;
     return (
-      <div className="inputContainer">
+      <div className="inputContainer" {...rest}>
         <div
           ref={ref}
           className={cn(
@@ -246,18 +247,19 @@ const PickerInput = React.forwardRef<
 
   // Render non-editable version (original behavior)
   return (
-    <div className="inputContainer"  {...inputProps}
->
+    <div className="inputContainer" {...inputProps}>
       <div
         onClick={handleInputClick}
         ref={ref}
-        className={cn("appearance-none", 
+        className={cn(
+          "appearance-none",
           cn(
-              "w-full rounded-md border border-gray-300 px-3 py-2",
-              "cursor-pointer font-[450] text-gray-400 focus:outline-none",
-              "bg-gray-100/40 text-sm transition-color"
-            ),
-            className)}
+            "w-full rounded-md border border-gray-300 px-3 py-2",
+            "cursor-pointer font-[450] text-gray-400 focus:outline-none",
+            "bg-gray-100/40 text-sm transition-color"
+          ),
+          className
+        )}
       >
         {getDisplayContent()}
       </div>
