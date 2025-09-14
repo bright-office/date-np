@@ -1,6 +1,6 @@
 {
   "name": "@brightsoftware/date-np",
-  "version": "0.6.89",
+  "version": "0.6.90",
   "author": {
     "name": "bright office"
   },
@@ -73,7 +73,7 @@
     "@types/react-dom": "^19.1.0"
   },
   "dependencies": {
-    "clsx":"2.1.1",
+    "clsx": "2.1.1",
     "tailwind-merge": "^2.6.0"
   },
   "license": "MIT",
