@@ -36,6 +36,11 @@ type tpickerInputProps = {
   editable?: boolean;
 
   /**
+   * Prop to make the picker read only
+   */
+  disabled?: boolean;
+
+  /**
    * Callback function to register the clearError function
    * Used to clear validation errors when clicking outside the picker
    */
@@ -55,6 +60,7 @@ const PickerInput = React.forwardRef<
     name,
     editable = true,
     onRegisterClearError,
+    disabled,
     ...inputProps
   } = props;
 
@@ -200,9 +206,12 @@ const PickerInput = React.forwardRef<
           className={cn(
             "relative flex h-[37px] items-center",
             cn(
-              "w-full rounded-md border border-gray-300 px-3 py-2",
+              "w-full rounded-md border border-gray-200 px-3 py-2",
               "cursor-pointer font-[450] text-gray-400 focus:outline-none",
-              "bg-gray-100/40 text-sm transition-color"
+              "bg-gray-100/40 text-sm transition-color",
+
+              disabled &&
+                "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed"
             ),
             className
           )}
@@ -254,6 +263,8 @@ const PickerInput = React.forwardRef<
         className={cn(
           "appearance-none",
           cn(
+            disabled &&
+              "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed",
             "w-full rounded-md border border-gray-300 px-3 py-2",
             "cursor-pointer font-[450] text-gray-400 focus:outline-none",
             "bg-gray-100/40 text-sm transition-color"

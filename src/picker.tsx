@@ -95,6 +95,11 @@ export type tpickerProps = {
    * onInputClick
    */
   onInputClick?: () => void;
+
+  /**
+   * disabled
+   */
+  disabled?: boolean;
 } & (tpickerWithInput | tpickerWithoutInput);
 
 const Picker = (props: tpickerProps) => {
@@ -111,6 +116,7 @@ const Picker = (props: tpickerProps) => {
     bodyProps,
     headerProps = {},
     isVisible,
+    disabled,
     required = false,
     onInputClick,
   } = props;
@@ -168,7 +174,7 @@ const Picker = (props: tpickerProps) => {
           }
         }}
         centerAlignContainer
-        active={isVisible ?? shouldShowPicker}
+        active={disabled ? !disabled : isVisible ?? shouldShowPicker}
         className="mt-2"
         {...dAwareConProps}
       >
@@ -205,6 +211,7 @@ const Picker = (props: tpickerProps) => {
         {shouldShowInput && (
           <PickerInput
             onClick={onInputClick}
+            disabled={disabled}
             // @ts-ignore
             ref={pickerInputRef}
             {...inputProps}
