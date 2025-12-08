@@ -1,6 +1,9 @@
 
 # Release Notes
 
+## Bug Fixes
+(98070f7) fix: shadcn drawer removing body pointer-event. --0x2f0
+
 ## Small tasks
-(6884883) chore: testing out the overlay support for shadcn comps --0x2f0
+(ec8dd52) chore:version change --0x2f0
 
