@@ -175,7 +175,7 @@ const DirectionAwareContainer = (props: tdirectionAwareContainerProps) => {
             ref={contentRef}
             className={cn(
                 props.className,
-                "fixed z-100 top-0 left-0 pointer-events-auto"
+                "absolute z-100 top-0 left-0 pointer-events-auto"
             )}>
             {props.children}
         </div>),
