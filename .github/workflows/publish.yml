@@ -54,6 +54,7 @@ jobs:
       - name: Verify auth
         run: npm whoami
         env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: checkout the repo
