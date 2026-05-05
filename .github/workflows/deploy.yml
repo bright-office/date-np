@@ -29,6 +29,7 @@ jobs:
 
       - name: Install root package dependencies and build
         run: |
+          bun install @brightsoftware/date-np
           bun install
           bun run build
 
