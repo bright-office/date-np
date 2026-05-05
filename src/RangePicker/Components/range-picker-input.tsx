@@ -58,7 +58,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
           updateRangePickerDay(date, "end");
         }
       },
-      minDate: minDate ? minDate : new Date(MIN_AD_YEAR + 1, 0, 1), 
+      minDate: minDate ? minDate : new Date(MIN_AD_YEAR + 1, 0, 1),
       maxDate: maxDate ? maxDate : new Date(MAX_AD_YEAR - 1, 11, 31),
       currentStartDate: startDate,
       currentEndDate: endDate,
@@ -68,10 +68,10 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
     const { handleInputChange, errors, clearErrors } = editable
       ? editableHook
       : {
-          handleInputChange: () => {},
-          errors: { start: null, end: null },
-          clearErrors: () => {},
-        };
+        handleInputChange: () => { },
+        errors: { start: null, end: null },
+        clearErrors: () => { },
+      };
 
     // Expose clearErrors function through onRegisterClearErrors callback
     const handleClearErrors = useCallback(() => {
@@ -227,7 +227,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
             <div
               ref={startInputRef}
               className={cn(
-                "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
+                "inline-block min-w-25 px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
                 !startDate && "text-gray-500",
                 errors.start && "bg-red-50 text-red-600"
               )}
@@ -253,7 +253,7 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
                 <div
                   ref={endInputRef}
                   className={cn(
-                    "inline-block min-w-[100px] px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
+                    "inline-block min-w-25 px-1 rounded border-0 outline-none focus:bg-blue-50 cursor-text",
                     !endDate && "text-gray-500",
                     errors.end && "bg-red-50 text-red-600"
                   )}
@@ -302,10 +302,10 @@ const RangePickerInput = forwardRef<HTMLDivElement, RangePickerInputProps>(
           className
             ? className
             : cn(
-                "w-full px-3 py-2 border border-gray-300 rounded-md",
-                "focus:outline-none cursor-pointer text-gray-400 font-[450]",
-                "bg-gray-100/40 text-sm hover:border-gray-400 transition-colors"
-              )
+              "w-full px-3 py-2 border border-gray-300 rounded-md",
+              "focus:outline-none cursor-pointer text-gray-400 font-[450]",
+              "bg-gray-100/40 text-sm hover:border-gray-400 transition-colors"
+            )
         )}
         onClick={handleInputClick}
       >

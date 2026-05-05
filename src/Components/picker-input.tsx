@@ -95,10 +95,10 @@ const PickerInput = React.forwardRef<
   const { handleInputChange, error, clearError } = editable
     ? editableHook
     : {
-        handleInputChange: () => {},
-        error: null,
-        clearError: () => {},
-      };
+      handleInputChange: () => { },
+      error: null,
+      clearError: () => { },
+    };
 
   // Create a function to handle clearing errors
   const handleClearError = useCallback(() => {
@@ -204,14 +204,14 @@ const PickerInput = React.forwardRef<
         <div
           ref={ref}
           className={cn(
-            "relative flex h-[37px] items-center",
+            "relative flex h-9.25 items-center justify-between",
             cn(
               "w-full rounded-md border border-gray-200 px-3 py-2",
               "cursor-pointer font-[450] text-gray-400 focus:outline-none",
               "bg-gray-100/40 text-sm transition-color",
 
               disabled &&
-                "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed"
+              "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed"
             ),
             className
           )}
@@ -222,7 +222,7 @@ const PickerInput = React.forwardRef<
             <div
               ref={inputRef}
               className={cn(
-                "min-w-[80px] p-1 cursor-text",
+                "min-w-20 p-1 cursor-text",
                 !displayDate && "text-gray-500",
                 isEditing && "bg-blue-50 rounded-md text-gray-500",
                 error && "bg-red-50 text-red-600 border-red-300"
@@ -243,6 +243,24 @@ const PickerInput = React.forwardRef<
             </div>
           </div>
 
+          <svg
+            className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            onClick={(e) => {
+              e.stopPropagation();
+              updatePickerVisiblity(true);
+            }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+
           {/* Error message tooltip */}
           {error && (
             <div className="absolute top-full left-0 mt-1 text-xs text-red-600 bg-white border border-red-200 rounded px-2 py-1 shadow-sm z-10">
@@ -261,10 +279,10 @@ const PickerInput = React.forwardRef<
         onClick={handleInputClick}
         ref={ref}
         className={cn(
-          "appearance-none",
+          "appearance-none flex items-center justify-between",
           cn(
             disabled &&
-              "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed",
+            "border-outline-neutral bg-neutral-100 text-gray-400/80  cursor-not-allowed",
             "w-full rounded-md border border-gray-300 px-3 py-2",
             "cursor-pointer font-[450] text-gray-400 focus:outline-none",
             "bg-gray-100/40 text-sm transition-color"
@@ -272,7 +290,24 @@ const PickerInput = React.forwardRef<
           className
         )}
       >
-        {getDisplayContent()}
+        <span>{getDisplayContent()}</span>
+        <svg
+          className="w-4 h-4 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          onClick={(e) => {
+            e.stopPropagation();
+            updatePickerVisiblity(true);
+          }}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
       </div>
     </div>
   );
