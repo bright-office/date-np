@@ -61,6 +61,7 @@ const PickerInput = React.forwardRef<
     editable = true,
     onRegisterClearError,
     disabled,
+    dateFormat,
     ...inputProps
   } = props;
 
