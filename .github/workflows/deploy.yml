@@ -29,13 +29,13 @@ jobs:
 
       - name: Install root package dependencies and build
         run: |
-          bun install @brightsoftware/date-np
           bun install
           bun run build
 
       - name: Install example dependencies and build
         working-directory: ./example/react
         run: |
+          bun add @brightsoftware/date-np
           bun install
           bun run tsc -b
           bun run vite build --base=/date-np/
