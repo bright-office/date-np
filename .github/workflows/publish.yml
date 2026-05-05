@@ -51,6 +51,11 @@ jobs:
     if: needs.check_version.outputs.SHOULD_PUBLISH == 'true'
 
     steps:
+      - name: Verify auth
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: checkout the repo
         uses: actions/checkout@v4
         with:
@@ -68,6 +73,7 @@ jobs:
           bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Creating and publishing a release 
         run: |
