@@ -77,7 +77,18 @@ const PickerInput = React.forwardRef<
 
   // State for tracking if we're currently editing (only if editable)
   const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const applyMask = (val: string) => {
+    const cleaned = val.replace(/\D/g, "");
+    let masked = "";
+    for (let i = 0; i < cleaned.length; i++) {
+      if (i === 4 || i === 6) masked += "-";
+      masked += cleaned[i];
+    }
+    return masked.slice(0, 10);
+  };
 
   // Custom hook for handling editable date input (only if editable)
   const editableHook = useEditableDateInput({
@@ -132,13 +143,14 @@ const PickerInput = React.forwardRef<
 
   // Editable-specific handlers (only used when editable is true)
   const handleDateInput = useCallback(
-    (e: React.FormEvent<HTMLDivElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!editable) return;
-      const target = e.currentTarget;
-      const value = target.textContent || "";
+      const target = e.target;
+      const maskedValue = applyMask(target.value);
+      setInputValue(maskedValue);
       // Determine target type based on locale
       const targetType = locale === "ne" ? "nepali" : "date";
-      handleInputChange(value, targetType);
+      handleInputChange(maskedValue, targetType);
     },
     [handleInputChange, editable, locale]
   );
@@ -146,41 +158,42 @@ const PickerInput = React.forwardRef<
   const handleFocus = useCallback(() => {
     if (!editable) return;
     setIsEditing(true);
-    if (inputRef.current && displayDate) {
+    if (displayDate) {
       // Set the content to ISO format for editing
-      inputRef.current.textContent = formatISO(displayDate);
+      setInputValue(formatISO(displayDate));
+    } else {
+      setInputValue("");
     }
   }, [displayDate, editable]);
 
   const handleBlur = useCallback(() => {
     if (!editable) return;
     setIsEditing(false);
-    // Reset to formatted display if there's a valid date
-    if (inputRef.current && displayDate) {
-      inputRef.current.textContent = formatDate(displayDate);
-    }
     // Clear error when blurring
     handleClearError();
-  }, [displayDate, formatDate, editable, handleClearError]);
+  }, [editable, handleClearError]);
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!editable) return;
       if (e.key === "Enter") {
         e.preventDefault();
-        const target = e.currentTarget as HTMLDivElement;
-        target.blur();
+        e.currentTarget.blur();
       } else if (e.key === "Escape") {
         e.preventDefault();
-        const target = e.currentTarget as HTMLDivElement;
         // Reset content and blur
         if (displayDate) {
-          target.textContent = formatDate(displayDate);
+          const isoDate = formatISO(displayDate);
+          setInputValue(isoDate);
+          handleInputChange(isoDate, locale === "ne" ? "nepali" : "date");
+        } else {
+          setInputValue("");
+          handleInputChange("", locale === "ne" ? "nepali" : "date");
         }
-        target.blur();
+        e.currentTarget.blur();
       }
     },
-    [displayDate, formatDate, editable]
+    [displayDate, editable, handleInputChange, locale]
   );
 
   // Get display content based on editing state and editable prop
@@ -219,28 +232,24 @@ const PickerInput = React.forwardRef<
         >
           <div className="flex items-center">
             {/* Date input field */}
-            <div
+            <input
               ref={inputRef}
+              type="text"
               className={cn(
-                "min-w-20 p-1 cursor-text",
-                !displayDate && "text-gray-500",
+                "min-w-20 p-1 cursor-text bg-transparent",
+                !displayDate && !isEditing && "text-gray-500",
                 isEditing && "bg-blue-50 rounded-md text-gray-500",
                 error && "bg-red-50 text-red-600 border-red-300"
               )}
               style={{ outline: "none" }}
-              contentEditable={true}
-              suppressContentEditableWarning={true}
-              onInput={handleDateInput}
+              value={isEditing ? inputValue : (displayDate ? formatDate(displayDate) : "")}
+              onChange={handleDateInput}
               onFocus={handleFocus}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
               aria-label="Date input"
-              data-placeholder={displayDate ? undefined : "YYYY-MM-DD"}
-            >
-              {displayDate
-                ? formatDate(displayDate)
-                : inputProps.placeholder || "YYYY-MM-DD"}
-            </div>
+              placeholder={inputProps.placeholder || "YYYY-MM-DD"}
+            />
           </div>
 
           <svg
