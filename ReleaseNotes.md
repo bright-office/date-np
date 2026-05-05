@@ -1,13 +1,11 @@
 
 # Release Notes
 
-## Bug Fixes
-(fd78723) fix: workflow file --Abhinaya Aryal
-(c1e0410) fix: update npm token --Abhinaya Aryal
-(45574e1) fix: update BS_MONTHS data for years 2083-2087 --Abhinaya Aryal
+## Features
+(042174f) feat: masking and date icon added with minor version upgrade --Abhinaya Aryal
+(20364f9) feat: masking the user input --Abhinaya Aryal
+(d72b5f9) feat: add calendar icon in the input bar --Abhinaya Aryal
 
 ## Small tasks
-(ee2b3ef) chore: update workflow --Abhinaya Aryal
-(14276f9) chore: fix workflow file skip issue --Abhinaya Aryal
-(b420de7) chore: workflow trigger in push too --Abhinaya Aryal
+(7511305) chore: resolve warning shown about dateformat attribute on console --Abhinaya Aryal
 
