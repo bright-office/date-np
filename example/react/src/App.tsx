@@ -9,12 +9,11 @@ import { NepaliDate } from "@brightsoftware/date-np/core";
 import { Picker } from "@brightsoftware/date-np/ui";
 import { RangePicker } from "@brightsoftware/date-np/ui";
 import { TimePicker } from "@brightsoftware/date-np/ui";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 function App() {
   const nepaliDate = new NepaliDate(2082, 2, 20); // Aashar 20, 2082
   const englishDate = new Date(2025, 5, 3); // June 3, 2025
-  const [date, setDate] = useState<Date | NepaliDate>();
 
   const divRef = useRef<HTMLDivElement>(null);
   const formatExamples = [
@@ -171,11 +170,11 @@ function App() {
 
             <Picker
               onSelect={(date: NepaliDate | Date) => {
-                setDate(date);
+                console.log(date);
               }}
               inputProps={{
                 editable: true,
-                defaultValue: new NepaliDate(2080, 5, 14), // BS date
+                defaultValue: undefined, // BS date
                 dateFormat: "dd-MMMM-yyyy",
                 defaultLocale: "BS",
                 className:
@@ -187,21 +186,6 @@ function App() {
               shouldShowInput={true}
               label="Select Date"
               description="Choose your preferred date"
-              bodyClassNames={{
-                dateHover: "hover:bg-blue-400",
-                selected: "bg-green-500 text-white",
-                todayStyle: "bg-cyan-400 text-white",
-              }}
-              headerClassNames={{
-                yearLabel:
-                  "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
-                monthLabel:
-                  "hover:bg-blue-400 hover:text-white text-black p-2 rounded-xl",
-                arrowIcon: {
-                  arrowIconLeft: <div>left</div>,
-                  arrowIconRight: <div>right</div>,
-                },
-              }}
             />
           </div>
 
@@ -263,7 +247,7 @@ function App() {
                   inputProps={{
                     placeholder: "Select time...",
                   }}
-                  onSave={(time)=>{alert(`Time saved: ${time.hours}:${time.minutes}:${time.seconds} ${time.period}`)}}
+                  onSave={(time) => { alert(`Time saved: ${time.hours}:${time.minutes}:${time.seconds} ${time.period}`) }}
                 />
               </div>
               <div>
