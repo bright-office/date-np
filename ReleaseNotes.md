@@ -2,10 +2,15 @@
 # Release Notes
 
 ## Features
-(042174f) feat: masking and date icon added with minor version upgrade --Abhinaya Aryal
-(20364f9) feat: masking the user input --Abhinaya Aryal
-(d72b5f9) feat: add calendar icon in the input bar --Abhinaya Aryal
+(5c035c0) feat: use github pages for deployment and also run workflows manually only instead of push and pull events --Abhinaya Aryal
+
+## Bug Fixes
+(23baf3c) fix: workflow being skipped --Abhinaya Aryal
+(e949afa) fix: silly mistake --Abhinaya Aryal
+(381d776) fix: install package from registry --Abhinaya Aryal
 
 ## Small tasks
-(7511305) chore: resolve warning shown about dateformat attribute on console --Abhinaya Aryal
+(f21c8a4) chore: correct semver versioning --Abhinaya Aryal
+(da6131f) chore: shows error only after uses completed typing date instead of showing error while typing too --Abhinaya Aryal
+(ddbb998) chore: auto append dash after year and month --Abhinaya Aryal
 
