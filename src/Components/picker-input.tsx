@@ -84,9 +84,10 @@ const PickerInput = React.forwardRef<
   const applyMask = (val: string) => {
     const cleaned = val.replace(/\D/g, "");
     let masked = "";
+
     for (let i = 0; i < cleaned.length; i++) {
-      if (i === 4 || i === 6) masked += "-";
       masked += cleaned[i];
+      if (i === 3 || i === 5) masked += "-";
     }
     return masked.slice(0, 10);
   };
@@ -147,13 +148,25 @@ const PickerInput = React.forwardRef<
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!editable) return;
       const target = e.target;
-      const maskedValue = applyMask(target.value);
+      let val = target.value;
+
+      // Handle backspace when the value ends with the auto-appended dash
+      // If the user deleted the dash, we also delete the preceding digit
+      if (
+        val.length < inputValue.length &&
+        inputValue.endsWith("-") &&
+        val === inputValue.slice(0, -1)
+      ) {
+        val = val.slice(0, -1);
+      }
+
+      const maskedValue = applyMask(val);
       setInputValue(maskedValue);
       // Determine target type based on locale
       const targetType = locale === "ne" ? "nepali" : "date";
       handleInputChange(maskedValue, targetType);
     },
-    [handleInputChange, editable, locale]
+    [handleInputChange, editable, locale, inputValue]
   );
 
   const handleFocus = useCallback(() => {
@@ -237,7 +250,7 @@ const PickerInput = React.forwardRef<
               ref={inputRef}
               type="text"
               className={cn(
-                "min-w-20 p-1 cursor-text bg-transparent",
+                "min-w-20 max-w-28 p-1 cursor-text bg-transparent",
                 !displayDate && !isEditing && "text-gray-500",
                 isEditing && "bg-blue-50 rounded-md text-gray-500",
                 error && "bg-red-50 text-red-600 border-red-300"
