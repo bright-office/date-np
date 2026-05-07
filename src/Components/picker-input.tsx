@@ -162,9 +162,11 @@ const PickerInput = React.forwardRef<
 
       const maskedValue = applyMask(val);
       setInputValue(maskedValue);
-      // Determine target type based on locale
-      const targetType = locale === "ne" ? "nepali" : "date";
-      handleInputChange(maskedValue, targetType);
+      if (maskedValue.length >= 10) {
+        // Determine target type based on locale
+        const targetType = locale === "ne" ? "nepali" : "date";
+        handleInputChange(maskedValue, targetType);
+      }
     },
     [handleInputChange, editable, locale, inputValue]
   );
