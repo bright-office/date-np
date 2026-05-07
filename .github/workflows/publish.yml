@@ -9,7 +9,6 @@ jobs:
     outputs:
       TAG: ${{ steps.extract_version.outputs.TAG }}
       SHOULD_PUBLISH: ${{ steps.check_git_tags.outputs.SHOULD_PUBLISH }}
-    if: github.event_name == 'push' || github.event.pull_request.merged == true
 
     steps: 
       - name: checkout the repo
