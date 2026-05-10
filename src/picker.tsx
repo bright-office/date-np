@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo, useRef, type ComponentProps } from "react";
+import { useEffect, useRef, type ComponentProps } from "react";
 import { cn } from "../utils/clsx";
 import DirectionAwareContainer from "./Components/helpers/direction-aware-container";
 import PickerBody from "./Components/picker-body";
@@ -28,7 +28,7 @@ type tpickerWithInput = {
   inputProps?: ComponentProps<typeof PickerInput>;
 
   /**
-   * Specify whethere to show the picker input or not
+   * Specify whether to show the picker input or not
    * @defaults to true
    */
   shouldShowInput?: boolean;
@@ -218,8 +218,8 @@ const Picker = (props: tpickerProps) => {
             onRegisterClearError={
               inputProps?.editable
                 ? (clearErrorFn) => {
-                    clearErrorRef.current = clearErrorFn;
-                  }
+                  clearErrorRef.current = clearErrorFn;
+                }
                 : undefined
             }
           />
