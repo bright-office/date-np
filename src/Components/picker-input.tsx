@@ -135,6 +135,7 @@ const PickerInput = React.forwardRef<
   };
 
   const handleInputClick = (e: React.MouseEvent) => {
+    if (disabled) return;
     // Don't toggle visibility if clicking on editable content and currently editing
     if (editable && isEditing) {
       e.stopPropagation();
@@ -146,7 +147,7 @@ const PickerInput = React.forwardRef<
   // Editable-specific handlers (only used when editable is true)
   const handleDateInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!editable) return;
+      if (!editable || disabled) return;
       const target = e.target;
       let val = target.value;
 
@@ -172,7 +173,7 @@ const PickerInput = React.forwardRef<
   );
 
   const handleFocus = useCallback(() => {
-    if (!editable) return;
+    if (!editable || disabled) return;
     setIsEditing(true);
     if (displayDate) {
       // Set the content to ISO format for editing
@@ -183,7 +184,7 @@ const PickerInput = React.forwardRef<
   }, [displayDate, editable]);
 
   const handleBlur = useCallback(() => {
-    if (!editable) return;
+    if (!editable || disabled) return;
     setIsEditing(false);
     // Clear error when blurring
     handleClearError();
@@ -191,7 +192,7 @@ const PickerInput = React.forwardRef<
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (!editable) return;
+      if (!editable || disabled) return;
       if (e.key === "Enter") {
         e.preventDefault();
         e.currentTarget.blur();
@@ -265,6 +266,7 @@ const PickerInput = React.forwardRef<
               onKeyDown={handleKeyDown}
               aria-label="Date input"
               placeholder={inputProps.placeholder || "YYYY-MM-DD"}
+              disabled={disabled}
             />
           </div>
 
@@ -275,7 +277,9 @@ const PickerInput = React.forwardRef<
             viewBox="0 0 24 24"
             onClick={(e) => {
               e.stopPropagation();
-              updatePickerVisiblity(true);
+              if (!disabled) {
+                updatePickerVisiblity(true);
+              }
             }}
           >
             <path
@@ -323,7 +327,9 @@ const PickerInput = React.forwardRef<
           viewBox="0 0 24 24"
           onClick={(e) => {
             e.stopPropagation();
-            updatePickerVisiblity(true);
+            if (!disabled) {
+              updatePickerVisiblity(true);
+            }
           }}
         >
           <path
