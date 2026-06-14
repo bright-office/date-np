@@ -66,9 +66,19 @@ const usePicker = () => {
       onSelect(day);
     }
     setPickerState((prevState) => {
+      if (!day) {
+        return {
+          ...prevState,
+          selectedDate: day,
+        };
+      }
+
+      // Also update activeMonth/activeYear so the calendar navigates to the selected date
       return {
         ...prevState,
         selectedDate: day,
+        activeMonth: day.getMonth(),
+        activeYear: day.getFullYear(),
       };
     });
   };
@@ -364,72 +374,50 @@ const usePicker = () => {
 
   const setMinDate = (newMinDate: Date | NepaliDate) => {
     setPickerState((prevState) => {
-      return {
+      const updatedState = {
         ...prevState,
         minDate: newMinDate,
       };
+
+      // Only update active month/year if no date is currently selected,
+      // to avoid overwriting the view set by defaultDate/selectedDate
+      if (!prevState.selectedDate) {
+        const isNotCurrentMonth =
+          newMinDate.getFullYear() !== prevState.activeYear ||
+          newMinDate.getMonth() !== prevState.activeMonth;
+
+        if (isNotCurrentMonth) {
+          updatedState.activeYear = newMinDate.getFullYear();
+          updatedState.activeMonth = newMinDate.getMonth();
+        }
+      }
+
+      return updatedState;
     });
-    if (
-      newMinDate instanceof NepaliDate &&
-      newMinDate.getFullYear() !== new NepaliDate()._year &&
-      newMinDate.getMonth() !== new NepaliDate().getMonth()
-    ) {
-      setPickerState((prev) => {
-        return {
-          ...prev,
-          activeYear: newMinDate.getFullYear(),
-          activeMonth: newMinDate.getMonth(),
-        };
-      });
-    }
-    if (
-      newMinDate instanceof Date &&
-      newMinDate.getFullYear() !== new NepaliDate()._year &&
-      newMinDate.getMonth() !== new NepaliDate().getMonth()
-    ) {
-      setPickerState((prev) => {
-        return {
-          ...prev,
-          activeYear: newMinDate.getFullYear(),
-          activeMonth: newMinDate.getMonth(),
-        };
-      });
-    }
   };
 
   const setMaxDate = (newMaxDate: Date | NepaliDate) => {
     setPickerState((prevState) => {
-      return {
+      const updatedState = {
         ...prevState,
         maxDate: newMaxDate,
       };
+
+      // Only update active month/year if no date is currently selected,
+      // to avoid overwriting the view set by defaultDate/selectedDate
+      if (!prevState.selectedDate) {
+        const isNotCurrentMonth =
+          newMaxDate.getFullYear() !== prevState.activeYear ||
+          newMaxDate.getMonth() !== prevState.activeMonth;
+
+        if (isNotCurrentMonth) {
+          updatedState.activeYear = newMaxDate.getFullYear();
+          updatedState.activeMonth = newMaxDate.getMonth();
+        }
+      }
+
+      return updatedState;
     });
-    if (
-      newMaxDate instanceof NepaliDate &&
-      newMaxDate.getFullYear() !== new NepaliDate()._year &&
-      newMaxDate.getMonth() !== new NepaliDate().getMonth()
-    ) {
-      setPickerState((prev) => {
-        return {
-          ...prev,
-          activeYear: newMaxDate.getFullYear(),
-          activeMonth: newMaxDate.getMonth(),
-        };
-      });
-    }
-    if (
-      newMaxDate instanceof Date &&
-      newMaxDate.getFullYear() !== new NepaliDate()._year &&
-      newMaxDate.getMonth() !== new NepaliDate().getMonth()
-    ) {
-      setPickerState((prev) => {
-        return {
-          ...prev,
-          activeYear: newMaxDate.getFullYear(),
-          activeMonth: newMaxDate.getMonth(),
-        };
-      });
-    }
   };
 
   return {
