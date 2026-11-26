@@ -372,52 +372,59 @@ const usePicker = () => {
     return selectedDate || defaultDate || null;
   };
 
+  const toLocaleDate = (date: Date | NepaliDate, locale: "en" | "ne") => {
+    if (locale === "ne") {
+      return date instanceof NepaliDate ? date : NepaliDate.fromADDate(date);
+    }
+    return date instanceof Date ? date : date.toADDate();
+  };
+
+  const clampActiveMonthYearToBound = (
+    prevState: tpickerContextType["pickerState"],
+    boundDate: Date | NepaliDate,
+    boundType: "min" | "max"
+  ) => {
+    // Only adjust active month/year if no date is currently selected
+    // and the current view falls outside the new bound
+    if (prevState.selectedDate) return {};
+
+    const localeDate = toLocaleDate(boundDate, prevState.locale);
+    const boundYear = localeDate.getFullYear();
+    const boundMonth = localeDate.getMonth();
+
+    const isOutOfBounds =
+      boundType === "min"
+        ? prevState.activeYear < boundYear ||
+          (prevState.activeYear === boundYear &&
+            prevState.activeMonth < boundMonth)
+        : prevState.activeYear > boundYear ||
+          (prevState.activeYear === boundYear &&
+            prevState.activeMonth > boundMonth);
+
+    if (!isOutOfBounds) return {};
+
+    return {
+      activeYear: boundYear,
+      activeMonth: boundMonth,
+    };
+  };
+
   const setMinDate = (newMinDate: Date | NepaliDate) => {
-    setPickerState((prevState) => {
-      const updatedState = {
-        ...prevState,
-        minDate: newMinDate,
-      };
-
-      // Only update active month/year if no date is currently selected,
-      // to avoid overwriting the view set by defaultDate/selectedDate
-      if (!prevState.selectedDate) {
-        const isNotCurrentMonth =
-          newMinDate.getFullYear() !== prevState.activeYear ||
-          newMinDate.getMonth() !== prevState.activeMonth;
-
-        if (isNotCurrentMonth) {
-          updatedState.activeYear = newMinDate.getFullYear();
-          updatedState.activeMonth = newMinDate.getMonth();
-        }
-      }
-
-      return updatedState;
-    });
+    setPickerState((prevState) => ({
+      ...prevState,
+      minDate:
+        newMinDate instanceof NepaliDate ? newMinDate.toADDate() : newMinDate,
+      ...clampActiveMonthYearToBound(prevState, newMinDate, "min"),
+    }));
   };
 
   const setMaxDate = (newMaxDate: Date | NepaliDate) => {
-    setPickerState((prevState) => {
-      const updatedState = {
-        ...prevState,
-        maxDate: newMaxDate,
-      };
-
-      // Only update active month/year if no date is currently selected,
-      // to avoid overwriting the view set by defaultDate/selectedDate
-      if (!prevState.selectedDate) {
-        const isNotCurrentMonth =
-          newMaxDate.getFullYear() !== prevState.activeYear ||
-          newMaxDate.getMonth() !== prevState.activeMonth;
-
-        if (isNotCurrentMonth) {
-          updatedState.activeYear = newMaxDate.getFullYear();
-          updatedState.activeMonth = newMaxDate.getMonth();
-        }
-      }
-
-      return updatedState;
-    });
+    setPickerState((prevState) => ({
+      ...prevState,
+      maxDate:
+        newMaxDate instanceof NepaliDate ? newMaxDate.toADDate() : newMaxDate,
+      ...clampActiveMonthYearToBound(prevState, newMaxDate, "max"),
+    }));
   };
 
   return {
